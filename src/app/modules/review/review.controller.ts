@@ -1,12 +1,15 @@
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import httpStatus from 'http-status';
-import { ReviewService } from './Review.service';
 import AppError from '../../error/AppError';
+import { reviewService } from './review.service';
 
 const createReview = catchAsync(async (req, res) => {
+    const reviewData = req.body;
+   const {userId} = req.user;
+   reviewData.menteeId = userId;
 
-  const result = await ReviewService.createReviewService(req.body);
+  const result = await reviewService.createReviewService(reviewData);
 
   // Send response
   sendResponse(res, {
@@ -19,7 +22,7 @@ const createReview = catchAsync(async (req, res) => {
 
 const getReviewByMentor = catchAsync(async (req, res) => {
   const { userId } = req.user;
-  const { meta, result } = await ReviewService.getAllReviewByMentorQuery(
+  const { meta, result } = await reviewService.getAllReviewByMentorQuery(
     req.query,
     userId,
   );
@@ -34,9 +37,7 @@ const getReviewByMentor = catchAsync(async (req, res) => {
 });
 
 const getSingleReview = catchAsync(async (req, res) => {
-  const result = await ReviewService.getSingleReviewQuery(
-    req.params.id,
-  );
+  const result = await reviewService.getSingleReviewQuery(req.params.id);
 
   sendResponse(res, {
     success: true,
@@ -48,11 +49,9 @@ const getSingleReview = catchAsync(async (req, res) => {
 
 const updateSingleReview = catchAsync(async (req, res) => {
   const { id } = req.params; 
+  const {userId} = req.user;
   const updateData = req.body;
-  const result = await ReviewService.updateReviewQuery(
-    id,
-    updateData,
-  );
+  const result = await reviewService.updateReviewQuery(id, updateData, userId);
 
   // Send response
   sendResponse(res, {
@@ -64,9 +63,8 @@ const updateSingleReview = catchAsync(async (req, res) => {
 });
 
 const deleteSingleReview = catchAsync(async (req, res) => {
-  const result = await ReviewService.deletedReviewQuery(
-    req.params.id,
-  );
+    const { userId } = req.user;
+  const result = await reviewService.deletedReviewQuery(req.params.id, userId);
 
   sendResponse(res, {
     success: true,
