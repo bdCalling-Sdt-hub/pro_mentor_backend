@@ -21,8 +21,8 @@ const getAllReviewByMentorQuery = async (
   query: Record<string, unknown>,
   mentorId: string,
 ) => {
-  const videoQuery = new QueryBuilder(
-    Review.find({ mentorId }).populate('mentorId'),
+  const reviewQuery = new QueryBuilder(
+    Review.find({ mentorId }).populate('mentorId').populate('menteeId'),
     query,
   )
     .search([''])
@@ -31,42 +31,55 @@ const getAllReviewByMentorQuery = async (
     .paginate()
     .fields();
 
-  const result = await videoQuery.modelQuery;
-  const meta = await videoQuery.countTotal();
+  const result = await reviewQuery.modelQuery;
+  const meta = await reviewQuery.countTotal();
   return { meta, result };
 };
 
 const getSingleReviewQuery = async (id: string) => {
-  const video = await Review.findById(id);
-  if (!video) {
-    throw new AppError(404, 'Video Not Found!!');
+  const review = await Review.findById(id);
+  if (!review) {
+    throw new AppError(404, 'Review Not Found!!');
   }
-  const Review = await Review.aggregate([
+  const result = await Review.aggregate([
     { $match: { _id: new mongoose.Types.ObjectId(id) } },
   ]);
-  if (Review.length === 0) {
-    throw new AppError(404, 'Video not found!');
+  if (result.length === 0) {
+    throw new AppError(404, 'Review not found!');
   }
 
-  return Review[0];
+  return result[0];
 };
 
-const updateReviewQuery = async (id: string, payload: Partial<TReview>) => {
-  const registerMentor = await Review.findById(id);
-  if (!registerMentor) {
-    throw new AppError(404, 'Video Not Found!!');
-  }
-  const result = await Review.findByIdAndUpdate(id, payload, { new: true });
+const updateReviewQuery = async (id: string, payload: Partial<TReview>, userId: string) => {
+if (!id || !userId) {
+  throw new AppError(400, 'Invalid input parameters');
+}
 
+const result = await Review.findOneAndUpdate(
+  { _id: id, menteeId: userId }, 
+  payload,
+  { new: true, runValidators: true }, 
+);
+
+// If no matching review is found, throw an error
+if (!result) {
+  throw new AppError(404, 'Review Not Found or Unauthorized Access!');
+}
   return result;
 };
 
-const deletedReviewQuery = async (id: string) => {
-  const video = await Review.findById(id);
-  if (!video) {
-    throw new AppError(404, 'Video  Not Found!!');
+const deletedReviewQuery = async (id: string, userId: string) => {
+     if (!id || !userId) {
+       throw new AppError(400, 'Invalid input parameters');
+     }
+  const result = await Review.findOneAndDelete({ _id: id, menteeId: userId });
+
+  // If no matching review is found, throw an error
+  if (!result) {
+    throw new AppError(404, 'Review Not Found!');
   }
-  const result = await Review.findOneAndDelete({ _id: id });
+
 
   return result;
 };

@@ -11,13 +11,18 @@ const taskGoalSchema = new Schema<TTaskGoal>(
       type: String,
       required: true,
     },
-    files: [String],
+    taskfiles: [String],
     bookingScheduleId: {
       type: Schema.Types.ObjectId,
       required: true,
       ref: 'BookingSchedule',
     },
     menteeId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: 'User',
+    },
+    mentorId: {
       type: Schema.Types.ObjectId,
       required: true,
       ref: 'User',

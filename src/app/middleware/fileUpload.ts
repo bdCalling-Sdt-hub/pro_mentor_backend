@@ -63,6 +63,9 @@ const fileUpload = (uploadDirectory: string) => {
          'video/avi',
          'video/mov',
          'video/mkv',
+         'application/pdf', // PDF files
+         'application/msword', // .doc files
+         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
        ];
        if (allowedMimeTypes.includes(file.mimetype)) {
          cb(null, true);

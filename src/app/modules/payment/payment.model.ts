@@ -6,6 +6,11 @@ const paymentSchema = new Schema<TPayment>(
   {
     mentorId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     menteeId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    sheduleBookingId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
     amount: { type: Number, required: true },
     method: {
       type: String,
