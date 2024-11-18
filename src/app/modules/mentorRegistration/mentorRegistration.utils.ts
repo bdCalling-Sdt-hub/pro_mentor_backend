@@ -1,29 +1,44 @@
-const generateSlotsForDays = (days:any, startTime:any, endTime:any) => {
-  const slots = days.map((day:any) => {
-    // Create the start and end date objects
-    const start = new Date(day);
-    start.setHours(startTime, 0, 0, 0);
+export function generateAvailableTimes(
+  startTime: string,
+  endTime: string,
+  incrementTime: number,
+): string[] {
+  // Helper function to convert time in HH:MM AM/PM format to minutes
+  const timeToMinutes = (time: string) => {
+    const [timePart, modifier] = time.split(' ');
+    let [hours, minutes] = timePart.split(':').map(Number);
 
-    const end = new Date(day);
-    end.setHours(endTime, 0, 0, 0);
+    if (modifier === 'PM' && hours !== 12) hours += 12;
+    if (modifier === 'AM' && hours === 12) hours = 0;
 
-    return {
-      day: new Date(day).toDateString(), // Store the day name (e.g., "Sat Nov 16 2024")
-      start: start.toISOString(), // Convert start time to ISO string
-      end: end.toISOString(), // Convert end time to ISO string
-    };
-  });
+    return hours * 60 + minutes;
+  };
 
-  return slots;
-};
+  // Helper function to convert minutes back to HH:MM AM/PM format
+  const minutesToTime = (minutes: number) => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    const modifier = hours >= 12 ? 'PM' : 'AM';
+    const hour12 = hours % 12 || 12;
 
-// Example Usage
-const preferredDays = [
-  new Date('2024-11-16'), // Saturday
-  new Date('2024-11-17'), // Sunday
-];
-const startTime = 10; // 10:00 AM
-const endTime = 14; // 2:00 PM
+    return `${hour12.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')} ${modifier}`;
+  };
 
-const slots = generateSlotsForDays(preferredDays, startTime, endTime);
-console.log(slots);
+  // Convert start and end times to minutes
+  const startMinutes = timeToMinutes(startTime);
+  const endMinutes = timeToMinutes(endTime);
+
+  // Generate available time slots
+  const availableTimes: string[] = [];
+  for (
+    let minutes = startMinutes;
+    minutes <= endMinutes;
+    minutes += incrementTime
+  ) {
+    availableTimes.push(minutesToTime(minutes));
+  }
+
+  return availableTimes;
+}
+
+

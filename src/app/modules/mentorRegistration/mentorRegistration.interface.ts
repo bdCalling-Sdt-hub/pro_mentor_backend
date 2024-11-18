@@ -18,9 +18,10 @@ export type TMentorRegistration = {
   education: string;
   experience: string;
   preferredDays: [string];
+  availableTime?: [string];
   startTime: string;
   endTime: string;
   status: 'pending' | 'accept' | 'cenceled';
-  professionalCredential: [string];
-  additionalDocument: [string];
+  professionalCredential?: [string];
+  additionalDocument?: [string];
 };

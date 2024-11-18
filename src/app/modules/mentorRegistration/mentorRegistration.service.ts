@@ -6,14 +6,18 @@ import { MentorRegistration } from './mentorRegistration.model';
 import { userService } from '../user/user.service';
 import mongoose from 'mongoose';
 
-const createMentorRegistrationService = async (payload:TMentorRegistration) => {
-    console.log('payload', payload);
+// const createMentorRegistrationService = async (payload:TMentorRegistration) => {
+//     console.log('payload 1');
 
-//     const user = await User.findById(payload.userId);
+//     const user = await User.findById(payload.mentorId);
+//     console.log('payload 2');
 //     if(!user){
 //         throw new AppError(httpStatus.NOT_FOUND, 'User Not Found!!');
 //     }
+//     console.log('payload 3');
 //   const result = await MentorRegistration.create(payload);
+//    console.log('payload 4');
+//   console.log('result result', result);
 //    if (!result) {
 //      throw new AppError(
 //        httpStatus.BAD_REQUEST,
@@ -29,7 +33,43 @@ const createMentorRegistrationService = async (payload:TMentorRegistration) => {
 
 //     return result;
  
+// };
+
+const createMentorRegistrationService = async (
+  payload: TMentorRegistration,
+) => {
+  try {
+  
+    const user = await User.findById(payload.mentorId);
+  
+    if (!user) {
+      throw new AppError(httpStatus.NOT_FOUND, 'User Not Found!!');
+    }
+  
+    const result = await MentorRegistration.create(payload);
+
+
+    if (!result) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Failed to create mentor registration',
+      );
+    }
+
+    // Defer user update to the next tick
+    process.nextTick(async () => {
+      await userService.updateUser(user._id, {
+        mentorRegistrationId: result._id,
+      });
+    });
+
+    return result;
+  } catch (error) {
+    console.error('Error in createMentorRegistrationService:', error);
+    throw error; // Rethrow or handle as needed
+  }
 };
+
 
 
 const getAllMentorRegistrationQuery = async (query: Record<string, unknown>) => {

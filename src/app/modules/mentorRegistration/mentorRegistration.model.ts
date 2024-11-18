@@ -20,6 +20,7 @@ const MentorRegistrationSchema = new Schema<TMentorRegistration>(
     education: { type: String, required: true },
     experience: { type: String, required: true },
     preferredDays: { type: [String], required: true },
+    availableTime: { type: [String], required: false },
     startTime: { type: String, required: true },
     endTime: { type: String, required: true },
     status: {
@@ -27,8 +28,8 @@ const MentorRegistrationSchema = new Schema<TMentorRegistration>(
       enum: ['pending', 'accept', 'cenceled'],
       default: 'pending',
     },
-    professionalCredential: { type: [String], required: true },
-    additionalDocument: { type: [String], required: true },
+    professionalCredential: { type: [String], required: false },
+    additionalDocument: { type: [String], required: false },
   },
   { timestamps: true },
 );

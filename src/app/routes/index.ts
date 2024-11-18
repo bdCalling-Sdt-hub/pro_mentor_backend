@@ -10,6 +10,7 @@ import reviewRouter from '../modules/review/review.route';
 import walletRouter from '../modules/wallet/wallet.route';
 import paymentRouter from '../modules/payment/payment.route';
 import taskGoalRouter from '../modules/taskGoal/taskGoal.route';
+import availableTimeRouter from '../modules/availableTime/availableTime.route';
 
 const router = Router();
 
@@ -54,6 +55,10 @@ const moduleRoutes = [
   {
     path: '/taskGoal',
     route: taskGoalRouter,
+  },
+  {
+    path: '/availableTime',
+    route: availableTimeRouter,
   },
 ];
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

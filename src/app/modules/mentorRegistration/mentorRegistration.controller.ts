@@ -2,38 +2,65 @@ import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import httpStatus from 'http-status';
 import { mentorRegistrationService } from './mentorRegistration.service';
+import AppError from '../../error/AppError';
+import { generateAvailableTimes } from './mentorRegistration.utils';
 
 const createMentorRegistration = catchAsync(async (req, res) => {
- const files = req.files as {
-   [fieldname: string]: Express.Multer.File[];
- };
+  const { userId } = req.user;
+  const files = req.files as {
+    [fieldname: string]: Express.Multer.File[];
+  };
+  // Access body and files
+  const bodyData = req.body;
+  if (
+    !files ||
+    !files['introVideo'] ||
+    !files['professionalCredential'] ||
+    !files['additionalDocument']
+  ) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Both introvideo and document files are required',
+    );
+  }
 
- // Log incoming body and file data for debugging
- console.log('Received body data:', req.body);
- console.log('Received files:', files);
+  const introVideo = files['introVideo'][0];
+  const professionalCredential = files['professionalCredential'][0];
+  const additionalDocument = files['additionalDocument'][0];
+  const videoPath = introVideo.path.replace(/^public[\\/]/, '');
+  const professionalCredentialPath = professionalCredential.path.replace(
+    /^public[\\/]/,
+    '',
+  );
+  const additionalDocumentPath = additionalDocument.path.replace(
+    /^public[\\/]/,
+    '',
+  );
 
- 
- // Access body and files
- const bodyData = req.body;
+  // const startTime = bodyData.startTime;
+  const incrementTime = 15;
 
- // Map files if they exist
- const filesData = {
-   introVideo: files['introVideo']?.[0]?.path || '',
-   professionalCredential:
-     files['professionalCredential']?.map((file) => file.path) || [],
-   additionalDocument:
-     files['additionalDocument']?.map((file) => file.path) || [],
- };
+  const availableTimeSlots = generateAvailableTimes(
+    bodyData.startTime,
+    bodyData.endTime,
+    incrementTime,
+  );
+  // console.log(availableTimeSlots);
 
-  console.log('filesData:', filesData);
- // Combine form-data fields with files into the payload
- const payload = {
-   ...bodyData,
-   ...filesData,
- };
-  
+  const payload = {
+    ...bodyData,
+    mentorId: userId,
+    introVideo: videoPath,
+    professionalCredential: professionalCredentialPath,
+    additionalDocument: additionalDocumentPath,
+    availableTime: availableTimeSlots,
+  };
+
+  // console.log('payload payload', payload);
+
   const result =
-    await mentorRegistrationService.createMentorRegistrationService(bodyData);
+    await mentorRegistrationService.createMentorRegistrationService(payload);
+    console.log('result', result);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -41,6 +68,7 @@ const createMentorRegistration = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
 
 
 const getMentorRegistration = catchAsync(async (req, res) => {
