@@ -23,9 +23,10 @@ const createAvailableTime = catchAsync(async (req, res) => {
 });
 
 const getAvailableTimeByMentor = catchAsync(async (req, res) => {
-  const { userId } = req.user;
+  
+  const {id, date}:any = req.query
   const  result= await availableService.getMentorAvailableTimeService(
-    userId,
+    id, date
   );
 
   sendResponse(res, {
@@ -77,7 +78,7 @@ const getAvailableTimeByMentor = catchAsync(async (req, res) => {
 export const availableTimeController = {
   createAvailableTime,
   getAvailableTimeByMentor,
-//   getSingleAvailableTime,
-//   updateSingleAvailableTime,
-//   deleteSingleAvailableTime,
+  //   getSingleAvailableTime,
+  //   updateSingleAvailableTime,
+  //   deleteSingleAvailableTime,
 };

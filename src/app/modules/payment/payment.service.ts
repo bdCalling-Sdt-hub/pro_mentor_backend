@@ -1,94 +1,304 @@
-
-import AppError from "../../error/AppError";
-import { User } from "../user/user.models";
-import { TPayment } from "./payment.interface";
-import { Payment } from "./payment.model";
+import mongoose from 'mongoose';
 import QueryBuilder from '../../builder/QueryBuilder';
+import AppError from '../../error/AppError';
+import { User } from '../user/user.models';
+import { Payment } from './payment.model';
 
-const addPaymentService = async (payload:TPayment) => {
-      const {
-        mentorId,
-        menteeId,
-        sheduleBookingId,
-        amount,
-        method,
-        bankDetails,
-        paypalPayDetails,
-        applePayDetails,
-      } = payload;
-    
-  const mentor = await User.findById(mentorId);
-  if (!mentor) {
-    throw new AppError(400, 'Mentor is not found!');
-  }
+// const addPaymentService = async (payload: any) => {
+//   const {
+//     mentorId,
+//     menteeId,
+//     sheduleBookingId,
+//     amount,
+//     method,
+//     bankDetails,
+//     paypalPayDetails,
+//     applePayDetails,
+//     transactionId,
+//     transactionDate,
+//     bookingDate,
+//     bookingTime,
+//     duration,
+//   } = payload;
 
-  if (mentor.role !== 'mentor') {
-     throw new AppError(400, 'User is not authorized as a Mentor!!');
-  }
-  //   const task = await Task.findById(sheduleBookingId);
-  //   if (!task) {
-  //     return next(new AppError(400, 'Task is not found!'));
-  //   }
-  const mentee = await User.findById(menteeId);
-  if (!mentee) {
-    throw new AppError(400, 'Mentee is not found!');
-  }
-  if (mentee.role !== 'mentee') {
-     throw new AppError(400, 'User is not authorized as a Mentee');
-  }
+//   console.log('......payload......');
+//   const status = 'pending';
 
-//   if (!task.provider.equals(providerId)) {
-//     return next(new AppError(400, 'Task Provider is not found!'));
+//   const paymentData = {
+//     mentorId,
+//     menteeId,
+//     sheduleBookingId,
+//     amount,
+//     method,
+//     status,
+//     bankDetails,
+//     paypalPayDetails,
+//     applePayDetails,
+//     transactionId,
+//     transactionDate,
+//   };
+
+//   console.log('......paymentData......');
+
+//   // Start a session for transaction
+//   const session = await mongoose.startSession();
+//   session.startTransaction();
+
+//   try {
+//     console.log('......try......');
+//     // Validate mentor
+//     const mentor = await User.findById(mentorId).session(session);
+//     console.log('mentor', mentor);
+//     if (!mentor) {
+//       throw new AppError(400, 'Mentor is not found!');
+//     }
+//     if (mentor.role !== 'mentor') {
+//       throw new AppError(400, 'User is not authorized as a Mentor!');
+//     }
+
+//     // Validate mentee
+//     const mentee = await User.findById(menteeId).session(session);
+//     console.log('mentee', mentee);
+//     if (!mentee) {
+//       throw new AppError(400, 'Mentee is not found!');
+//     }
+//     if (mentee.role !== 'mentee') {
+//       throw new AppError(400, 'User is not authorized as a Mentee');
+//     }
+
+//     // Validate Payment Amount
+//     if (!amount || amount <= 0) {
+//       throw new AppError(
+//         400,
+//         'Invalid Paymental amount. It must be a positive number.',
+//       );
+//     }
+
+//     // Validate Payment Method
+//     const validMethods = ['bank', 'paypal_pay', 'apple_pay'];
+//     if (!method || !validMethods.includes(method)) {
+//       throw new AppError(400, 'Invalid Paymental method.');
+//     }
+
+//     // Method-specific validation
+//     if (method === 'bank') {
+//       if (
+//         !bankDetails ||
+//         !bankDetails.accountNumber ||
+//         !bankDetails.accountName ||
+//         !bankDetails.bankName
+//       ) {
+//         throw new AppError(
+//           400,
+//           'All bank details (account number, account name, bank name) are required for bank Paymentals.',
+//         );
+//       }
+//     } else if (method === 'paypal_pay') {
+//       if (!paypalPayDetails || !paypalPayDetails.paypalId) {
+//         throw new AppError(
+//           400,
+//           'Paypal Pay token is required for Paypal Pay Paymentals.',
+//         );
+//       }
+//     } else if (method === 'apple_pay') {
+//       if (!applePayDetails || !applePayDetails.appleId) {
+//         throw new AppError(
+//           400,
+//           'Apple Pay token is required for Apple Pay Paymentals.',
+//         );
+//       }
+//     }
+
+//     // Create payment record
+//     const result = await Payment.create([paymentData], { session });
+//     console.log('result', result);
+//     if (!result || !result[0]) {
+//       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to add Payment!');
+//     }
+
+//     // Time calculation for booking
+//     const startTimeOld = moment(bookingTime, 'hh:mm A');
+//     const endTimeOld = startTimeOld.clone().add(duration - 1, 'minutes');
+//     const startTime = startTimeOld.format('hh:mm A');
+//     const endTime = endTimeOld.format('hh:mm A');
+
+//     // Booking data
+//     const bookingData = {
+//       mentorId,
+//       menteeId,
+//       bookingDate,
+//       bookingTime,
+//       duration,
+//       startTime,
+//       endTime,
+//       status: 'Booked',
+//     };
+
+//     console.log('bookingData', bookingData);
+
+//     const bookingResult =
+//       await mentorBookingService.createMentorBookingService(bookingData);
+//     if (!bookingResult) {
+//       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to add Booking!');
+//     }
+
+//     await Payment.updateOne(
+//       { _id: result[0]._id },
+//       { sheduleBookingId: bookingResult._id },
+//       { session },
+//     );
+
+//     await session.commitTransaction();
+//     session.endSession();
+
+//     return result;
+//   } catch (error) {
+//     console.error('Transaction Error:', error);
+//     await session.abortTransaction();
+//     session.endSession();
+//     throw error;
 //   }
-  // Validate Paymental Amount
-  if (!amount || amount <= 0) {
-    throw new AppError(
-      400,
-      'Invalid Paymental amount. It must be a positive number.',
-    );
-  }
+// };
 
-  // Validate Paymental Method
-  const validMethods = ['bank', 'paypal_pay', 'apple_pay'];
-  if (!method || !validMethods.includes(method)) {
-     throw new AppError(400, 'Invalid Paymental method.');
-  }
+const addPaymentService = async (payload: any) => {
+  const {
+    mentorId,
+    menteeId,
+    sheduleBookingId,
+    amount,
+    method,
+    bankDetails,
+    paypalPayDetails,
+    applePayDetails,
+    transactionId,
+    transactionDate,
+    bookingDate,
+    bookingTime,
+    duration,
+  } = payload;
 
-  // Method-specific validation
-  if (method === 'bank') {
-    if (
-      !bankDetails ||
-      !bankDetails.accountNumber ||
-      !bankDetails.accountName ||
-      !bankDetails.bankName
-    ) {
-       throw new AppError(
-         400,
-         'All bank details (account number, account name, bank name) are required for bank Paymentals.',
-       );
+  const status = 'pending';
+
+  const paymentData = {
+    mentorId,
+    menteeId,
+    sheduleBookingId,
+    amount,
+    method,
+    status,
+    bankDetails,
+    paypalPayDetails,
+    applePayDetails,
+    transactionId,
+    transactionDate,
+  };
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    const mentor = await User.findById(payload.mentorId);
+    console.log('.....try-1.......');
+    if (!mentor) {
+      throw new AppError(400, 'Mentor is not found!');
     }
-  } else if (method === 'paypal_pay') {
-    if (!paypalPayDetails || !paypalPayDetails.paypalId) {
-      throw new AppError(
-        400,
-        'Google Pay token is required for Google Pay Paymentals.',
-      );
+    if (mentor.role !== 'mentor') {
+      throw new AppError(400, 'User is not authorized as a Mentor!');
     }
-  } else if (method === 'apple_pay') {
-    if (!applePayDetails || !applePayDetails.appleId) {
-       throw new AppError(
-         400,
-         'Apple Pay token is required for Apple Pay Paymentals.',
-       );
-    }
+    console.log('.....try-2.......');
+    // console.log(paymentData);
+    const result = await Payment.create([paymentData], { session });
+    // const result = await Payment.create([paymentData], { session });
+    console.log('result', result);
+    console.log('.....try-3.......');
+
+    // const result = await Order.create([data], { session });
+    // if (!result.length) {
+    //   throw new Error('Failed to payment');
+    // }
+
+    // const userUpdate = await User.findOneAndUpdate(
+    //   { _id: payload.mentorId },
+    //   { mentorRegistrationId: payload.mentorId },
+    //   { session },
+    // );
+    // if (!userUpdate) {
+    //   throw new Error('Failed to update');
+    // }
+
+    await session.commitTransaction();
+    await session.endSession();
+    return result[0];
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error('Failed to payment sfsaf ');
   }
-
-    const result = await Payment.create(payload);
-
-    return result;
-
-
 };
+
+// const addPaymentService = async (payload: any) => {
+//   const {
+//     mentorId,
+//     menteeId,
+//     sheduleBookingId,
+//     amount,
+//     method,
+//     bankDetails,
+//     paypalPayDetails,
+//     applePayDetails,
+//     transactionId,
+//     transactionDate,
+//     bookingDate,
+//     bookingTime,
+//     duration,
+//   } = payload;
+
+//   const status = 'pending';
+
+//   const paymentData = {
+//     mentorId,
+//     menteeId,
+//     sheduleBookingId,
+//     amount,
+//     method,
+//     status,
+//     bankDetails,
+//     paypalPayDetails,
+//     applePayDetails,
+//     transactionId,
+//     transactionDate,
+//   };
+
+//     const mentor = await User.findById(payload.mentorId);
+//     console.log('.....try-1.......');
+//     if (!mentor) {
+//       throw new AppError(400, 'Mentor is not found!');
+//     }
+//     if (mentor.role !== 'mentor') {
+//       throw new AppError(400, 'User is not authorized as a Mentor!');
+//     }
+//     console.log('.....try-2.......');
+//     console.log(paymentData);
+//     const result = await Payment.create(paymentData);
+//     // console.log('result', result);
+//     console.log('.....try-3.......');
+
+//     // const result = await Order.create([data], { session });
+//     if (!result) {
+//       throw new Error('Failed to payment');
+//     }
+
+//     const userUpdate = await User.findOneAndUpdate(
+//       { _id: payload.mentorId },
+//       { mentorRegistrationId: payload.mentorId },
+
+//     );
+//     if (!userUpdate) {
+//       throw new Error('Failed to update');
+//     }
+//     return result;
+
+// };
 
 const getAllPaymentService = async (query: Record<string, unknown>) => {
   const PaymentQuery = new QueryBuilder(
@@ -99,7 +309,7 @@ const getAllPaymentService = async (query: Record<string, unknown>) => {
     query,
   )
     .search(['name'])
-    .filter()             
+    .filter()
     .sort()
     .paginate()
     .fields();
@@ -109,13 +319,10 @@ const getAllPaymentService = async (query: Record<string, unknown>) => {
   return { meta, result };
 };
 const getAllPaymentByMentorService = async (
-    query: Record<string, unknown>,
-  mentorId:string,
+  query: Record<string, unknown>,
+  mentorId: string,
 ) => {
-  const PaymentQuery = new QueryBuilder(
-    Payment.find({ mentorId }),
-    query,
-  )
+  const PaymentQuery = new QueryBuilder(Payment.find({ mentorId }), query)
     .search(['name'])
     .filter()
     .sort()

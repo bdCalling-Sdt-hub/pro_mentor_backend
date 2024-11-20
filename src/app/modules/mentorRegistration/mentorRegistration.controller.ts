@@ -70,8 +70,7 @@ const createMentorRegistration = catchAsync(async (req, res) => {
 });
 
 
-
-const getMentorRegistration = catchAsync(async (req, res) => {
+const getallMentorRegistration = catchAsync(async (req, res) => {
   const { meta, result } =
     await mentorRegistrationService.getAllMentorRegistrationQuery(req.query);
 
@@ -86,8 +85,10 @@ const getMentorRegistration = catchAsync(async (req, res) => {
 
 
 const getSingleMentorRegistration = catchAsync(async (req, res) => {
-  const result  =
-    await mentorRegistrationService.getSingleMentorRegistrationQuery(req.params.id);
+  const result =
+    await mentorRegistrationService.getSingleMentorRegistrationQuery(
+      req.params.id,
+    );
 
   sendResponse(res, {
     success: true,
@@ -96,6 +97,36 @@ const getSingleMentorRegistration = catchAsync(async (req, res) => {
     message: 'Single Mentor are requered successful!!',
   });
 });
+
+
+const getAdminMentorRegistration = catchAsync(async (req, res) => {
+  const { meta, result } = await mentorRegistrationService.getAdminMentorQuery(
+    req.query,
+  );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    meta: meta,
+    data: result,
+    message: 'Mentor Registration All are requered successful!!',
+  });
+});
+
+
+const getMentorRegistrationOnly = catchAsync(async (req, res) => {
+  const {userId} = req.user;
+  const result =
+    await mentorRegistrationService.getMentorRegistrationOnly(userId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    data: result,
+    message: 'My Registration are requered successful!!',
+  });
+});
+
 
 const updateSingleMentorRegistration = catchAsync(async (req, res) => {
   const result = await mentorRegistrationService.updateMentorRegistrationQuery(req.params.id, req.body);
@@ -138,10 +169,11 @@ const cencelSingleMentorRegistration = catchAsync(async (req, res) => {
 
 export const mentorRegistrationController = {
   createMentorRegistration,
-  getMentorRegistration,
+  getallMentorRegistration,
+  getMentorRegistrationOnly,
+  getAdminMentorRegistration,
   getSingleMentorRegistration,
   updateSingleMentorRegistration,
   acceptSingleMentorRegistration,
   cencelSingleMentorRegistration,
-  //   updateSetting,
 };

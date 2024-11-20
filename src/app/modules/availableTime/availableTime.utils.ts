@@ -1,33 +1,40 @@
+import moment from 'moment';
 
-export const generateSlotsForDays = (days:any, startTime:any, endTime:any) => {
-  const slots = days.map((day:any) => {
-    // Create the start and end date objects
-    const start = new Date(day);
-    start.setHours(startTime, 0, 0, 0);
+export const generateSlotsForDays = (startTime: string, endTime: string) => {
+  console.log('startTime', startTime);
+  console.log('endTime', endTime);
 
-    const end = new Date(day);
-    end.setHours(endTime, 0, 0, 0);
+  // Parse the time strings into valid Date objects using moment.js
+  const start:any = moment(startTime, 'hh:mm A').toDate(); // Parses time like '09:00 AM'
+  const end:any = moment(endTime, 'hh:mm A').toDate(); // Parses time like '11:00 AM'
 
-    return {
-      day: new Date(day).toDateString(), // Store the day name (e.g., "Sat Nov 16 2024")
-      start: start.toISOString(), // Convert start time to ISO string
-      end: end.toISOString(), // Convert end time to ISO string
-    };
-  });
+  console.log('start end', { start, end });
+
+  const slots: any = [];
+  let currentTime:any = new Date(start);
+
+  // Loop through the time range and generate the slots
+  while (currentTime <= end) {
+    const nextTime:any = new Date(currentTime);
+    console.log('nextTime', nextTime);
+    nextTime.setHours(currentTime.getHours() + 1); // increment by 1 hour for the next slot
+
+    const duration = (end - currentTime) / (1000 * 60 * 60); // calculate the remaining duration in hours
+
+    // Format current time slot to HH:mm
+    const formattedTime = moment(currentTime).format('HH:mm'); // Use moment.js to format the time
+    console.log('formattedTime', formattedTime);
+
+    // Add the slot to the array
+    slots.push({
+      time: formattedTime,
+      duration: duration >= 0 ? duration : 0, // Ensure the duration doesn't go negative
+    });
+
+    currentTime = nextTime; // Move to the next slot
+  }
 
   return slots;
 };
-
-// Example Usage
-// const preferredDays = [
-//   new Date('2024-11-16'), // Saturday
-//   new Date('2024-11-17'), // Sunday
-// ];
-// const startTime = '10:00'; // 10:00 AM
-// const endTime = '2:00'; // 2:00 PM
-
-// const slots = generateSlotsForDays(preferredDays, startTime, endTime);
-// console.log(slots);
-
 
 

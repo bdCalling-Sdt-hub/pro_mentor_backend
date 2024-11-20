@@ -8,8 +8,8 @@ const paymentSchema = new Schema<TPayment>(
     menteeId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     sheduleBookingId: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
+      ref: 'ScheduleBooking',
+      required: false,
     },
     amount: { type: Number, required: true },
     method: {
@@ -26,9 +26,11 @@ const paymentSchema = new Schema<TPayment>(
     },
     paypalPayDetails: {
       paypalId: { type: String },
+      // required: false,
     },
     applePayDetails: {
       appleId: { type: String },
+      // required: false,
     },
     transactionId: {
       type: String,

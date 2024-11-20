@@ -31,36 +31,37 @@ import express, { NextFunction, Request, Response } from 'express';
 import auth from '../../middleware/auth';
 import { USER_ROLE } from '../user/user.constants';
 import validateRequest from '../../middleware/validateRequest';
-import { mentorRegistrationValidation } from './mentorRegistration.validation';
 import { mentorRegistrationController } from './mentorRegistration.controller';
 import fileUpload from '../../middleware/fileUpload';
 import multer from 'multer';
 
-// const video = fileUpload('./public/uploads/video');
-// const documents = fileUpload('./public/uploads/documents');
-
 const mentorRegistrationRouter = express.Router();
 
-// Define separate upload handlers for video and documents
-const documentsUpload = fileUpload('./public/uploads/documents'); // Document upload to the "documents" directory
+const documentsUpload = fileUpload('./public/uploads/documents'); 
 
 mentorRegistrationRouter
   .post(
     '/',
-    
+
     documentsUpload.fields([
       { name: 'introVideo', maxCount: 1 },
-      { name: 'professionalCredential', maxCount: 5 }, // Up to 5 professional credentials
-      { name: 'additionalDocument', maxCount: 5 }, // Up to 5 additional documents
+      { name: 'professionalCredential', maxCount: 5 },
+      { name: 'additionalDocument', maxCount: 5 },
     ]),
     auth(USER_ROLE.MENTOR),
     mentorRegistrationController.createMentorRegistration,
   )
 
+  .get('/', mentorRegistrationController.getallMentorRegistration)
   .get(
-    '/',
+    '/admin',
     auth(USER_ROLE.ADMIN, USER_ROLE.SUPER_ADMIN),
-    mentorRegistrationController.getMentorRegistration,
+    mentorRegistrationController.getAdminMentorRegistration,
+  )
+  .get(
+    '/me',
+    auth(USER_ROLE.MENTOR),
+    mentorRegistrationController.getMentorRegistrationOnly,
   )
   .get('/:id', mentorRegistrationController.getSingleMentorRegistration)
   .patch(

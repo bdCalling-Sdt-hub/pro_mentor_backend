@@ -5,39 +5,54 @@ import QueryBuilder from '../../builder/QueryBuilder';
 import { AvailableTime } from './availableTime.model';
 import { TAvailableTime } from './availableTime.interface';
 import { generateSlotsForDays } from './availableTime.utils';
+import { MentorRegistration } from '../mentorRegistration/mentorRegistration.model';
 
 
 const createAvailableService = async (payload: TAvailableTime) => {
 
   console.log('availableTime', payload);
 
- const result = generateSlotsForDays(
-   payload.days,
-   payload.startTime,
-   payload.endTime,
- );
- console.log('result', result);
+//  const result = generateSlotsForDays(
+
+//  );
+//  console.log('result', result);
 
 //   const result = await AvailableTime.create(payload);
 //   if (!result) {
 //     throw new AppError(httpStatus.BAD_REQUEST, 'Failed to Available time added!!');
 //   }
 
-  return result;
+  return payload;
 };
 
 
-const getMentorAvailableTimeService = async (mentorId: string) => {
+const getMentorAvailableTimeService = async (mentorId: string, date: string) => {
+  console.log('mentorId', mentorId);
+  console.log('date', date);
 
-  const result = await AvailableTime.findOne({ mentorId }).populate('mentorId');
-  if (!result) {
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      'Failed to Available time added!!',
-    );
+  const dayName = new Date(date).toLocaleDateString('en-US', {
+    weekday: 'long',
+  });
+  console.log('dayName', dayName);
+  const verifyMentorDays = await MentorRegistration.findOne({
+    mentorId,
+    preferredDays: { $in: [dayName] }, // Correct the method to use $in for array matching
+  });
+
+  if (!verifyMentorDays) {
+    throw new Error('The mentor is not available on this day');
   }
 
-  return result;
+  console.log('verifyMentorDays', verifyMentorDays);
+  const startTime = '09:00 AM';
+  const endTime = '12:30 PM';
+  // verifyMentorDays.startTime,
+  // verifyMentorDays.endTime,
+  const slots = generateSlotsForDays(startTime, endTime);
+
+  console.log('slots', slots);
+
+  return 'result';
 };
 
 

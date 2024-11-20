@@ -12,7 +12,7 @@ availableTimeRouter
     // validateRequest(videoValidation.VideoSchema),
     availableTimeController.createAvailableTime,
   )
-  .get('/', auth(USER_ROLE.MENTOR), availableTimeController.getAvailableTimeByMentor);
+  .get('/', availableTimeController.getAvailableTimeByMentor);
 //   .get('/:id', reviewController.getSingleReview)
 //   .patch('/:id', auth(USER_ROLE.MENTEE), reviewController.updateSingleReview)
 //   .delete('/:id', auth(USER_ROLE.MENTEE), reviewController.deleteSingleReview);

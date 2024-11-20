@@ -18,8 +18,11 @@ const createUser = catchAsync(async (req: Request, res: Response) => {
 });
 
 const userCreateVarification = catchAsync(async (req, res) => {
+  console.log('..........1..........');
   const token = req.headers?.token as string;
+  console.log('token', token);
   const { otp } = req.body;
+  console.log('otp', otp);
   const newUser = await userService.otpVerifyAndCreateUser({ otp, token });
 
   return sendResponse(res, {

@@ -1,27 +1,40 @@
 import { model, Schema } from 'mongoose';
-import { TAvailableTime } from './availableTime.interface';
+import { TAvailableTime, TAvailableTimeSlots } from './availableTime.interface';
 
-const availableTimeSchema = new Schema<TAvailableTime>({
-  mentorId: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
+
+const AvailableTimeSlotSchema = new Schema<TAvailableTime>({
+  time: {
+    type: String, 
     required: true,
   },
-  days: {
-    type: [String],
-    required: true,
-  },
-  startTime: {
-    type: String,
-    required: true,
-  },
-  endTime: {
-    type: String,
+  duration: {
+    type: Number, 
     required: true,
   },
 });
 
-export const AvailableTime = model<TAvailableTime>(
-  'AvailableTime',
-  availableTimeSchema,
+// Define the AvailableTime schema for the complete available time document
+const availableTimeSchema = new Schema<TAvailableTimeSlots>(
+  {
+    mentorId: {
+      type: Schema.Types.ObjectId, 
+      required: true,
+      ref: 'User', 
+    },
+    date: {
+      type: Date, 
+      required: true,
+    },
+    availableSlots: {
+      type: [AvailableTimeSlotSchema], 
+      required: true,
+    },
+  },
+  { timestamps: true }, 
+);
+
+// Create the model from the schema
+export const AvailableTime = model<TAvailableTimeSlots>(
+  'AvailableTime', 
+  availableTimeSchema, 
 );

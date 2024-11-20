@@ -11,6 +11,8 @@ import walletRouter from '../modules/wallet/wallet.route';
 import paymentRouter from '../modules/payment/payment.route';
 import taskGoalRouter from '../modules/taskGoal/taskGoal.route';
 import availableTimeRouter from '../modules/availableTime/availableTime.route';
+import bookingRouter from '../modules/shediulBooking/shediulBooking.route';
+import mentorBookingRouter from '../modules/mentorBooking/mentorBooking.route';
 
 const router = Router();
 
@@ -57,8 +59,16 @@ const moduleRoutes = [
     route: taskGoalRouter,
   },
   {
+    path: '/shediulBooking',
+    route: bookingRouter,
+  },
+  {
     path: '/availableTime',
     route: availableTimeRouter,
+  },
+  {
+    path: '/mentorBooking',
+    route: mentorBookingRouter,
   },
 ];
 moduleRoutes.forEach((route) => router.use(route.path, route.route));
