@@ -6,12 +6,14 @@ import AppError from '../../error/AppError';
 import { generateAvailableTimes } from './mentorRegistration.utils';
 
 const createMentorRegistration = catchAsync(async (req, res) => {
-  const { userId } = req.user;
+  // const { userId } = req.user;
   const files = req.files as {
     [fieldname: string]: Express.Multer.File[];
   };
   // Access body and files
   const bodyData = req.body;
+
+  console.log(files);
   if (
     !files ||
     !files['introVideo'] ||
@@ -49,18 +51,18 @@ const createMentorRegistration = catchAsync(async (req, res) => {
 
   const payload = {
     ...bodyData,
-    mentorId: userId,
+    // mentorId: userId,
     introVideo: videoPath,
     professionalCredential: professionalCredentialPath,
     additionalDocument: additionalDocumentPath,
     availableTime: availableTimeSlots,
   };
 
-  // console.log('payload payload', payload);
+  console.log('payload payload', payload);
 
   const result =
     await mentorRegistrationService.createMentorRegistrationService(payload);
-    console.log('result', result);
+  console.log('result', result);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -68,7 +70,6 @@ const createMentorRegistration = catchAsync(async (req, res) => {
     data: result,
   });
 });
-
 
 const getallMentorRegistration = catchAsync(async (req, res) => {
   const { meta, result } =
@@ -82,7 +83,6 @@ const getallMentorRegistration = catchAsync(async (req, res) => {
     message: 'Mentor Registration All are requered successful!!',
   });
 });
-
 
 const getSingleMentorRegistration = catchAsync(async (req, res) => {
   const result =
@@ -98,7 +98,6 @@ const getSingleMentorRegistration = catchAsync(async (req, res) => {
   });
 });
 
-
 const getAdminMentorRegistration = catchAsync(async (req, res) => {
   const { meta, result } = await mentorRegistrationService.getAdminMentorQuery(
     req.query,
@@ -113,9 +112,8 @@ const getAdminMentorRegistration = catchAsync(async (req, res) => {
   });
 });
 
-
 const getMentorRegistrationOnly = catchAsync(async (req, res) => {
-  const {userId} = req.user;
+  const { userId } = req.user;
   const result =
     await mentorRegistrationService.getMentorRegistrationOnly(userId);
 
@@ -127,9 +125,11 @@ const getMentorRegistrationOnly = catchAsync(async (req, res) => {
   });
 });
 
-
 const updateSingleMentorRegistration = catchAsync(async (req, res) => {
-  const result = await mentorRegistrationService.updateMentorRegistrationQuery(req.params.id, req.body);
+  const result = await mentorRegistrationService.updateMentorRegistrationQuery(
+    req.params.id,
+    req.body,
+  );
 
   sendResponse(res, {
     success: true,

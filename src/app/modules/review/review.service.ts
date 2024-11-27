@@ -4,18 +4,80 @@ import mongoose from 'mongoose';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { TReview } from './review.interface';
 import { Review } from './review.model';
+import { MentorRegistration } from '../mentorRegistration/mentorRegistration.model';
+import { User } from '../user/user.models';
 
 
 const createReviewService = async (payload: TReview) => {
-  console.log('payuload', payload);
+  try {
+    console.log('Payload:', payload);
 
-  const result = await Review.create(payload);
-  if (!result) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'Failed to Video added!!');
+    const result = await Review.create(payload);
+
+    if (!result) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to add video review!');
+    }
+
+    const mentor = await User.findById(payload.mentorId);
+    if (!mentor) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Mentor not found!');
+    }
+
+    if (!mentor.mentorRegistrationId) {
+      throw new AppError(
+        httpStatus.NOT_FOUND,
+        'Mentor registration not found!',
+      );
+    }
+
+    const registration:any = await MentorRegistration.findById(
+      mentor.mentorRegistrationId,
+    );
+    if (!registration) {
+      throw new AppError(
+        httpStatus.NOT_FOUND,
+        'Mentor registration not found!',
+      );
+    }
+  
+    let { reviewCount, ratingCount } = registration;
+  
+    const newRating =
+      (ratingCount * reviewCount + result.rating) / (reviewCount + 1);
+
+    const updatedRegistration = await MentorRegistration.findByIdAndUpdate(
+      mentor.mentorRegistrationId,
+      {
+        reviewCount: reviewCount + 1,
+        ratingCount: newRating,
+      },
+      { new: true },
+    );
+
+    if (!updatedRegistration) {
+      throw new AppError(
+        httpStatus.INTERNAL_SERVER_ERROR,
+        'Failed to update mentor registration!',
+      );
+    }
+
+    return result;
+  } catch (error) {
+  
+    console.error('Error creating review:', error);
+
+    if (error instanceof AppError) {
+      throw error;
+    }
+
+  
+    throw new AppError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      'An unexpected error occurred while creating the review.',
+    );
   }
-
-  return result;
 };
+
 
 const getAllReviewByMentorQuery = async (
   query: Record<string, unknown>,
@@ -62,7 +124,6 @@ const result = await Review.findOneAndUpdate(
   { new: true, runValidators: true }, 
 );
 
-// If no matching review is found, throw an error
 if (!result) {
   throw new AppError(404, 'Review Not Found or Unauthorized Access!');
 }
@@ -70,19 +131,75 @@ if (!result) {
 };
 
 const deletedReviewQuery = async (id: string, userId: string) => {
-     if (!id || !userId) {
-       throw new AppError(400, 'Invalid input parameters');
-     }
+
+  if (!id || !userId) {
+    throw new AppError(400, 'Invalid input parameters');
+  }
+
   const result = await Review.findOneAndDelete({ _id: id, menteeId: userId });
 
-  // If no matching review is found, throw an error
   if (!result) {
     throw new AppError(404, 'Review Not Found!');
+  }
+
+  const mentor = await User.findById(result.mentorId);
+  if (!mentor) {
+    throw new AppError(404, 'Mentor Not Found!');
+  }
+
+  if (!mentor.mentorRegistrationId) {
+    throw new AppError(404, 'Mentor Registration Not Found!');
+  }
+
+  const registration:any = await MentorRegistration.findById(
+    mentor.mentorRegistrationId,
+  );
+  if (!registration) {
+    throw new AppError(404, 'Mentor Registration Not Found!');
+  }
+
+
+  const { reviewCount, ratingCount } = registration;
+  console.log('reviewCount ratingCount',reviewCount, ratingCount);
+  console.log('result.rating', result.rating);
+
+  const newRatingCount = ratingCount - result.rating;
+  console.log('newRatingCount', newRatingCount);
+  const newReviewCount = reviewCount - 1;
+  console.log('newReviewCount', newReviewCount);
+
+
+  let newAverageRating = 0;
+  console.log('newAverageRating', newAverageRating);
+  if (newReviewCount > 0) {
+    newAverageRating = newRatingCount / newReviewCount;
+  }
+
+
+  if (newReviewCount <= 0) {
+    newAverageRating = 0;
+  }
+
+  console.log('newAverageRating-2', newAverageRating);
+
+  const updatedRegistration = await MentorRegistration.findByIdAndUpdate(
+    mentor.mentorRegistrationId,
+    {
+      reviewCount: newReviewCount,
+      ratingCount: newAverageRating,
+    },
+    { new: true },
+  );
+
+  if (!updatedRegistration) {
+    throw new AppError(500, 'Failed to update mentor registration');
   }
 
 
   return result;
 };
+
+
 
 export const reviewService = {
   createReviewService,
@@ -90,5 +207,5 @@ export const reviewService = {
   getSingleReviewQuery,
   updateReviewQuery,
   deletedReviewQuery,
-  //   getSettings,
+
 };

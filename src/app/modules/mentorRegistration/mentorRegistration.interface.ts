@@ -11,6 +11,8 @@ export type TMentorRegistration = {
   country: string;
   gender: string;
   about: string;
+  reviewCount?: number;
+  ratingCount?: number;
   introVideo?: string;
   industryExpertise: string;
   careerLavel: string;

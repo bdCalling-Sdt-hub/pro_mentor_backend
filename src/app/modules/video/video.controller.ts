@@ -28,7 +28,7 @@ const createMentorVideo = catchAsync(async (req, res) => {
     videoUrl: videoPath,
     thumbnailUrl: thumbnailPath,
   };
-
+// console.log('bodyData', bodyData);
   const result = await mentorVideoService.createMentorVideoService(bodyData);
 
   // Send response
@@ -54,6 +54,24 @@ const getMentorVideoByMentor = catchAsync(async (req, res) => {
     meta: meta,
     data: result,
     message: ' All Video are requered successful!!',
+  });
+});
+
+const getMentorVideoByRecommended = catchAsync(async (req, res) => {
+  const { related }:any = req.query;
+  // console.log('related', related);
+  const { meta, result } =
+    await mentorVideoService.getAllMentorVideoByRecommendedQuery(
+      req.query,
+      related,
+    );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    meta: meta,
+    data: result,
+    message: ' All Recommended Video are requered successful!!',
   });
 });
 
@@ -129,6 +147,7 @@ const deleteSingleMentorVideo = catchAsync(async (req, res) => {
 export const mentorVideoController = {
   createMentorVideo,
   getMentorVideoByMentor,
+  getMentorVideoByRecommended,
   getSingleMentorVideo,
   updateSingleMentorVideo,
   deleteSingleMentorVideo,

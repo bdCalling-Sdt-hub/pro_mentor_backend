@@ -32,6 +32,14 @@ const addWithdrawService = async (payload: TWithdraw) => {
     );
   }
 
+  const mentorWallet = await Wallet.findOne({ mentorId });
+  if (!mentorWallet) {
+    throw new AppError(400, 'Mentor wallet is not found!');
+  }
+
+  if (amount > mentorWallet.amount) {
+    throw new AppError(400, 'Insufficient funds in the wallet.');
+  }
   // Validate Withdrawal Method
   const validMethods = ['bank', 'paypal_pay', 'apple_pay'];
   if (!method || !validMethods.includes(method)) {
@@ -66,7 +74,7 @@ const addWithdrawService = async (payload: TWithdraw) => {
       );
     }
   }
-
+console.log('payload payload', payload);
   const result = await Withdraw.create(payload);
 
   return result;

@@ -25,6 +25,11 @@ videoRouter
     auth(USER_ROLE.MENTOR),
     mentorVideoController.getMentorVideoByMentor,
   )
+  .get(
+    '/recommended',
+    // auth(USER_ROLE.MENTOR),
+    mentorVideoController.getMentorVideoByRecommended,
+  )
   .get('/:id', mentorVideoController.getSingleMentorVideo)
   .patch(
     '/:id',

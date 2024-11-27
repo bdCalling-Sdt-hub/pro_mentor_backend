@@ -4,17 +4,53 @@ import mongoose from 'mongoose';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { Video } from './video.model';
 import { TVideo } from './video.interface';
+import { User } from '../user/user.models';
+import { escapeRegex } from './video.utils';
 
 const createMentorVideoService = async (payload: TVideo) => {
-  console.log('payuload', payload);
+  
+  console.log('Payload:', payload);
+
+  
+  const { mentorId, title, description, category, ...rest } = payload;
+
+  
+  if (!mentorId || !title || !description) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Missing required fields: mentorId, title, or description',
+    );
+  }
+
+  
+  const mentor = await User.findById(mentorId).populate('mentorRegistrationId');
+  if (!mentor) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Mentor Not Found!');
+  }
+  if (!mentor.mentorRegistrationId) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Mentor Registration Not Found!');
+  }
+
+  
+  const { industryExpertise }:any = mentor.mentorRegistrationId;
+  if (!industryExpertise) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Mentor registration missing industry expertise',
+    );
+  }
+  payload.category = industryExpertise;
+
   
   const result = await Video.create(payload);
   if (!result) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'Failed to Video added!!');
+    throw new AppError(httpStatus.BAD_REQUEST, 'Failed to add video');
   }
 
+  
   return result;
 };
+
 
 const getAllMentorVideoByIdQuery = async (query: Record<string, unknown>,mentorId:string) => {
   const videoQuery = new QueryBuilder(
@@ -31,6 +67,62 @@ const getAllMentorVideoByIdQuery = async (query: Record<string, unknown>,mentorI
   const meta = await videoQuery.countTotal();
   return { meta, result };
 };
+
+const getAllMentorVideoByRecommendedQuery = async (
+  query: Record<string, unknown>,
+  related: string,
+) => {
+  console.log('related', related);
+
+  const cleanedRelated = related.trim();
+  console.log('cleanedRelated', cleanedRelated);
+
+  if (!cleanedRelated || typeof cleanedRelated !== 'string') {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Related category is required and should be a string',
+    );
+  }
+
+  const escapedRelated = escapeRegex(cleanedRelated);
+  console.log('escapedRelated', escapedRelated);
+
+  const limit = query.limit ? parseInt(query.limit as string, 10) : 10; 
+  const page = query.page ? parseInt(query.page as string, 10) : 1; 
+
+  const skip = (page - 1) * limit;
+
+  const result = await Video.find({
+    $or: [
+      { category: { $regex: escapedRelated, $options: 'i' } },
+      { title: { $regex: escapedRelated, $options: 'i' } },
+    ],
+  })
+    .skip(skip) 
+    .limit(limit) 
+    .populate('mentorId'); 
+
+  console.log('result', result);
+
+  const total = await Video.countDocuments({
+    $or: [
+      { category: { $regex: escapedRelated, $options: 'i' } },
+      { title: { $regex: escapedRelated, $options: 'i' } },
+    ],
+  });
+
+  const totalPage = Math.ceil(total / limit);
+
+  const meta = {
+    limit,
+    page,
+    total,
+    totalPage,
+  };
+
+  return { meta, result };
+};
+
 
 const getSingleMentorVideoQuery = async (id: string) => {
   const video = await Video.findById(id);
@@ -70,8 +162,9 @@ const deletedMentorVideoQuery = async (id: string) => {
 export const mentorVideoService = {
   createMentorVideoService,
   getAllMentorVideoByIdQuery,
+  getAllMentorVideoByRecommendedQuery,
   getSingleMentorVideoQuery,
   updateMentorVideoQuery,
   deletedMentorVideoQuery,
-  //   getSettings,
+  
 };

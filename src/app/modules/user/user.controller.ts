@@ -7,6 +7,7 @@ import { storeFile } from '../../utils/fileHelper';
 import httpStatus from 'http-status';
 
 const createUser = catchAsync(async (req: Request, res: Response) => {
+  console.log(req.body);
   const createUserToken = await userService.createUserToken(req.body);
 
   sendResponse(res, {
@@ -102,8 +103,6 @@ const getMyProfile = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
-
-
 
 const updateMyProfile = catchAsync(async (req: Request, res: Response) => {
   if (req?.file) {

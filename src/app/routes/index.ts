@@ -13,6 +13,7 @@ import taskGoalRouter from '../modules/taskGoal/taskGoal.route';
 import availableTimeRouter from '../modules/availableTime/availableTime.route';
 import bookingRouter from '../modules/shediulBooking/shediulBooking.route';
 import mentorBookingRouter from '../modules/mentorBooking/mentorBooking.route';
+import withdrawRouter from '../modules/withdraw/withdraw.route';
 
 const router = Router();
 
@@ -53,6 +54,10 @@ const moduleRoutes = [
   {
     path: '/payment',
     route: paymentRouter,
+  },
+  {
+    path: '/withdraw',
+    route: withdrawRouter,
   },
   {
     path: '/taskGoal',

@@ -18,7 +18,7 @@ const VideoSchema = new Schema<TVideo>(
     },
     category: {
       type: String,
-      required: true,
+      required: false,
     },
     videoUrl: {
       type: String,

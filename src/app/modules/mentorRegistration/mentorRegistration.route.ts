@@ -37,18 +37,17 @@ import multer from 'multer';
 
 const mentorRegistrationRouter = express.Router();
 
-const documentsUpload = fileUpload('./public/uploads/documents'); 
+const documentsUpload = fileUpload('./public/uploads/documents');
 
 mentorRegistrationRouter
   .post(
     '/',
-
+    // auth(USER_ROLE.MENTOR),
     documentsUpload.fields([
       { name: 'introVideo', maxCount: 1 },
       { name: 'professionalCredential', maxCount: 5 },
       { name: 'additionalDocument', maxCount: 5 },
     ]),
-    auth(USER_ROLE.MENTOR),
     mentorRegistrationController.createMentorRegistration,
   )
 

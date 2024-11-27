@@ -7,20 +7,19 @@ import { userService } from '../user/user.service';
 import mongoose from 'mongoose';
 import QueryBuilder from '../../builder/QueryBuilder';
 
-
 const createMentorRegistrationService = async (
   payload: TMentorRegistration,
 ) => {
   try {
-  
     const user = await User.findById(payload.mentorId);
-  
+
     if (!user) {
       throw new AppError(httpStatus.NOT_FOUND, 'User Not Found!!');
     }
-  
-    const result = await MentorRegistration.create(payload);
 
+    console.log({ payload });
+
+    const result = await MentorRegistration.create(payload);
 
     if (!result) {
       throw new AppError(
@@ -35,8 +34,6 @@ const createMentorRegistrationService = async (
     throw error; // Rethrow or handle as needed
   }
 };
-
-
 
 // const getAllMentorRegistrationQuery = async (query: Record<string, unknown>) => {
 //   console.log('............1.............');
@@ -62,7 +59,7 @@ const createMentorRegistrationService = async (
 //         } else if (value.toLowerCase() === 'false') {
 //           value = false;
 //         } else if (!isNaN(Number(value))) {
-//           value = Number(value); 
+//           value = Number(value);
 //         }
 //       }
 
@@ -228,7 +225,6 @@ const getAllMentorRegistrationQuery = async (
   return { meta: { total: totalCount, page, limit }, result };
 };
 
-
 const getSingleMentorRegistrationQuery = async (id: string) => {
   const registerMentor = await MentorRegistration.findById(id);
   if (!registerMentor) {
@@ -238,18 +234,15 @@ const getSingleMentorRegistrationQuery = async (id: string) => {
     { $match: { _id: new mongoose.Types.ObjectId(id) } },
   ]);
   if (mentorRegistration.length === 0) {
-    throw new AppError(404, 'Mentor not found!');
+    throw new AppError(404, 'Mentor not found!!');
   }
 
   return mentorRegistration[0];
 };
 
-
-const getAdminMentorQuery = async (
-  query: Record<string, unknown>,
-) => {
+const getAdminMentorQuery = async (query: Record<string, unknown>) => {
   const mentorRegistrationQuery = new QueryBuilder(
-    MentorRegistration.find({ }).populate('mentorId'),
+    MentorRegistration.find({}).populate('mentorId'),
     query,
   )
     .search([''])
@@ -263,13 +256,12 @@ const getAdminMentorQuery = async (
   return { meta, result };
 };
 
-
 const getMentorRegistrationOnly = async (id: string) => {
- const mentor = await User.findById(id).populate({
-   path: 'mentorRegistrationId',
-   populate: { path: 'mentorId' }, // Ensure this matches your schema
- });
- 
+  const mentor = await User.findById(id).populate({
+    path: 'mentorRegistrationId',
+    populate: { path: 'mentorId' },
+  });
+
   if (!mentor) {
     throw new AppError(404, 'Mentor is Not Found!!');
   }
@@ -280,20 +272,25 @@ const getMentorRegistrationOnly = async (id: string) => {
   return mentor?.mentorRegistrationId;
 };
 
+const updateMentorRegistrationQuery = async (
+  id: string,
+  payload: Partial<TMentorRegistration>,
+) => {
+  const registerMentor = await MentorRegistration.findById(id);
+  if (!registerMentor) {
+    throw new AppError(404, 'Register Mentor Not Found!!');
+  }
+  const mentorRegistration = await MentorRegistration.findByIdAndUpdate(
+    id,
+    payload,
+    { new: true },
+  );
 
-const updateMentorRegistrationQuery = async (id: string, payload:Partial<TMentorRegistration>) => {
-    const registerMentor = await MentorRegistration.findById(id);
-    if (!registerMentor){
-        throw new AppError(404, 'Register Mentor Not Found!!');
-    }
-    const mentorRegistration = await MentorRegistration.findByIdAndUpdate(id, payload, {new:true})
- 
   return mentorRegistration;
 };
 
-const acceptSingleMentorRegistrationService = async (
-  id: string
-) => {
+const acceptSingleMentorRegistrationService = async (id: string) => {
+  console.log('id id', id)
   const registerMentor = await MentorRegistration.findById(id);
   if (!registerMentor) {
     throw new AppError(404, 'Register Mentor Not Found!!');
@@ -302,20 +299,23 @@ const acceptSingleMentorRegistrationService = async (
   if (!mentor) {
     throw new AppError(404, 'Mentor Not Found!!');
   }
-  const mentorRegistration = await MentorRegistration.findByIdAndUpdate(
+  const mentorRegistration:any = await MentorRegistration.findByIdAndUpdate(
     id,
     { status: 'accept' },
     { new: true },
   );
 
-
+  // Update the mentor's registration ID to the updated mentor registration ID
+  const updatedMentor = await User.findByIdAndUpdate(
+    registerMentor.mentorId,
+    { mentorRegistrationId: mentorRegistration._id },
+    { new: true },
+  );
 
   return mentorRegistration;
 };
 
-const cencelSingleMentorRegistrationService = async (
-  id: string,
-) => {
+const cencelSingleMentorRegistrationService = async (id: string) => {
   const registerMentor = await MentorRegistration.findById(id);
   if (!registerMentor) {
     throw new AppError(404, 'Register Mentor Not Found!!');
@@ -328,8 +328,6 @@ const cencelSingleMentorRegistrationService = async (
 
   return mentorRegistration;
 };
-
-
 
 export const mentorRegistrationService = {
   createMentorRegistrationService,
