@@ -14,6 +14,30 @@ const ScheduleBookingSchema = new Schema<TShedualBooking>(
       required: true,
       ref: 'User',
     },
+    subject: {
+      type: String,
+      required: true,
+    },
+    jobTitle: {
+      type: String,
+      required: true,
+    },
+    industryField: {
+      type: String,
+      required: true,
+    },
+    yearOfExperience: {
+      type: String,
+      required: true,
+    },
+    educationLevel: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
     bookingDate: {
       type: Date,
       required: true,

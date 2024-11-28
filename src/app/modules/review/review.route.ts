@@ -15,7 +15,7 @@ reviewRouter
     // validateRequest(videoValidation.VideoSchema),
     reviewController.createReview,
   )
-  .get('/', auth(USER_ROLE.MENTOR), reviewController.getReviewByMentor)
+  .get('/',  reviewController.getReviewByMentor)
   .get('/:id', reviewController.getSingleReview)
   .patch('/:id', auth(USER_ROLE.MENTEE), reviewController.updateSingleReview)
   .delete('/:id', auth(USER_ROLE.MENTEE), reviewController.deleteSingleReview);

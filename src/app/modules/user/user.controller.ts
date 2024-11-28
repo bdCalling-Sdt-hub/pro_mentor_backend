@@ -58,9 +58,30 @@ const getAllUserCount = catchAsync(async (req, res) => {
     message: 'Users All Count successful!!',
   });
 });
+const getAllMentorCount = catchAsync(async (req, res) => {
+  const result = await userService.getAllMentorCount();
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    data: result,
+    message: 'Mentors All Count successful!!',
+  });
+});
+const getAllMenteeCount = catchAsync(async (req, res) => {
+  const result = await userService.getAllMenteeCount();
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    data: result,
+    message: 'Mentees All Count successful!!',
+  });
+});
 
 const getAllUserRasio = catchAsync(async (req, res) => {
   const yearQuery = req.query.year;
+  const role:any = req.query.role;
 
   // Safely extract year as string
   const year = typeof yearQuery === 'string' ? parseInt(yearQuery) : undefined;
@@ -74,7 +95,7 @@ const getAllUserRasio = catchAsync(async (req, res) => {
     });
   }
 
-  const result = await userService.getAllUserRatio(year);
+  const result = await userService.getAllUserRatio(year, role);
 
   sendResponse(res, {
     success: true,
@@ -148,5 +169,7 @@ export const userController = {
   deleteMyAccount,
   getAllUsers,
   getAllUserCount,
+  getAllMentorCount,
+  getAllMenteeCount,
   getAllUserRasio,
 };

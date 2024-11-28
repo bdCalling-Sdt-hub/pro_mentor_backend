@@ -51,31 +51,62 @@ const addTaskToTaskGoalService = async (payload: any) => {
 };
 
 
-// const getAllBookingsShwduleByMentorTaskGoalQuery = async (
-//   query: Record<string, unknown>,
-//   id: string,
-// ) => {
-//   const taskGoalQuery = new QueryBuilder(
-//     TaskGoal.find({ bookingScheduleId:id }).populate('mentorId'),
-//     query,
-//   )
-//     .search([''])
-//     .filter()
-//     .sort()
-//     .paginate()
-//     .fields();
 
-//   const result = await taskGoalQuery.modelQuery;
-//   const meta = await taskGoalQuery.countTotal();
-//   return { meta, result };
-// };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const getAllBookingsShwduleByMentorTaskGoalQuery = async (
+  query: Record<string, unknown>,
   id: string,
 ) => {
-  const result = TaskGoal.findOne({ bookingScheduleId: id }).populate('mentorId');
+  const taskGoalQuery = new QueryBuilder(
+    TaskGoal.find({ bookingScheduleId: id }).populate('mentorId'), 
+    query,
+  )
+    .search([''])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
 
-  return result;
+  const result = await taskGoalQuery.modelQuery;
+
+  
+  const resultWithGoalProgress = result.map((taskGoal: any) => {
+    const tasks = taskGoal.tasks || [];
+    const completedTasks = tasks.filter(
+      (task:any) => task.status === 'completed',
+    ).length;
+    const totalTasks = tasks.length;
+
+    
+    taskGoal.goalProgress =
+      totalTasks === 0 ? 0 : (completedTasks / totalTasks) * 100;
+
+    return taskGoal; 
+  });
+
+  const meta = await taskGoalQuery.countTotal();
+
+  return { meta, result: resultWithGoalProgress };
 };
+
+
 
 const getSingleMentorTaskGoalQuery = async (id: string) => {
   const taskGoal = await TaskGoal.findById(id);
@@ -91,6 +122,78 @@ const getSingleMentorTaskGoalQuery = async (id: string) => {
 
   return taskGoals[0];
 };
+
+const completedTaskStatus = async (taskGoalId: string, taskId: string) => {
+  
+  const taskGoal = await TaskGoal.findById(taskGoalId);
+  if (!taskGoal) {
+    throw new AppError(404, 'Task Goal Not Found!');
+  }
+
+  if (!taskGoal.tasks) {
+    throw new AppError(404, 'No tasks found for this Task Goal!');
+  }
+  
+  const taskIndex = taskGoal?.tasks?.findIndex(
+    (task: TTask) => task._id.toString() === taskId,
+  );
+  if (taskIndex === -1) {
+    throw new AppError(404, 'Task Not Found!');
+  }
+
+    taskGoal.tasks[taskIndex].status = 'completed';
+
+  const updatedTaskGoal = await taskGoal.save(); 
+
+  return updatedTaskGoal;
+};
+
+
+const taskGoalStatusService = async (taskGoalId: string) => {
+  
+  const taskGoal = await TaskGoal.findById(taskGoalId);
+  if (!taskGoal) {
+    throw new AppError(404, 'Task Goal Not Found!');
+  }
+
+  const validStatusTransitions: Record<string, string> = {
+    running: 'checking', 
+    checking: 'completed', 
+  };
+
+  const newStatus = validStatusTransitions[taskGoal.status];
+
+  if (!newStatus) {
+    throw new AppError(
+      400,
+      `Invalid status transition from ${taskGoal.status}`,
+    );
+  }
+
+  const result = await TaskGoal.findByIdAndUpdate(
+    taskGoalId,
+    { status: newStatus },
+    { new: true }, 
+  );
+
+  return result;
+};
+
+// const fullGoalTaskGoalStatusService = async (taskGoalId: string) => {
+//   const taskGoal = await TaskGoal.findById(taskGoalId);
+//   if (!taskGoal) {
+//     throw new AppError(404, 'Task Goal Not Found!');
+//   }
+
+//   const result = await TaskGoal.findByIdAndUpdate(
+//     taskGoalId,
+//     { status: 'completed' },
+//     { new: true },
+//   );
+
+//   return result;
+// };
+
 
 const updateMentorTaskGoal = async (id: string, payload: Partial<TTaskGoal>) => {
   const taskGoal = await TaskGoal.findById(id);
@@ -118,5 +221,7 @@ export const mentorTaskGoalService = {
   getAllBookingsShwduleByMentorTaskGoalQuery,
   getSingleMentorTaskGoalQuery,
   updateMentorTaskGoal,
+  completedTaskStatus,
+  taskGoalStatusService,
   deletedMentorTaskGoal,
 };

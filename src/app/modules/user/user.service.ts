@@ -197,10 +197,18 @@ const getAllUserCount = async () => {
   const allUserCount = await User.countDocuments();
   return allUserCount;
 };
+const getAllMentorCount = async () => {
+  const allUserCount = await User.find({ role: USER_ROLE.MENTOR }).countDocuments();
+  return allUserCount;
+};
+const getAllMenteeCount = async () => {
+  const allUserCount = await User.find({ role: USER_ROLE.MENTEE }).countDocuments();
+  return allUserCount;
+};
 
 
 
-const getAllUserRatio = async (year: number) => {
+const getAllUserRatio = async (year: number, role: string) => {
   const startOfYear = new Date(year, 0, 1); // January 1st of the given year
   const endOfYear = new Date(year + 1, 0, 1); // January 1st of the next year
 
@@ -217,6 +225,7 @@ const getAllUserRatio = async (year: number) => {
           $gte: startOfYear,
           $lt: endOfYear,
         },
+        role: role,
       },
     },
     {
@@ -312,5 +321,7 @@ export const userService = {
   blockedUser,
   getAllUserQuery,
   getAllUserCount,
+  getAllMentorCount,
+  getAllMenteeCount,
   getAllUserRatio,
 };

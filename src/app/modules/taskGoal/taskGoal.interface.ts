@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 
 export type TTask = {
+  _id:string;
   taskName: string;
   taskfiles?: string[];
   status: string;
@@ -12,4 +13,5 @@ export type TTaskGoal = {
   bookingScheduleId: Types.ObjectId;
   menteeId: Types.ObjectId;
   mentorId: Types.ObjectId;
+  goalProgress: number;
 };

@@ -14,6 +14,7 @@ import availableTimeRouter from '../modules/availableTime/availableTime.route';
 import bookingRouter from '../modules/shediulBooking/shediulBooking.route';
 import mentorBookingRouter from '../modules/mentorBooking/mentorBooking.route';
 import withdrawRouter from '../modules/withdraw/withdraw.route';
+import notificationRoutes from '../modules/notification/notification.route';
 
 const router = Router();
 
@@ -34,6 +35,10 @@ const moduleRoutes = [
   {
     path: '/setting',
     route: settingsRouter,
+  },
+  {
+    path: '/notification',
+    route: notificationRoutes,
   },
   {
     path: '/mentorRegistration',

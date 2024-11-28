@@ -88,11 +88,7 @@ const cencelMentorBookingQuery = async (id: string) => {
   if (!mentorBooking) {
     throw new AppError(404, 'Mentor Booking  Not Found!!');
   }
-  const result = await MentorBooking.findByIdAndUpdate(
-    id,
-    { status: 'cancelled' },
-    { new: true },
-  );
+  const result = await MentorBooking.findByIdAndDelete(id);
 
   return result;
 };

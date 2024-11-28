@@ -72,14 +72,16 @@ const addTaskToTaskGoal = catchAsync(async (req, res) => {
 
 const getBookingScheduleIdTaskGoal = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const result =
+  const { meta, result } =
     await mentorTaskGoalService.getAllBookingsShwduleByMentorTaskGoalQuery(
+      req.query,
       id,
     );
 
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
+    meta: meta,
     data: result,
     message: ' All Booking By Task Goal are requered successful!!',
   });
@@ -97,6 +99,40 @@ const getSingleMentorTaskGoal = catchAsync(async (req, res) => {
     message: 'Single Task Goal are requered successful!!',
   });
 });
+
+const completedTaskStatus = catchAsync(async (req, res) => {
+  const { id:taskGoalId }:any = req.params;
+  const { taskId }:any = req.query;
+  // Call the service to update the TaskGoal
+  const result = await mentorTaskGoalService.completedTaskStatus(
+    taskGoalId,
+    taskId,
+  );
+
+  // Send response
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Task Status updated successfully!',
+    data: result,
+  });
+});
+
+const taskGoalStatus = catchAsync(async (req, res) => {
+  const { id: taskGoalId }: any = req.params;
+
+  const result = await mentorTaskGoalService.taskGoalStatusService(taskGoalId);
+
+  // Send response
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Task Goal status updated successfully!',
+    data: result,
+  });
+});
+
+
 
 const updateSingleMentorTaskGoal = catchAsync(async (req, res) => {
  const { userId } = req.user;
@@ -149,5 +185,7 @@ export const taskGoalController = {
   getBookingScheduleIdTaskGoal,
   getSingleMentorTaskGoal,
   updateSingleMentorTaskGoal,
+  completedTaskStatus,
+  taskGoalStatus,
   deleteSingleMentorTaskGoal,
 };   

@@ -80,6 +80,45 @@ const getSingleMentorBookingAvailableTimeSlotsQuery = async (id: string) => {
 const getAllMentorBookingByQuery = async (
   query: Record<string, unknown>,
   mentorId: string,
+  menteeId: string,
+) => {
+  const BookingQuery = new QueryBuilder(
+    ScheduleBooking.find({ mentorId, menteeId }).populate('mentorId'),
+    query,
+  )
+    .search([''])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await BookingQuery.modelQuery;
+  const meta = await BookingQuery.countTotal();
+  return { meta, result };
+};
+
+const getAllMentorByMenteeBookingByQuery = async (
+  query: Record<string, unknown>,
+  mentorId: string
+) => {
+  const BookingQuery = new QueryBuilder(
+    ScheduleBooking.find({ mentorId }).populate('mentorId'),
+    query,
+  )
+    .search([''])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await BookingQuery.modelQuery;
+  const meta = await BookingQuery.countTotal();
+  return { meta, result };
+};
+
+const getAllMenteeByMentorBookingByQuery = async (
+  query: Record<string, unknown>,
+  mentorId: string
 ) => {
   const BookingQuery = new QueryBuilder(
     ScheduleBooking.find({ mentorId }).populate('mentorId'),
@@ -98,10 +137,11 @@ const getAllMentorBookingByQuery = async (
 
 const getAllMenteeBookingByQuery = async (
   query: Record<string, unknown>,
+  menteeId: string,
   mentorId: string,
 ) => {
   const bookingQuery = new QueryBuilder(
-    ScheduleBooking.find({ mentorId }).populate('mentorId'),
+    ScheduleBooking.find({ menteeId,mentorId }).populate('mentorId'),
     query,
   )
     .search([''])
@@ -158,6 +198,8 @@ const deletedMentorBookingQuery = async (id: string) => {
 export const mentorBookingService = {
   createMentorBookingService,
   getAllMentorBookingByQuery,
+  getAllMentorByMenteeBookingByQuery,
+  getAllMenteeByMentorBookingByQuery,
   getAllMenteeBookingByQuery,
   getSingleMentorBookingQuery,
   updateMentorBookingQuery,

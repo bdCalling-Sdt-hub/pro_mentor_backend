@@ -20,9 +20,11 @@ const MentorRegistrationSchema = new Schema<TMentorRegistration>(
     careerLavel: { type: String, required: false },
     specializedSkill: { type: String, required: true },
     education: { type: String, required: true },
-    experience: { type: String, required: true },
+    mentorExperience: { type: String, required: true },
     preferredDays: { type: [String], required: true },
-    availableTime: { type: [String], required: false },
+    availableTime: { type: String, required: false },
+    startBreakTime: { type: String, required: false, default: '' },
+    endBreakTime: { type: String, required: false, default: '' },
     startTime: { type: String, required: true },
     endTime: { type: String, required: true },
     status: {
@@ -35,6 +37,13 @@ const MentorRegistrationSchema = new Schema<TMentorRegistration>(
   },
   { timestamps: true },
 );
+
+
+MentorRegistrationSchema.index({
+  fullName: 'text',
+  industryExpertise: 'text',
+  specializedSkill: 'text',
+});
 
 export const MentorRegistration = model<TMentorRegistration>(
   'MentorRegistration',

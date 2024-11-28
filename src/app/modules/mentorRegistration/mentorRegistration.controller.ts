@@ -3,7 +3,7 @@ import sendResponse from '../../utils/sendResponse';
 import httpStatus from 'http-status';
 import { mentorRegistrationService } from './mentorRegistration.service';
 import AppError from '../../error/AppError';
-import { generateAvailableTimes } from './mentorRegistration.utils';
+// import { generateAvailableTimes } from './mentorRegistration.utils';
 
 const createMentorRegistration = catchAsync(async (req, res) => {
   // const { userId } = req.user;
@@ -40,13 +40,14 @@ const createMentorRegistration = catchAsync(async (req, res) => {
   );
 
   // const startTime = bodyData.startTime;
-  const incrementTime = 15;
+  // const incrementTime = 15;
 
-  const availableTimeSlots = generateAvailableTimes(
-    bodyData.startTime,
-    bodyData.endTime,
-    incrementTime,
-  );
+  // const availableTimeSlots = generateAvailableTimes(
+  //   bodyData.startTime,
+  //   bodyData.endTime
+  // );
+  const availableTimeSlots = `${bodyData.startTime} - ${bodyData.endTime}`;
+
   // console.log(availableTimeSlots);
 
   const payload = {
@@ -70,6 +71,7 @@ const createMentorRegistration = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
 
 const getallMentorRegistration = catchAsync(async (req, res) => {
   const { meta, result } =
@@ -126,16 +128,42 @@ const getMentorRegistrationOnly = catchAsync(async (req, res) => {
 });
 
 const updateSingleMentorRegistration = catchAsync(async (req, res) => {
+  console.log('update payload');
+  const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+
+  // Access body and files
+  const payload = req.body;
+  console.log('payload - 1', payload);
+
+  // Check if introVideo file exists
+  if (files && files['introVideo'] && files['introVideo'].length > 0) {
+    const introVideo = files['introVideo'][0];
+    const videoPath = introVideo.path.replace(/^public[\\/]/, '');
+
+    if (videoPath) {
+      payload.introVideo = videoPath;
+    }
+
+   
+  } else {
+    console.log('No intro video uploaded');
+  }
+   if (payload.startTime && payload.endTime) {
+     payload.availableTime = `${payload.startTime} - ${payload.endTime}`;
+   }
+
+  console.log('update payload', payload);
+
   const result = await mentorRegistrationService.updateMentorRegistrationQuery(
     req.params.id,
-    req.body,
+    payload,
   );
 
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
     data: result,
-    message: 'Updated Single Mentor are successful!!',
+    message: 'Updated Single Mentor successfully!',
   });
 });
 

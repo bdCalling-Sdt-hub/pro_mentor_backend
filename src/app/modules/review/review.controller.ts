@@ -21,10 +21,10 @@ const createReview = catchAsync(async (req, res) => {
 });
 
 const getReviewByMentor = catchAsync(async (req, res) => {
-  const { userId } = req.user;
+  const { mentorId }:any = req.query;
   const { meta, result } = await reviewService.getAllReviewByMentorQuery(
     req.query,
-    userId,
+    mentorId,
   );
 
   sendResponse(res, {

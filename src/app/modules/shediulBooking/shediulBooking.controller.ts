@@ -31,8 +31,47 @@ const createMentorBooking = catchAsync(async (req, res) => {
 
 const getBookingByMentor = catchAsync(async (req, res) => {
   const { userId } = req.user;
+  const { menteeId }:any = req.query;
   const { meta, result } =
-    await mentorBookingService.getAllMentorBookingByQuery(req.query, userId);
+    await mentorBookingService.getAllMentorBookingByQuery(
+      req.query,
+      userId,
+      menteeId,
+    );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    meta: meta,
+    data: result,
+    message: ' All Booking By Mentor are requered successful!!',
+  });
+});
+
+const getBookingByMentorAllBooking = catchAsync(async (req, res) => {
+  const { userId } = req.user;
+  const { meta, result } =
+    await mentorBookingService.getAllMentorByMenteeBookingByQuery(
+      req.query,
+      userId,
+    );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    meta: meta,
+    data: result,
+    message: ' All Booking By Mentor are requered successful!!',
+  });
+});
+
+const getBookingByMenteeAllBooking = catchAsync(async (req, res) => {
+  const { userId } = req.user;
+  const { meta, result } =
+    await mentorBookingService.getAllMentorByMenteeBookingByQuery(
+      req.query,
+      userId,
+    );
 
   sendResponse(res, {
     success: true,
@@ -45,8 +84,13 @@ const getBookingByMentor = catchAsync(async (req, res) => {
 
 const getBookingByMentee = catchAsync(async (req, res) => {
   const { userId } = req.user;
+  const { mentorId }:any = req.query;
   const { meta, result } =
-    await mentorBookingService.getAllMenteeBookingByQuery(req.query, userId);
+    await mentorBookingService.getAllMenteeBookingByQuery(
+      req.query,
+      userId,
+      mentorId,
+    );
 
   sendResponse(res, {
     success: true,
@@ -104,6 +148,8 @@ const deleteSingleMentorBooking = catchAsync(async (req, res) => {
 export const mentorBookingController = {
   createMentorBooking,
   getBookingByMentor,
+  getBookingByMentorAllBooking,
+  getBookingByMenteeAllBooking,
   getBookingByMentee,
   getSingleMentorBooking,
   updateSingleMentorBooking,

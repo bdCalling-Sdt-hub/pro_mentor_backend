@@ -18,9 +18,11 @@ export type TMentorRegistration = {
   careerLavel: string;
   specializedSkill: string;
   education: string;
-  experience: string;
+  mentorExperience: string;
   preferredDays: [string];
-  availableTime?: [string];
+  availableTime?: string;
+  startBreakTime: string;
+  endBreakTime: string;
   startTime: string;
   endTime: string;
   status: 'pending' | 'accept' | 'cenceled';

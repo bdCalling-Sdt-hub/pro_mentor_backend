@@ -15,11 +15,25 @@ bookingRouter
     mentorBookingController.createMentorBooking,
   )
   .get(
-    '/',
+    '/mentor/',
     auth(USER_ROLE.MENTOR),
-    mentorBookingController.getSingleMentorBooking,
+    mentorBookingController.getBookingByMentor,
   )
-  .get('/', auth(USER_ROLE.MENTEE), mentorBookingController.getBookingByMentee)
+  .get(
+    '/mentor/all-booking',
+    auth(USER_ROLE.MENTOR),
+    mentorBookingController.getBookingByMentorAllBooking,
+  )
+  .get(
+    '/mentee/',
+    auth(USER_ROLE.MENTEE),
+    mentorBookingController.getBookingByMentee,
+  )
+  .get(
+    '/mentee/all-booking',
+    auth(USER_ROLE.MENTEE),
+    mentorBookingController.getBookingByMenteeAllBooking,
+  )
   .get('/:id', mentorBookingController.getSingleMentorBooking)
   .patch(
     '/:id',

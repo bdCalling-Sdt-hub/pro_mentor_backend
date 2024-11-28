@@ -9,6 +9,7 @@ const paymentRouter = express.Router();
 
 paymentRouter
   .post('/add-payment', auth(USER_ROLE.MENTEE), paymentController.addPayment)
+  .get('/all-earning-amount', paymentController.getAllPaymentAmountCount)
   .get('/', auth(USER_ROLE.ADMIN), paymentController.getAllPayment)
   .get('/:id', paymentController.getSinglePayment)
   .get(
@@ -16,9 +17,7 @@ paymentRouter
     auth(USER_ROLE.MENTOR),
     paymentController.getAllPaymentByMentor,
   )
-  .delete(
-    '/:id',
-    paymentController.deleteSinglePayment,
-  );
+
+  .delete('/:id', paymentController.deleteSinglePayment);
 
 export default paymentRouter;

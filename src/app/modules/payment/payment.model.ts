@@ -12,6 +12,7 @@ const paymentSchema = new Schema<TPayment>(
       required: false,
     },
     amount: { type: Number, required: true },
+    adminAmount: { type: Number, required: false },
     method: {
       type: String,
       enum: ['bank', 'paypal_pay', 'apple_pay'],

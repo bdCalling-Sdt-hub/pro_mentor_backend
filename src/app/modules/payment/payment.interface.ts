@@ -5,6 +5,7 @@ export type TPayment = {
   menteeId: Types.ObjectId;
   sheduleBookingId?: Types.ObjectId;
   amount: number;
+  adminAmount?: number;
   method: string;
   status: string;
   bankDetails?: {

@@ -30,6 +30,9 @@ taskGoalRouter
     auth(USER_ROLE.MENTOR),
     taskGoalController.updateSingleMentorTaskGoal,
   )
+  .patch('/task/:id', taskGoalController.completedTaskStatus)
+  .patch('/status/:id', taskGoalController.taskGoalStatus)
+
   .delete(
     '/:id',
     auth(USER_ROLE.MENTOR),
