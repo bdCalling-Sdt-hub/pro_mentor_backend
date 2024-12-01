@@ -163,11 +163,35 @@ const otpVerifyAndCreateUser = async ({
     throw new AppError(httpStatus.BAD_REQUEST, 'User creation failed');
   }
 
-  return user;
+
+    const jwtPayload: {
+      userId: string;
+      role: string;
+      fullName: string;
+      email: string;
+      phone: string;
+    } = {
+      fullName: user?.fullName,
+      email: user.email,
+      phone: user.phone,
+      userId: user?._id?.toString() as string,
+      role: user?.role,
+    };
+
+    // console.log({ jwtPayload });
+    console.log('user user', user);
+
+    const accessToken = createToken({
+      payload: jwtPayload,
+      access_secret: config.jwt_access_secret as string,
+      expity_time: '3m',
+    });
+
+  return accessToken;
 };
 
 const updateUser = async (id: string, payload: Partial<TUser>) => {
-  const { role, email, ...rest } = payload;
+  const { role, email, isActive, isDeleted,password, ...rest } = payload;
 
   const user = await User.findByIdAndUpdate(id, rest, { new: true });
 

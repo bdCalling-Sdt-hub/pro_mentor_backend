@@ -201,11 +201,18 @@ const addPaymentService = async (payload: any) => {
       type:'success',
     };
 
-    const notificationResult1 = await notificationService.createNotification(notificationData1);
-    const notificationResult2 =
-      await notificationService.createNotification(notificationData2);
-    const notificationResult3 =
-      await notificationService.createNotification(notificationData3);
+    const notificationResult1 = await notificationService.createNotification(
+      notificationData1,
+      session,
+    );
+    const notificationResult2 = await notificationService.createNotification(
+      notificationData2,
+      session,
+    );
+    const notificationResult3 = await notificationService.createNotification(
+      notificationData3,
+      session,
+    );
 
     await session.commitTransaction();
     session.endSession();

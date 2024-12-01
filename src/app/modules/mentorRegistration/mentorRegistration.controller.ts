@@ -3,17 +3,35 @@ import sendResponse from '../../utils/sendResponse';
 import httpStatus from 'http-status';
 import { mentorRegistrationService } from './mentorRegistration.service';
 import AppError from '../../error/AppError';
+import config from '../../config';
+import { verifyToken } from '../../utils/tokenManage';
 // import { generateAvailableTimes } from './mentorRegistration.utils';
 
 const createMentorRegistration = catchAsync(async (req, res) => {
-  // const { userId } = req.user;
+  const token = req.headers?.token as string;
+  if (!token) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Token is required');
+  }
+  const decodeData = verifyToken({
+    token,
+    access_secret: config.jwt_access_secret as string,
+  });
+
+  if (!decodeData) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Invalid token');
+  }
+
+  const { userId } = decodeData;
+ 
   const files = req.files as {
     [fieldname: string]: Express.Multer.File[];
   };
   // Access body and files
   const bodyData = req.body;
 
-  console.log(files);
+  // duplicate check by email  // todo
+
+  // console.log(files);
   if (
     !files ||
     !files['introVideo'] ||
@@ -27,32 +45,29 @@ const createMentorRegistration = catchAsync(async (req, res) => {
   }
 
   const introVideo = files['introVideo'][0];
-  const professionalCredential = files['professionalCredential'][0];
-  const additionalDocument = files['additionalDocument'][0];
+  const professionalCredential = files['professionalCredential'];
+  const additionalDocument = files['additionalDocument'];
+
   const videoPath = introVideo.path.replace(/^public[\\/]/, '');
-  const professionalCredentialPath = professionalCredential.path.replace(
-    /^public[\\/]/,
-    '',
-  );
-  const additionalDocumentPath = additionalDocument.path.replace(
-    /^public[\\/]/,
-    '',
+
+  const professionalCredentialPath = professionalCredential.map((credential) =>
+    credential.path.replace(/^public[\\/]/, ''),
   );
 
-  // const startTime = bodyData.startTime;
-  // const incrementTime = 15;
+  const additionalDocumentPath = additionalDocument.map((credential) =>
+    credential.path.replace(/^public[\\/]/, ''),
+  );
 
-  // const availableTimeSlots = generateAvailableTimes(
-  //   bodyData.startTime,
-  //   bodyData.endTime
-  // );
-  const availableTimeSlots = `${bodyData.startTime} - ${bodyData.endTime}`;
+  console.log({ professionalCredential });
+  console.log({ professionalCredentialPath });
 
-  // console.log(availableTimeSlots);
+  const availableTimeSlots = `${bodyData.startTime} - ${bodyData.endTime}`; // todo
+  const endBreaktime = bodyData.endBreakTime-1;
+  bodyData.endBreaktime = endBreaktime;
 
   const payload = {
     ...bodyData,
-    // mentorId: userId,
+    mentorId: userId,
     introVideo: videoPath,
     professionalCredential: professionalCredentialPath,
     additionalDocument: additionalDocumentPath,
@@ -62,7 +77,7 @@ const createMentorRegistration = catchAsync(async (req, res) => {
   console.log('payload payload', payload);
 
   const result =
-    await mentorRegistrationService.createMentorRegistrationService(payload);
+    await mentorRegistrationService.createMentorRegistrationService(payload); // todo email sent to admin
   console.log('result', result);
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -71,7 +86,6 @@ const createMentorRegistration = catchAsync(async (req, res) => {
     data: result,
   });
 });
-
 
 const getallMentorRegistration = catchAsync(async (req, res) => {
   const { meta, result } =
@@ -85,6 +99,27 @@ const getallMentorRegistration = catchAsync(async (req, res) => {
     message: 'Mentor Registration All are requered successful!!',
   });
 });
+
+const getMentorAvailableSlots = catchAsync(async (req, res) => {
+  const { mentorId } = req.params;
+  const { duration, date } = req.query;
+  const payload = {
+    mentorId,
+    duration,
+    date,
+  };
+
+  const result =
+    await mentorRegistrationService.getMentorAvailableSlots(payload);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    data: result,
+    message: 'Mentor Available Slots are requered successful!!',
+  });
+});
+
 
 const getSingleMentorRegistration = catchAsync(async (req, res) => {
   const result =
@@ -143,14 +178,12 @@ const updateSingleMentorRegistration = catchAsync(async (req, res) => {
     if (videoPath) {
       payload.introVideo = videoPath;
     }
-
-   
   } else {
     console.log('No intro video uploaded');
   }
-   if (payload.startTime && payload.endTime) {
-     payload.availableTime = `${payload.startTime} - ${payload.endTime}`;
-   }
+  if (payload.startTime && payload.endTime) {
+    payload.availableTime = `${payload.startTime} - ${payload.endTime}`;
+  }
 
   console.log('update payload', payload);
 
@@ -182,9 +215,11 @@ const acceptSingleMentorRegistration = catchAsync(async (req, res) => {
 });
 
 const cencelSingleMentorRegistration = catchAsync(async (req, res) => {
+   const rejone = req.body;
   const result =
     await mentorRegistrationService.cencelSingleMentorRegistrationService(
       req.params.id,
+      rejone,
     );
 
   sendResponse(res, {
@@ -195,9 +230,11 @@ const cencelSingleMentorRegistration = catchAsync(async (req, res) => {
   });
 });
 
+
 export const mentorRegistrationController = {
   createMentorRegistration,
   getallMentorRegistration,
+  getMentorAvailableSlots,
   getMentorRegistrationOnly,
   getAdminMentorRegistration,
   getSingleMentorRegistration,

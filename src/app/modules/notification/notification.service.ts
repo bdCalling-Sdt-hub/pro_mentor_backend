@@ -5,8 +5,8 @@ import { User } from '../user/user.models';
 import Notification from './notification.model';
 import { TNotification } from './notification.interface';
 
-const createNotification = async (payload: any) => {
-  const result = await Notification.create(payload);
+const createNotification = async (payload: any, session: any) => {
+  const result = await Notification.create([payload], { session });
   return result;
 };
 

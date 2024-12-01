@@ -62,6 +62,75 @@ const createMentorBookingService = async (payload: TShedualBooking) => {
   return result;
 };
 
+const reSheduleMentorBookingService = async (id: string, payload: TShedualBooking) => {
+  const { bookingDate, startTime, endTime, mentorId } = payload;
+
+  const isValidTimeFormat = (time: string) =>
+    moment(time, 'hh:mm A', true).isValid();
+  if (
+    typeof startTime !== 'string' ||
+    typeof endTime !== 'string' ||
+    !isValidTimeFormat(startTime) ||
+    !isValidTimeFormat(endTime)
+  ) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Invalid time format for start or end time',
+    );
+  }
+
+  const existingBooking = await ScheduleBooking.findOne({
+    mentorId,
+    bookingDate,
+    $or: [
+     
+      {
+        $and: [
+          { startTime: { $gte: startTime } },
+          { startTime: { $lte: endTime } },
+        ],
+      },
+    
+      {
+        $and: [
+          { endTime: { $gte: startTime } },
+          { endTime: { $lte: endTime } },
+        ],
+      },
+   
+    ],
+  });
+
+
+  if (existingBooking) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Booking time is overlapping with an existing booking',
+    );
+  }
+
+  const updateReSheduleData = {
+    bookingDate: payload.bookingDate,
+    bookingTime: payload.bookingTime,
+    startTime: payload.startTime,
+    endTime: payload.endTime,
+  };
+
+    console.log('updateReSheduleData', updateReSheduleData);
+  const result = await ScheduleBooking.findOneAndUpdate(
+    { _id: id },
+    updateReSheduleData,
+    {
+      new: true,}
+  );
+
+  if (!result) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Failed to add booking');
+  }
+
+  return result;
+};
+
 const getSingleMentorBookingAvailableTimeSlotsQuery = async (id: string) => {
   const booking = await ScheduleBooking.findById(id);
   if (!booking) {
@@ -83,7 +152,7 @@ const getAllMentorBookingByQuery = async (
   menteeId: string,
 ) => {
   const BookingQuery = new QueryBuilder(
-    ScheduleBooking.find({ mentorId, menteeId }).populate('mentorId'),
+    ScheduleBooking.find({ mentorId, menteeId }).populate('menteeId'),
     query,
   )
     .search([''])
@@ -97,12 +166,13 @@ const getAllMentorBookingByQuery = async (
   return { meta, result };
 };
 
+// akhane all mentor ke get kora hoase jara ai mentee ke booking korese
 const getAllMentorByMenteeBookingByQuery = async (
   query: Record<string, unknown>,
   mentorId: string
 ) => {
   const BookingQuery = new QueryBuilder(
-    ScheduleBooking.find({ mentorId }).populate('mentorId'),
+    ScheduleBooking.find({ mentorId }).populate('mentorId').populate('menteeId'),
     query,
   )
     .search([''])
@@ -116,12 +186,13 @@ const getAllMentorByMenteeBookingByQuery = async (
   return { meta, result };
 };
 
+// akhane all mentee ke get kora hoase jara ai mentor ke booking korese
 const getAllMenteeByMentorBookingByQuery = async (
   query: Record<string, unknown>,
-  mentorId: string
+  menteeId: string,
 ) => {
   const BookingQuery = new QueryBuilder(
-    ScheduleBooking.find({ mentorId }).populate('mentorId'),
+    ScheduleBooking.find({ menteeId }).populate('mentorId'),
     query,
   )
     .search([''])
@@ -198,6 +269,7 @@ const deletedMentorBookingQuery = async (id: string) => {
 export const mentorBookingService = {
   createMentorBookingService,
   getAllMentorBookingByQuery,
+  reSheduleMentorBookingService,
   getAllMentorByMenteeBookingByQuery,
   getAllMenteeByMentorBookingByQuery,
   getAllMenteeBookingByQuery,

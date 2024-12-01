@@ -33,7 +33,7 @@ const getAvailableTimeByMentor = catchAsync(async (req, res) => {
     success: true,
     statusCode: httpStatus.OK,
     data: result,
-    message: ' AvailableTime are requered successful!!',
+    message: ' Available Time are  successful!!',
   });
 });
 

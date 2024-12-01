@@ -9,12 +9,12 @@ const withdrawRouter = express.Router();
 withdrawRouter
   .post('/add-withdraw', auth(USER_ROLE.MENTOR), withdrawController.addWithdraw)
   .get('/', auth(USER_ROLE.ADMIN), withdrawController.getAllWithdraw)
-  .get('/:id', withdrawController.getSingleWithdraw)
   .get(
     '/mentor',
     auth(USER_ROLE.MENTOR),
     withdrawController.getAllWithdrawByMentor,
   )
+  .get('/:id', withdrawController.getSingleWithdraw)
   .patch(
     '/status/:id',
     auth(USER_ROLE.ADMIN),

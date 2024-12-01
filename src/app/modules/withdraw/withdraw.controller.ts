@@ -4,11 +4,21 @@ import sendResponse from '../../utils/sendResponse';
 import { withdrawService } from './withdraw.service';
 
 const addWithdraw = catchAsync(async (req, res, next) => {
-  const { userId } = req.user;
+  console.log('gas');
   const withdrawData = req.body;
+  console.log('withdrawData', withdrawData);
+  if(withdrawData.method === 'bank'){
+    withdrawData.bankDetails = JSON.parse(withdrawData.bankDetails);
+  }if(withdrawData.method === 'paypal'){
+    withdrawData.paypalDetails = JSON.parse(withdrawData.paypalDetails);
+  }if (withdrawData.method === 'apple_pay') {
+    withdrawData.stripeDetails = JSON.parse(withdrawData.applePayDetails);
+  }
+ 
+  const { userId } = req.user;
   withdrawData.mentorId = userId;
-
-  const result = await withdrawService.addWithdrawService(req.body);
+  
+  const result = await withdrawService.addWithdrawService(withdrawData);
 
   if (result) {
     sendResponse(res, {
@@ -49,7 +59,9 @@ const getAllWithdraw = catchAsync(async (req, res, next) => {
 });
 
 const getAllWithdrawByMentor = catchAsync(async (req, res, next) => {
+  console.log('...........');
   const { userId } = req.user;
+  console.log('userId', userId);
   const result = await withdrawService.getAllWithdrawByMentorService(
     req.query,
     userId,
@@ -114,7 +126,6 @@ const getAllWithdrawRequestAccept = catchAsync(async (req, res, next) => {
     });
   }
 });
-
 
 const deleteSingleWithdraw = catchAsync(async (req, res, next) => {
   // give me validation data

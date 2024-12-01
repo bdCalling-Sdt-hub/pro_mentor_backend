@@ -53,6 +53,10 @@ mentorRegistrationRouter
 
   .get('/', mentorRegistrationController.getallMentorRegistration)
   .get(
+    '/available/:mentorId',
+    mentorRegistrationController.getMentorAvailableSlots,
+  )
+  .get(
     '/admin',
     auth(USER_ROLE.ADMIN, USER_ROLE.SUPER_ADMIN),
     mentorRegistrationController.getAdminMentorRegistration,

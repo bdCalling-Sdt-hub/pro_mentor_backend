@@ -9,6 +9,7 @@ export type TMentorRegistration = {
   contactNum: number;
   email: string;
   country: string;
+  location: string;
   gender: string;
   about: string;
   reviewCount?: number;
@@ -17,6 +18,7 @@ export type TMentorRegistration = {
   industryExpertise: string;
   careerLavel: string;
   specializedSkill: string;
+  mentoringStyle: string;
   education: string;
   mentorExperience: string;
   preferredDays: [string];

@@ -77,8 +77,9 @@ const acceptSingleMentorVideo = catchAsync(async (req, res) => {
 });
 
 const cencelSingleMentorVideo = catchAsync(async (req, res) => {
+ 
   const result = await mentorBookingService.cencelMentorBookingQuery(
-    req.params.id,
+    req.params.id
   );
 
   sendResponse(res, {

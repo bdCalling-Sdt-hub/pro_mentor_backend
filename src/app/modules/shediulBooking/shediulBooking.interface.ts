@@ -10,7 +10,7 @@ export type TShedualBooking = {
   educationLevel: string;
   description: string;
   bookingDate: Date;
-  bookingTime: string;
+  bookingTime?: string;
   duration: number;
   startTime?: string;
   endTime?: string;

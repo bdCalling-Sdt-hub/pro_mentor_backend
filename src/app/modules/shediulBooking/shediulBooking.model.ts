@@ -43,7 +43,7 @@ const ScheduleBookingSchema = new Schema<TShedualBooking>(
       required: true,
     },
     bookingTime: {
-      type: String,
+      type: String, // Ensure this is a String type
       required: true,
     },
     duration: {
