@@ -11,10 +11,16 @@ const taskGoalRouter = express.Router();
 taskGoalRouter
   .post(
     '/',
-    taskFiles.fields([{ name: 'taskfiles', maxCount: 5 }]),
     auth(USER_ROLE.MENTOR),
     // validateRequest(videoValidation.VideoSchema),
     taskGoalController.createMentorTaskGoal,
+  )
+  .post(
+    '/task',
+    taskFiles.fields([{ name: 'taskfiles', maxCount: 5 }]),
+    auth(USER_ROLE.MENTOR),
+    // validateRequest(videoValidation.VideoSchema),
+    taskGoalController.addTaskToTaskGoal,
   )
   .get('/sheduled-task/:id', taskGoalController.getBookingScheduleIdTaskGoal)
   .get('/:id', taskGoalController.getSingleMentorTaskGoal)
@@ -24,6 +30,9 @@ taskGoalRouter
     auth(USER_ROLE.MENTOR),
     taskGoalController.updateSingleMentorTaskGoal,
   )
+  .patch('/task/:id', taskGoalController.completedTaskStatus)
+  .patch('/status/:id', taskGoalController.taskGoalStatus)
+
   .delete(
     '/:id',
     auth(USER_ROLE.MENTOR),

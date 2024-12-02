@@ -14,7 +14,7 @@ notificationRoutes.post(
 );
 
 notificationRoutes.get(
-  '',
+  '/',
   auth(USER_ROLE.MENTEE, USER_ROLE.MENTOR),
   NotificationController.getAllNotificationByUser,
 );

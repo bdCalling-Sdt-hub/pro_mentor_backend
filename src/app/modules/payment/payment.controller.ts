@@ -98,6 +98,19 @@ const getSinglePayment = catchAsync(async (req, res, next) => {
   
 });
 
+
+const getAllPaymentAmountCount = catchAsync(async (req, res) => {
+  const result = await paymentService.getAllEarningAmountService();
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    data: result,
+    message: 'All Earning Amount successful!!',
+  });
+});
+
+
 const deleteSinglePayment = catchAsync(async (req, res, next) => {
   // give me validation data
   const result = await paymentService.deleteSinglePaymentService(req.params.id);
@@ -125,4 +138,5 @@ export const paymentController = {
   getSinglePayment,
   deleteSinglePayment,
   getAllPaymentByMentor,
+  getAllPaymentAmountCount,
 };

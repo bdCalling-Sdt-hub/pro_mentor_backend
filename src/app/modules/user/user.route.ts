@@ -35,6 +35,8 @@ userRoutes
   )
   .get('/all-users', userController.getAllUsers)
   .get('/all-users-count', userController.getAllUserCount)
+  .get('/all-mentors-count', userController.getAllMentorCount)
+  .get('/all-mentees-count', userController.getAllMenteeCount)
   .get('/all-users-rasio', userController.getAllUserRasio)
   .get('/:id', userController.getUserById)
 

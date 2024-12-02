@@ -6,23 +6,25 @@ import { mentorTaskGoalService } from './taskGoal.service';
 
 const createMentorTaskGoal = catchAsync(async (req, res) => {
   const { userId } = req.user;
-  const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+  // const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
- if (!files || !files['taskfiles']) {
-   throw new AppError(httpStatus.BAD_REQUEST, 'TaskGoal files are required');
- }
+//  if (!files || !files['taskfiles']) {
+//    throw new AppError(httpStatus.BAD_REQUEST, 'TaskGoal files are required');
+//  }
 
- // Extract task file paths
- const taskGoalFiles = files['taskfiles'].map((file) =>
-   file.path.replace(/^public[\\/]/, ''),
- );
+// //  // Extract task file paths
+// //  const taskGoalFiles = files['taskfiles'].map((file) =>
+// //    file.path.replace(/^public[\\/]/, ''),
+// //  );
 
  // Construct payload for service
  const bodyData = {
    ...req.body,
    mentorId: userId, // Attach the mentorId to the task
-   taskfiles: taskGoalFiles, // Add the file paths
+  //  taskfiles: taskGoalFiles, // Add the file paths
  };
+
+ console.log('bodyData', bodyData);
 
   const result =
     await mentorTaskGoalService.createMentorTaskGoalService(bodyData);
@@ -32,6 +34,37 @@ const createMentorTaskGoal = catchAsync(async (req, res) => {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Task Goal added successfully!',
+    data: result,
+  });
+});
+
+const addTaskToTaskGoal = catchAsync(async (req, res) => {
+  const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+
+  if (!files || !files['taskfiles']) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'TaskGoal files are required');
+  }
+
+  // Extract task file paths
+  const taskGoalFiles = files['taskfiles'].map((file) =>
+    file.path.replace(/^public[\\/]/, ''),
+  );
+
+  // Construct payload for service
+  const taskData = {
+    ...req.body,
+    taskfiles: taskGoalFiles,
+    status:"pending",
+  };
+  console.log('taskData', taskData);
+
+  const result = await mentorTaskGoalService.addTaskToTaskGoalService(taskData);
+
+  // Send response
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Task added successfully!',
     data: result,
   });
 });
@@ -66,6 +99,40 @@ const getSingleMentorTaskGoal = catchAsync(async (req, res) => {
     message: 'Single Task Goal are requered successful!!',
   });
 });
+
+const completedTaskStatus = catchAsync(async (req, res) => {
+  const { id:taskGoalId }:any = req.params;
+  const { taskId }:any = req.query;
+  // Call the service to update the TaskGoal
+  const result = await mentorTaskGoalService.completedTaskStatus(
+    taskGoalId,
+    taskId,
+  );
+
+  // Send response
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Task Status updated successfully!',
+    data: result,
+  });
+});
+
+const taskGoalStatus = catchAsync(async (req, res) => {
+  const { id: taskGoalId }: any = req.params;
+
+  const result = await mentorTaskGoalService.taskGoalStatusService(taskGoalId);
+
+  // Send response
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Task Goal status updated successfully!',
+    data: result,
+  });
+});
+
+
 
 const updateSingleMentorTaskGoal = catchAsync(async (req, res) => {
  const { userId } = req.user;
@@ -114,8 +181,11 @@ const deleteSingleMentorTaskGoal = catchAsync(async (req, res) => {
 
 export const taskGoalController = {
   createMentorTaskGoal,
+  addTaskToTaskGoal,
   getBookingScheduleIdTaskGoal,
   getSingleMentorTaskGoal,
   updateSingleMentorTaskGoal,
+  completedTaskStatus,
+  taskGoalStatus,
   deleteSingleMentorTaskGoal,
-};
+};   

@@ -163,11 +163,35 @@ const otpVerifyAndCreateUser = async ({
     throw new AppError(httpStatus.BAD_REQUEST, 'User creation failed');
   }
 
-  return user;
+
+    const jwtPayload: {
+      userId: string;
+      role: string;
+      fullName: string;
+      email: string;
+      phone: string;
+    } = {
+      fullName: user?.fullName,
+      email: user.email,
+      phone: user.phone,
+      userId: user?._id?.toString() as string,
+      role: user?.role,
+    };
+
+    // console.log({ jwtPayload });
+    console.log('user user', user);
+
+    const accessToken = createToken({
+      payload: jwtPayload,
+      access_secret: config.jwt_access_secret as string,
+      expity_time: '3m',
+    });
+
+  return accessToken;
 };
 
 const updateUser = async (id: string, payload: Partial<TUser>) => {
-  const { role, email, ...rest } = payload;
+  const { role, email, isActive, isDeleted,password, ...rest } = payload;
 
   const user = await User.findByIdAndUpdate(id, rest, { new: true });
 
@@ -197,10 +221,18 @@ const getAllUserCount = async () => {
   const allUserCount = await User.countDocuments();
   return allUserCount;
 };
+const getAllMentorCount = async () => {
+  const allUserCount = await User.find({ role: USER_ROLE.MENTOR }).countDocuments();
+  return allUserCount;
+};
+const getAllMenteeCount = async () => {
+  const allUserCount = await User.find({ role: USER_ROLE.MENTEE }).countDocuments();
+  return allUserCount;
+};
 
 
 
-const getAllUserRatio = async (year: number) => {
+const getAllUserRatio = async (year: number, role: string) => {
   const startOfYear = new Date(year, 0, 1); // January 1st of the given year
   const endOfYear = new Date(year + 1, 0, 1); // January 1st of the next year
 
@@ -217,6 +249,7 @@ const getAllUserRatio = async (year: number) => {
           $gte: startOfYear,
           $lt: endOfYear,
         },
+        role: role,
       },
     },
     {
@@ -247,13 +280,7 @@ const getAllUserRatio = async (year: number) => {
 };
 
 const getUserById = async (id: string) => {
-  const result = await User.findById(id).populate({
-    path: 'purchesPackageId', // First level population
-    populate: {
-      path: 'package_id',
-      model: 'SubscriptionPlan',
-    },
-  });
+  const result = await User.findById(id).populate('mentorRegistrationId');
   if (!result) {
     throw new AppError(httpStatus.NOT_FOUND, 'User not found');
   }
@@ -318,5 +345,7 @@ export const userService = {
   blockedUser,
   getAllUserQuery,
   getAllUserCount,
+  getAllMentorCount,
+  getAllMenteeCount,
   getAllUserRatio,
 };

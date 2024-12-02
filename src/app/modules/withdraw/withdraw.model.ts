@@ -16,16 +16,14 @@ const WithdrawSchema = new Schema<TWithdraw>(
       accountNumber: { type: String },
       accountName: { type: String },
       bankName: { type: String },
+      exp: { type: String },
+      cvc: { type: String },
     },
     paypalPayDetails: {
       paypalId: { type: String },
     },
     applePayDetails: {
       appleId: { type: String },
-    },
-    transactionId: {
-      type: String,
-      required: true,
     },
     transactionDate: {
       type: Date,

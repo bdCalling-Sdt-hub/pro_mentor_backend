@@ -1,34 +1,36 @@
-import { model, Schema } from "mongoose";
-import { TTaskGoal } from "./taskGoal.interface";
+import { Schema, model, Types, Document } from 'mongoose';
+import { TTask, TTaskGoal } from './taskGoal.interface';
 
-const taskGoalSchema = new Schema<TTaskGoal>(
-  {
-    goalName: {
-      type: String,
-      required: true,
-    },
-    taskName: {
-      type: String,
-      required: true,
-    },
-    taskfiles: [String],
-    bookingScheduleId: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: 'BookingSchedule',
-    },
-    menteeId: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: 'User',
-    },
-    mentorId: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: 'User',
-    },
+
+const TaskSchema = new Schema<TTask>({
+  taskName: { type: String, required: true },
+  taskfiles: { type: [String], default: [] },
+  status: { type: String, enum: ['pending', 'completed'], default: 'pending', required: true },
+});
+
+
+const TaskGoalSchema = new Schema<TTaskGoal>({
+  goalName: { type: String, required: true },
+  status: {
+    type: String,
+    enum: ['running', 'checking', 'completed'],
+    default: 'running',
+    required: true,
   },
-  { timestamps: true },
-);
+  tasks: { type: [TaskSchema], required: false, default: [] },
+  bookingScheduleId: {
+    type: Schema.Types.ObjectId,
+    ref: 'BookingSchedule',
+    required: true,
+  },
+  menteeId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  mentorId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  goalProgress: { type: Number, required: true, default: 0 },
+});
 
-export const TaskGoal = model<TTaskGoal>('TaskGoal', taskGoalSchema);
+
+
+
+const TaskGoal = model<TTaskGoal>('TaskGoal', TaskGoalSchema);
+
+export default TaskGoal ;

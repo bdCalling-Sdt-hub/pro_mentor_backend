@@ -11,15 +11,22 @@ const MentorRegistrationSchema = new Schema<TMentorRegistration>(
     contactNum: { type: Number, required: true },
     email: { type: String, required: true, unique: true },
     country: { type: String, required: true },
+    location: { type: String, required: true },
     gender: { type: String, required: true },
     about: { type: String, required: true },
+    reviewCount: { type: Number, required: false, default: 0 },
+    ratingCount: { type: Number, required: false, default: 0 },
     introVideo: { type: String, required: false, default: '' },
     industryExpertise: { type: String, required: true },
-    careerLavel: { type: String, required: true },
+    careerLavel: { type: String, required: false },
     specializedSkill: { type: String, required: true },
     education: { type: String, required: true },
-    experience: { type: String, required: true },
+    mentorExperience: { type: String, required: true },
+    mentoringStyle: { type: String, required: true },
     preferredDays: { type: [String], required: true },
+    availableTime: { type: String, required: false },
+    startBreakTime: { type: String, required: false, default: '' },
+    endBreakTime: { type: String, required: false, default: '' },
     startTime: { type: String, required: true },
     endTime: { type: String, required: true },
     status: {
@@ -27,11 +34,18 @@ const MentorRegistrationSchema = new Schema<TMentorRegistration>(
       enum: ['pending', 'accept', 'cenceled'],
       default: 'pending',
     },
-    professionalCredential: { type: [String], required: true },
-    additionalDocument: { type: [String], required: true },
+    professionalCredential: { type: [String], required: false },
+    additionalDocument: { type: [String], required: false },
   },
   { timestamps: true },
 );
+
+
+MentorRegistrationSchema.index({
+  fullName: 'text',
+  industryExpertise: 'text',
+  specializedSkill: 'text',
+});
 
 export const MentorRegistration = model<TMentorRegistration>(
   'MentorRegistration',
