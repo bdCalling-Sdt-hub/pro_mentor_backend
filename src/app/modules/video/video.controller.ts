@@ -127,6 +127,21 @@ console.log('updateData222', updateData);
 });
 
 
+const updateSingleMentorVideoViewUpdated = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  
+  const result = await mentorVideoService.updateMentorVideoViewQuery(id);
+
+  // Send response
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Video view updated successfully!',
+    data: result,
+  });
+});
+
+
 
 const deleteSingleMentorVideo = catchAsync(async (req, res) => {
   const result = await mentorVideoService.deletedMentorVideoQuery(
@@ -150,5 +165,6 @@ export const mentorVideoController = {
   getMentorVideoByRecommended,
   getSingleMentorVideo,
   updateSingleMentorVideo,
+  updateSingleMentorVideoViewUpdated,
   deleteSingleMentorVideo,
 };

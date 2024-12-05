@@ -9,6 +9,13 @@ import { verifyToken } from '../../utils/tokenManage';
 
 const createMentorRegistration = catchAsync(async (req, res) => {
   const token = req.headers?.token as string;
+
+  console.log('body -1', req.body);
+
+ req.body.preferredDays = JSON.parse(req.body.preferredDays);
+
+  console.log('body -2', req.body);
+
   if (!token) {
     throw new AppError(httpStatus.BAD_REQUEST, 'Token is required');
   }
@@ -74,11 +81,11 @@ const createMentorRegistration = catchAsync(async (req, res) => {
     availableTime: availableTimeSlots,
   };
 
-  console.log('payload payload', payload);
-
+  // console.log('payload payload', payload);
+console.log('............controller............');
   const result =
     await mentorRegistrationService.createMentorRegistrationService(payload); // todo email sent to admin
-  console.log('result', result);
+  console.log('result result ', result);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -168,7 +175,9 @@ const updateSingleMentorRegistration = catchAsync(async (req, res) => {
 
   // Access body and files
   const payload = req.body;
-  console.log('payload - 1', payload);
+  console.log('payload........1', payload);
+  req.body.preferredDays = JSON.parse(req.body.preferredDays);
+  console.log('payload........2', payload);
 
   // Check if introVideo file exists
   if (files && files['introVideo'] && files['introVideo'].length > 0) {

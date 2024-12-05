@@ -15,6 +15,8 @@ import bookingRouter from '../modules/shediulBooking/shediulBooking.route';
 import mentorBookingRouter from '../modules/mentorBooking/mentorBooking.route';
 import withdrawRouter from '../modules/withdraw/withdraw.route';
 import notificationRoutes from '../modules/notification/notification.route';
+import chatRouter from '../modules/chat/chat.route';
+import messageRouter from '../modules/message/message.route';
 
 const router = Router();
 
@@ -79,6 +81,14 @@ const moduleRoutes = [
   {
     path: '/mentorBooking',
     route: mentorBookingRouter,
+  },
+  {
+    path: '/chat',
+    route: chatRouter,
+  },
+  {
+    path: '/message',
+    route: messageRouter,
   },
 ];
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

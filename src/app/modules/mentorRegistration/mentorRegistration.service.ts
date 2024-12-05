@@ -18,6 +18,9 @@ const createMentorRegistrationService = async (
   const session = await mongoose.startSession();
   session.startTransaction();
 
+  // console.log('payload payload payload', payload);
+  console.log('............service 1............')
+
   try {
     const user = await User.findById(payload.mentorId).session(session);
 
@@ -269,14 +272,15 @@ const updateMentorRegistrationQuery = async (
   id: string,
   payload: Partial<TMentorRegistration>,
 ) => {
-  console.log('payload registrer', payload);
+  console.log('id', id);
+  console.log('payload', payload);
   const registerMentor = await MentorRegistration.findById(id);
   if (!registerMentor) {
     throw new AppError(404, 'Register Mentor Not Found!!');
   }
   const mentorRegistration = await MentorRegistration.findByIdAndUpdate(
     id,
-    payload,
+    payload,             
     { new: true },
   );
 

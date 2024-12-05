@@ -18,14 +18,10 @@ const TaskGoalSchema = new Schema<TTaskGoal>({
     required: true,
   },
   tasks: { type: [TaskSchema], required: false, default: [] },
-  bookingScheduleId: {
-    type: Schema.Types.ObjectId,
-    ref: 'BookingSchedule',
-    required: true,
-  },
   menteeId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   mentorId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   goalProgress: { type: Number, required: true, default: 0 },
+  taskCount: { type: Number, required: true, default: 3 },
 });
 
 

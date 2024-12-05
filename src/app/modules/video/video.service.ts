@@ -149,6 +149,16 @@ const updateMentorVideoQuery = async (id: string, payload: Partial<TVideo>) => {
   return result;
 };
 
+const updateMentorVideoViewQuery = async (id: string) => {
+  const registerMentor = await Video.findById(id);
+  if (!registerMentor) {
+    throw new AppError(404, 'Video Not Found!!');
+  }
+  const result = await Video.findByIdAndUpdate(id,  { views: (registerMentor.views || 0) + 1 }, { new: true });
+
+  return result;
+};
+
 const deletedMentorVideoQuery = async (id: string) => {
   const video = await Video.findById(id);
   if (!video) {
@@ -165,6 +175,7 @@ export const mentorVideoService = {
   getAllMentorVideoByRecommendedQuery,
   getSingleMentorVideoQuery,
   updateMentorVideoQuery,
+  updateMentorVideoViewQuery,
   deletedMentorVideoQuery,
   
 };

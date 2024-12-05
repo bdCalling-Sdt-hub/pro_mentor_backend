@@ -5,6 +5,7 @@ import sendResponse from '../../utils/sendResponse';
 import { storeFile } from '../../utils/fileHelper';
 
 import httpStatus from 'http-status';
+import { User } from './user.models';
 
 const createUser = catchAsync(async (req: Request, res: Response) => {
   console.log(req.body);
@@ -35,6 +36,22 @@ const userCreateVarification = catchAsync(async (req, res) => {
 });
 
 // rest >...............
+
+const getMentor = catchAsync(async (req, res) => {
+  // const as = await User.findById('674db0fb690c8d666f6c3a1c');
+
+  const result = await User.findById('674db0fb690c8d666f6c3a1c').populate(
+    'mentorRegistrationId',
+  );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    // meta: result.meta,
+    data: result,
+    message: 'Users All are requered successful!!',
+  });
+});
 
 const getAllUsers = catchAsync(async (req, res) => {
   const result = await userService.getAllUserQuery(req.query);
@@ -81,7 +98,7 @@ const getAllMenteeCount = catchAsync(async (req, res) => {
 
 const getAllUserRasio = catchAsync(async (req, res) => {
   const yearQuery = req.query.year;
-  const role:any = req.query.role;
+  const role: any = req.query.role;
 
   // Safely extract year as string
   const year = typeof yearQuery === 'string' ? parseInt(yearQuery) : undefined;
@@ -172,4 +189,5 @@ export const userController = {
   getAllMentorCount,
   getAllMenteeCount,
   getAllUserRasio,
+  getMentor,
 };

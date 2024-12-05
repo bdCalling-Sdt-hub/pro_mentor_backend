@@ -14,7 +14,7 @@ const getAllNotificationQuery = async (
   query: Record<string, unknown>,
   userId: string,
 ) => {
-  const notificationQuery = new QueryBuilder(Notification.find({ userId }), query)
+  const notificationQuery = new QueryBuilder(Notification.find({ userId }).populate('userId'), query) 
     .search([''])
     .filter()
     .sort()

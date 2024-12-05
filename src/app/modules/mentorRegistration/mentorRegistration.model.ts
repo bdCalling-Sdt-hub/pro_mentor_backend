@@ -16,6 +16,7 @@ const MentorRegistrationSchema = new Schema<TMentorRegistration>(
     about: { type: String, required: true },
     reviewCount: { type: Number, required: false, default: 0 },
     ratingCount: { type: Number, required: false, default: 0 },
+    membershipCount: { type: Number, required: false, default: 0 },
     introVideo: { type: String, required: false, default: '' },
     industryExpertise: { type: String, required: true },
     careerLavel: { type: String, required: false },
@@ -40,16 +41,13 @@ const MentorRegistrationSchema = new Schema<TMentorRegistration>(
   { timestamps: true },
 );
 
-
 MentorRegistrationSchema.index({
   fullName: 'text',
   industryExpertise: 'text',
   specializedSkill: 'text',
 });
-
+ 
 export const MentorRegistration = model<TMentorRegistration>(
   'MentorRegistration',
   MentorRegistrationSchema,
 );
-
-

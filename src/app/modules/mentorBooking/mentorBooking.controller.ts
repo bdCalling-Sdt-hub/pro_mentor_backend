@@ -5,10 +5,10 @@ import AppError from '../../error/AppError';
 import { mentorBookingService } from './mentorBooking.service';
 
 const createMentorBooking = catchAsync(async (req, res) => {
-    const bodyData = req.body;
+  const bodyData = req.body;
   const { userId } = req.user;
   bodyData.menteeId = userId;
-  
+
   const result =
     await mentorBookingService.createMentorBookingService(bodyData);
 
@@ -62,7 +62,6 @@ const getSingleMentorBooking = catchAsync(async (req, res) => {
   });
 });
 
-
 const acceptSingleMentorVideo = catchAsync(async (req, res) => {
   const result = await mentorBookingService.acceptMentorBookingQuery(
     req.params.id,
@@ -77,9 +76,8 @@ const acceptSingleMentorVideo = catchAsync(async (req, res) => {
 });
 
 const cencelSingleMentorVideo = catchAsync(async (req, res) => {
- 
   const result = await mentorBookingService.cencelMentorBookingQuery(
-    req.params.id
+    req.params.id,
   );
 
   sendResponse(res, {

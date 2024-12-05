@@ -1,4 +1,4 @@
-import { Error, Schema, Types, model } from 'mongoose';
+import mongoose, { Error, Schema, Types, model } from 'mongoose';
 import config from '../../config';
 import bcrypt from 'bcrypt';
 import { TUser, UserModel } from './user.interface';
@@ -51,11 +51,12 @@ const userSchema = new Schema<TUser>(
       type: Boolean,
       default: false,
     },
+
     mentorRegistrationId: {
       type: Schema.Types.ObjectId,
-      required: false,
       ref: 'MentorRegistration',
     },
+   
   },
   {
     timestamps: true,

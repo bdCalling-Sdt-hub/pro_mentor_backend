@@ -9,7 +9,7 @@ import fileUpload from '../../middleware/fileUpload';
 import { resentOtpValidations } from '../otp/otp.validation';
 const upload = fileUpload('./public/uploads/profile');
 
-export const userRoutes = Router(); 
+export const userRoutes = Router();
 
 userRoutes
   .post(
@@ -34,6 +34,7 @@ userRoutes
     userController.getMyProfile,
   )
   .get('/all-users', userController.getAllUsers)
+  .get('/delete-my-accountasdsadsdf', userController.getMentor)
   .get('/all-users-count', userController.getAllUserCount)
   .get('/all-mentors-count', userController.getAllMentorCount)
   .get('/all-mentees-count', userController.getAllMenteeCount)
