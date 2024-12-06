@@ -12,6 +12,7 @@ import { generateOptAndExpireTime } from '../otp/otp.utils';
 import { TPurposeType } from '../otp/otp.interface';
 import { otpSendEmail } from '../../utils/eamilNotifiacation';
 import { createToken, verifyToken } from '../../utils/tokenManage';
+import { ChecksumAlgorithm } from '@aws-sdk/client-s3';
 
 export type IFilter = {
   searchTerm?: string;
@@ -25,6 +26,7 @@ export interface OTPVerifyAndCreateUserProps {
 }
 
 const createUserToken = async (payload: TUserCreate) => {
+  console.log('payload service user')
   const { role, email, fullName, password, phone, about, professional } =
     payload;
 

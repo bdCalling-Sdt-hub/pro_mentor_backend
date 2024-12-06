@@ -6,17 +6,6 @@ import { mentorTaskGoalService } from './taskGoal.service';
 
 const createMentorTaskGoal = catchAsync(async (req, res) => {
   const { userId } = req.user;
-  // const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-
-//  if (!files || !files['taskfiles']) {
-//    throw new AppError(httpStatus.BAD_REQUEST, 'TaskGoal files are required');
-//  }
-
-// //  // Extract task file paths
-// //  const taskGoalFiles = files['taskfiles'].map((file) =>
-// //    file.path.replace(/^public[\\/]/, ''),
-// //  );
-
  // Construct payload for service
  const bodyData = {
    ...req.body,
@@ -38,15 +27,49 @@ const createMentorTaskGoal = catchAsync(async (req, res) => {
   });
 });
 
+
+
+
+// const createMentorTaskGoal = catchAsync(async (req, res) => {
+//   // Body data
+//   const { goalName, goalTasks } = req.body;
+
+//   // Handle the uploaded files (multer adds files to `req.files`)
+//   const tasks = goalTasks.map((task:any, index:any) => ({
+//     taskName: task.taskName,
+//     taskFile: req.files && req.files[index] ? req.files[index].path : null, // Attach the file path
+//     status: task.status,
+//   }));
+
+//   // Create the full goal object to pass to the service
+//   const bodyData = {
+//     goalName,
+//     goalTasks: tasks,
+//   };
+
+//   // Call service to save the goal
+//   const result =
+//     await mentorTaskGoalService.createMentorTaskGoalService(bodyData);
+
+//   // Send response
+//   sendResponse(res, {
+//     statusCode: httpStatus.OK,
+//     success: true,
+//     message: 'Task Goal added successfully!',
+//     data: result,
+//   });
+// });
+
+
+
+
 const addTaskToTaskGoal = catchAsync(async (req, res) => {
   const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+  // console.log('files', files);
 
-  if (!files || !files['taskfiles']) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'TaskGoal files are required');
-  }
-
+ 
   // Extract task file paths
-  const taskGoalFiles = files['taskfiles'].map((file) =>
+  const taskGoalFiles = files['taskfiles']?.map((file) =>
     file.path.replace(/^public[\\/]/, ''),
   );
 
@@ -70,20 +93,35 @@ const addTaskToTaskGoal = catchAsync(async (req, res) => {
 });
 
 
-const getBookingScheduleIdTaskGoal = catchAsync(async (req, res) => {
-  const { id } = req.params;
-  const { meta, result } =
-    await mentorTaskGoalService.getAllBookingsShwduleByMentorTaskGoalQuery(
-      req.query,
-      id,
-    );
+const getAllMentorGoals = catchAsync(async (req, res) => {
+  const { userId } = req.user;
+  const { meta, result } = await mentorTaskGoalService.getAllMentorGoalsService(
+    req.query,
+    userId,
+  );
 
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
     meta: meta,
     data: result,
-    message: ' All Booking By Task Goal are requered successful!!',
+    message: ' Mentor Task Goal are requered successful!!',
+  });
+});
+
+const getAllMenteeGoals = catchAsync(async (req, res) => {
+  const { userId } = req.user;
+  const { meta, result } = await mentorTaskGoalService.getAllMenteeGoalsService(
+    req.query,
+    userId,
+  );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    meta: meta,
+    data: result,
+    message: 'Mentee Task Goal are requered successful!!',
   });
 });
 
@@ -182,7 +220,8 @@ const deleteSingleMentorTaskGoal = catchAsync(async (req, res) => {
 export const taskGoalController = {
   createMentorTaskGoal,
   addTaskToTaskGoal,
-  getBookingScheduleIdTaskGoal,
+  getAllMentorGoals,
+  getAllMenteeGoals,
   getSingleMentorTaskGoal,
   updateSingleMentorTaskGoal,
   completedTaskStatus,

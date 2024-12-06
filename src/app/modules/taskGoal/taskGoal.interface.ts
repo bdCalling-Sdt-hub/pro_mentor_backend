@@ -10,8 +10,8 @@ export type TTaskGoal = {
   goalName: string;
   status: string;
   tasks?: TTask[];
-  bookingScheduleId: Types.ObjectId;
   menteeId: Types.ObjectId;
   mentorId: Types.ObjectId;
   goalProgress: number;
+  taskCount?: number
 };

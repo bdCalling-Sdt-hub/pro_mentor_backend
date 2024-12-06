@@ -14,6 +14,7 @@ export type TMentorRegistration = {
   about: string;
   reviewCount?: number;
   ratingCount?: number;
+  membershipCount?: number;
   introVideo?: string;
   industryExpertise: string;
   careerLavel: string;

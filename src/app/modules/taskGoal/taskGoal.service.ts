@@ -18,26 +18,37 @@ const createMentorTaskGoalService = async (payload: TTaskGoal) => {
 };
 
 const addTaskToTaskGoalService = async (payload: any) => {
-  console.log('Payload:', payload);
+  console.log('task add', payload);
 
   if (!payload.taskGoalId) {
     throw new AppError(httpStatus.BAD_REQUEST, 'Task Goal ID is required!');
   }
 
-  const taskGoal = await TaskGoal.findById(payload.taskGoalId);
+  const taskGoal:any = await TaskGoal.findById(payload.taskGoalId);
   if (!taskGoal) {
     throw new AppError(httpStatus.NOT_FOUND, 'Task Goal Not Found!');
   }
+  if (taskGoal.taskCount === 0) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'You have reached the maximum task limit!!',
+    );
+  }
+
+
 
   const task = {
     taskName: payload.taskName,
-    taskfiles: payload.taskfiles || [],
-    status: payload.status || 'pending'
+    taskfiles: Array.isArray(payload.taskfiles) ? payload.taskfiles : [],
+    status: payload.status || 'pending',
   };
 
   const result = await TaskGoal.updateOne(
     { _id: payload.taskGoalId },
-    { $push: { tasks: task } }, 
+    {
+      $push: { tasks: task },
+      $inc: { taskCount: -1 }, 
+    },
   );
 
   if (!result || result.modifiedCount === 0) {
@@ -55,27 +66,13 @@ const addTaskToTaskGoalService = async (payload: any) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const getAllBookingsShwduleByMentorTaskGoalQuery = async (
+const getAllMentorGoalsService = async (
   query: Record<string, unknown>,
-  id: string,
+  mentorId: string,
 ) => {
+console.log('query', query.menteeId);
   const taskGoalQuery = new QueryBuilder(
-    TaskGoal.find({ bookingScheduleId: id }).populate('mentorId'), 
+    TaskGoal.find({ mentorId, menteeId:query.menteeId }).populate('mentorId').populate('menteeId'),
     query,
   )
     .search([''])
@@ -86,19 +83,51 @@ const getAllBookingsShwduleByMentorTaskGoalQuery = async (
 
   const result = await taskGoalQuery.modelQuery;
 
-  
   const resultWithGoalProgress = result.map((taskGoal: any) => {
     const tasks = taskGoal.tasks || [];
     const completedTasks = tasks.filter(
-      (task:any) => task.status === 'completed',
+      (task: any) => task.status === 'completed',
     ).length;
     const totalTasks = tasks.length;
 
-    
     taskGoal.goalProgress =
       totalTasks === 0 ? 0 : (completedTasks / totalTasks) * 100;
 
-    return taskGoal; 
+    return taskGoal;
+  });
+
+  const meta = await taskGoalQuery.countTotal();
+
+  return { meta, result: resultWithGoalProgress };
+};
+
+const getAllMenteeGoalsService = async (
+  query: Record<string, unknown>,
+  menteeId: string,
+) => {
+  const taskGoalQuery = new QueryBuilder(
+    TaskGoal.find({ menteeId, mentorId:query.mentorId }).populate('mentorId').populate('menteeId'),
+    query,
+  )
+    .search([''])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await taskGoalQuery.modelQuery;
+
+  const resultWithGoalProgress = result.map((taskGoal: any) => {
+    const tasks = taskGoal.tasks || [];
+    const completedTasks = tasks.filter(
+      (task: any) => task.status === 'completed',
+    ).length;
+    const totalTasks = tasks.length;
+
+    taskGoal.goalProgress =
+      totalTasks === 0 ? 0 : (completedTasks / totalTasks) * 100;
+
+    return taskGoal;
   });
 
   const meta = await taskGoalQuery.countTotal();
@@ -218,7 +247,8 @@ const deletedMentorTaskGoal = async (id: string) => {
 export const mentorTaskGoalService = {
   createMentorTaskGoalService,
   addTaskToTaskGoalService,
-  getAllBookingsShwduleByMentorTaskGoalQuery,
+  getAllMentorGoalsService,
+  getAllMenteeGoalsService,
   getSingleMentorTaskGoalQuery,
   updateMentorTaskGoal,
   completedTaskStatus,

@@ -4,7 +4,6 @@ import { USER_ROLE } from '../user/user.constants';
 import fileUpload from '../../middleware/fileUpload';
 import { mentorVideoController } from './video.controller';
 
-
 const video = fileUpload('./public/uploads/video');
 
 const videoRouter = express.Router();
@@ -40,10 +39,11 @@ videoRouter
     auth(USER_ROLE.MENTOR),
     mentorVideoController.updateSingleMentorVideo,
   )
+  .patch('/views/:id', mentorVideoController.updateSingleMentorVideoViewUpdated)
   .delete(
     '/:id',
     auth(USER_ROLE.MENTOR),
-    mentorVideoController.deleteSingleMentorVideo);
-
+    mentorVideoController.deleteSingleMentorVideo,
+  );
 
 export default videoRouter;

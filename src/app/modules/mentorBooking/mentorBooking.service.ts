@@ -6,12 +6,17 @@ import { TMentorBooking } from './mentorBooking.interface';
 import MentorBooking from './mentorBooking.model';
 import { notificationService } from '../notification/notification.service';
 import { sendEmail } from '../../utils/mailSender';
-import { acceptanceRegistrationEmail, cancellationRegistrationEmail } from './mentorBooking.utils';
-
+import {
+  acceptanceRegistrationEmail,
+  cancellationRegistrationEmail,
+} from './mentorBooking.utils';
+import { populate } from 'dotenv';
+import { User } from '../user/user.models';
+import { MentorRegistration } from '../mentorRegistration/mentorRegistration.model';
 
 const createMentorBookingService = async (payload: TMentorBooking) => {
-  const session = await mongoose.startSession(); 
-  session.startTransaction(); 
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
   try {
     console.log('payload', payload);
@@ -26,12 +31,12 @@ const createMentorBookingService = async (payload: TMentorBooking) => {
     }
 
     const notificationData = {
-      userId: result[0].mentorId, 
+      userId: result[0].mentorId,
       message: `Booking mentor is successful!`,
       type: 'success',
     };
     const notificationData2 = {
-      userId: result[0].menteeId, 
+      userId: result[0].menteeId,
       message: `Booking mentee is successful!`,
       type: 'success',
     };
@@ -51,24 +56,24 @@ const createMentorBookingService = async (payload: TMentorBooking) => {
         'Failed to create notification',
       );
     }
-    
+
     await session.commitTransaction();
     session.endSession();
 
-    return result; 
+    return result;
   } catch (error) {
     await session.abortTransaction();
     console.error('Error in createMentorBookingService:', error);
-    session.endSession(); 
-    throw error; 
+    session.endSession();
+    throw error;
   }
 };
-
 
 const getAllMentorBookingByIdQuery = async (
   query: Record<string, unknown>,
   mentorId: string,
 ) => {
+  console.log('mentorId', mentorId);
   const BookingQuery = new QueryBuilder(
     MentorBooking.find({ mentorId }).populate('mentorId').populate('menteeId'),
     query,
@@ -88,9 +93,11 @@ const getAllMenteeBookingByQuery = async (
   query: Record<string, unknown>,
   menteeId: string,
 ) => {
-    console.log('menteeId', menteeId);
+  console.log('menteeId', menteeId);
+
+  // Create the base query using QueryBuilder
   const bookingQuery = new QueryBuilder(
-    MentorBooking.find({ menteeId }).populate('menteeId').populate('mentorId'),
+    MentorBooking.find({ menteeId }).populate('mentorId'),
     query,
   )
     .search([''])
@@ -99,8 +106,19 @@ const getAllMenteeBookingByQuery = async (
     .paginate()
     .fields();
 
+  // Execute the query to fetch bookings
   const result = await bookingQuery.modelQuery;
+  console.log({result})
+
+  // Now populate 'mentorRegistrationId' for each mentorId
+  for (let booking of result) {
+    if (booking && booking.mentorId) {
+      await booking.populate('mentorId.mentorRegistrationId');
+    }
+  }
+
   const meta = await bookingQuery.countTotal();
+
   return { meta, result };
 };
 
@@ -119,19 +137,25 @@ const getSingleMentorBookingQuery = async (id: string) => {
   return result[0];
 };
 
-
 const acceptMentorBookingQuery = async (id: string) => {
   const session = await mongoose.startSession(); // Start a session
   session.startTransaction(); // Start the transaction
 
   try {
-    // Find the mentor booking by ID inside the transaction
-    const mentorBooking = await MentorBooking.findById(id).session(session);
+    // Find the mentor booking by ID and populate the necessary fields
+    const mentorBooking = await MentorBooking.findById(id)
+      .populate({
+        path: 'mentorId', // Populate the full mentorId object (not just the ObjectId)
+        populate: { path: 'mentorRegistrationId' }, // Populate mentorRegistrationId inside mentorId
+      })
+      .session(session);
 
     if (!mentorBooking) {
       throw new AppError(404, 'Mentor Booking Not Found!!');
     }
-
+ 
+     const mentorRegistrationIDD = mentorBooking.mentorId?.mentorRegistrationId;
+ 
     // Update the mentor booking status to 'accepted'
     const result = await MentorBooking.findByIdAndUpdate(
       id,
@@ -140,14 +164,37 @@ const acceptMentorBookingQuery = async (id: string) => {
     );
 
     if (!result) {
-      throw new AppError(404, 'Failed to accept Mentor Booking!');
+      throw new AppError(404, 'Failed to update Mentor Booking status!');
     }
 
+    // Retrieve the mentor registration to increment the membership count
+    const mentorRegistration = await MentorRegistration.findById(
+      mentorRegistrationIDD,
+    ).session(session); // Ensure mentorRegistration update is part of the session
 
+    if (!mentorRegistration) {
+      throw new AppError(404, 'Mentor Registration Not Found!!');
+    }
+
+    // Update the mentor registration (increment membership count)
+    const result2 = await MentorRegistration.findByIdAndUpdate(
+      mentorRegistrationIDD, // Use the correct mentor registration ID here
+      { membershipCount: (mentorRegistration.membershipCount || 0) + 1 },
+      { new: true, session }, // Ensure this update is part of the transaction
+    );
+
+    if (!result2) {
+      throw new AppError(
+        404,
+        'Failed to update Mentor Registration membership count!',
+      );
+    }
+
+    // Commit the transaction after all updates succeed
     await session.commitTransaction();
     session.endSession();
 
-    return result;
+    return result; // Return the updated mentor booking status
   } catch (error) {
     // If anything fails, abort the transaction
     await session.abortTransaction();
@@ -158,9 +205,7 @@ const acceptMentorBookingQuery = async (id: string) => {
 };
 
 
-
 const cencelMentorBookingQuery = async (id: string) => {
- 
   const mentorBooking = await MentorBooking.findById(id);
   if (!mentorBooking) {
     throw new AppError(404, 'Mentor Booking  Not Found!!');

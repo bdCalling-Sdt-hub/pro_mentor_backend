@@ -22,7 +22,8 @@ taskGoalRouter
     // validateRequest(videoValidation.VideoSchema),
     taskGoalController.addTaskToTaskGoal,
   )
-  .get('/sheduled-task/:id', taskGoalController.getBookingScheduleIdTaskGoal)
+  .get('/mentor', auth(USER_ROLE.MENTOR), taskGoalController.getAllMentorGoals)
+  .get('/mentee', auth(USER_ROLE.MENTEE), taskGoalController.getAllMenteeGoals)
   .get('/:id', taskGoalController.getSingleMentorTaskGoal)
   .patch(
     '/:id',

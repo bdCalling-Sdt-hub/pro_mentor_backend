@@ -31,7 +31,7 @@ mentorBookingRouter
   )
   .patch(
     '/cencel/:id',
-    auth(USER_ROLE.MENTOR),
+    auth(USER_ROLE.MENTOR, USER_ROLE.MENTEE),
     mentorBookingController.cencelSingleMentorVideo,
   );
 

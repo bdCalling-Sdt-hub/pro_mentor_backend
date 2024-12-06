@@ -33,6 +33,7 @@ const addPaymentService = async (payload: any) => {
   } = payload;
 
   console.log('......payload......');
+ 
   const status = 'pending';
 
   const paymentData = {
