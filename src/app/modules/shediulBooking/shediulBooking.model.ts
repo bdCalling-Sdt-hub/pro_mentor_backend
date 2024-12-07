@@ -64,6 +64,24 @@ const ScheduleBookingSchema = new Schema<TShedualBooking>(
       enum: ['Booked', 'completed'],
       default: 'Booked',
     },
+    zoomMeetingId: {
+      meetingLink: {
+        type: String,
+        required: false,
+      },
+      startTime: {
+        type: Date,
+        required: false,
+      },
+      endTime: {
+        type: Date,
+        required: false,
+      },
+      agenda: {
+        type: String,
+        required: false,
+      },
+    },
   },
   { timestamps: true },
 ); 

@@ -4,23 +4,24 @@ import { Request, Response } from 'express';
 import sendResponse from '../../utils/sendResponse';
 import { notificationService } from './notification.service';
 import httpStatus from 'http-status';
+import app from '../../../app';
+import AppError from '../../error/AppError';
 
 const createNotification = catchAsync(async (req: Request, res: Response) => {
-  const result = await notificationService.createNotification(req.body);
+  // const result = await notificationService.createNotification(req.body);
 
-  sendResponse(res, {
-    success: true,
-    statusCode: httpStatus.OK,
-    data: result,
-    message: 'Notification successful',
-  });
+  // sendResponse(res, {
+  //   success: true,
+  //   statusCode: httpStatus.OK,
+  //   data: result,
+  //   message: 'Notification successful',
+  // });
 });
 
 const getAllNotificationByUser = catchAsync(async (req, res) => {
-  const { userId } = req.user;
+
   const result = await notificationService.getAllNotificationQuery(
     req.query,
-    userId as string,
   );
 
   sendResponse(res, {
@@ -30,6 +31,19 @@ const getAllNotificationByUser = catchAsync(async (req, res) => {
     data: result.result,
     message: 'Notification All are requered successful!!',
   });
+});
+
+const getSingleUserNotification = catchAsync(async (req, res) => {
+  // const { userId } = req.params;
+  const {userId} = req.user
+  const result = await notificationService.getUserNotification(userId);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    data: result,
+    message: 'Notification All are requered successful!!',
+  });
+  
 });
 
 
@@ -95,11 +109,33 @@ const deletedAdminNotification = catchAsync(
   },
 );
 
+const markNotificationsAsRead = catchAsync(async (req, res) => {
+  const { userId } = req.params;
+
+  const result = await notificationService.markNotificationsAsRead(userId);
+  if (!result) {
+    throw new AppError(
+      404,
+      'No notifications found for this user or invalid user ID',
+    ); 
+  }
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    data: result,
+    message: 'Notifications marked as read',
+  });
+  
+});
+
 export const NotificationController = {
   createNotification,
   getAllNotificationByUser,
+  getSingleUserNotification,
   getAllNotificationByAdmin,
   getSingleNotification,
   deletedNotification,
+  markNotificationsAsRead,
   deletedAdminNotification,
 };

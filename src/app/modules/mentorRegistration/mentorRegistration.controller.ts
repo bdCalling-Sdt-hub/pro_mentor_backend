@@ -95,8 +95,24 @@ console.log('............controller............');
 });
 
 const getallMentorRegistration = catchAsync(async (req, res) => {
+
+  console.log('controller registration query', req.query);
+  const query = req.query;
+  let filtersQuery={};
+   if (Object.keys(query).length > 0) {
+     filtersQuery = Object.entries(query).reduce((acc:any, [key, value]) => {
+       // Only include key-value pairs where value is not an empty string
+       if (typeof value === 'string' && value.trim() !== '') {
+         acc[key] = value;
+       }
+       return acc;
+     }, {});
+   }
+
+   console.log('filtersQuery', filtersQuery);
+  
   const { meta, result } =
-    await mentorRegistrationService.getAllMentorRegistrationQuery(req.query);
+    await mentorRegistrationService.getAllMentorRegistrationQuery(filtersQuery);
 
   sendResponse(res, {
     success: true,

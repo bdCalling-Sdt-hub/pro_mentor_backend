@@ -1,5 +1,11 @@
 import { Types } from "mongoose";
 
+interface IZoomMeeting {
+  meetingLink?: string;
+  startTime?: Date;
+  endTime?: Date;
+  agenda?: string;
+}
 export type TShedualBooking = {
   menteeId: Types.ObjectId;
   mentorId: Types.ObjectId;
@@ -15,4 +21,5 @@ export type TShedualBooking = {
   startTime?: string;
   endTime?: string;
   status: string;
+  zoomMeetingId?: IZoomMeeting;
 };

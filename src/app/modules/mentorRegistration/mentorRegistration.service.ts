@@ -81,7 +81,7 @@ const createMentorRegistrationService = async (
 const getAllMentorRegistrationQuery = async (
   query: Record<string, unknown>,
 ) => {
-  console.log('query', query);
+  console.log('query -----11111', query);
 
   const { availableTime, searchTerm, sort, page, limit, ...filters }: any =
     query;
