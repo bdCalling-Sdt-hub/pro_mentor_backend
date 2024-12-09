@@ -6,65 +6,128 @@ import { TShedualBooking } from './shediulBooking.interface';
 import ScheduleBooking from './shediulBooking.model';
 import moment from 'moment';
 import { User } from '../user/user.models';
+import { generateZoomMeetingLink } from './shediulBooking.utils';
 
 const createMentorBookingService = async (payload: TShedualBooking) => {
   const { bookingDate, startTime, endTime, mentorId } = payload;
 
-  const isValidTimeFormat = (time: string) =>
-    moment(time, 'hh:mm A', true).isValid();
-  if (
-    typeof startTime !== 'string' ||
-    typeof endTime !== 'string' ||
-    !isValidTimeFormat(startTime) ||
-    !isValidTimeFormat(endTime)
-  ) {
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      'Invalid time format for start or end time',
-    );
-  }
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-  const existingBooking = await ScheduleBooking.findOne({
-    mentorId,
-    bookingDate,
-    $or: [
-     
-      {
-        $and: [
-          { startTime: { $gte: startTime } },
-          { startTime: { $lte: endTime } },
-        ],
-      },
+  try {
+    const isValidTimeFormat = (time: string) =>
+      moment(time, 'hh:mm A', true).isValid();
+    if (
+      typeof startTime !== 'string' ||
+      typeof endTime !== 'string' ||
+      !isValidTimeFormat(startTime) ||
+      !isValidTimeFormat(endTime)
+    ) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Invalid time format for start or end time',
+      );
+    }
+
+    const existingBooking = await ScheduleBooking.findOne({
+      mentorId,
+      bookingDate,
+      $or: [
+        {
+          $and: [
+            { startTime: { $gte: startTime } },
+            { startTime: { $lte: endTime } },
+          ],
+        },
+
+        {
+          $and: [
+            { endTime: { $gte: startTime } },
+            { endTime: { $lte: endTime } },
+          ],
+        },
+      ],
+    });
+
+    if (existingBooking) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Booking time is overlapping with an existing booking',
+      );
+    }
+
+    // Create the booking
+    const result = await ScheduleBooking.create([payload], { session });
+    if (!result[0]) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to add booking');
+    }
+
+    // Generate Zoom meeting link after the booking is created
+    const meetingData = {
+      topic: 'Mentoring Service Meeting',
+      agenda: 'Discuss Services',
+      start_time: result[0].startTime,
+      duration: result[0].duration,
+    };
+
+console.log('......error....1.....');
+    // Example usage
+    const meetingLink = await generateZoomMeetingLink(meetingData);
+    console.log('......error......2...');
+    console.log('meetingLink', meetingLink);
+    console.log('......error.......3..');
+
+    if (!meetingLink) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to add booking');
+    }
+console.log('......error....4.....');
+
+// {
+//   meetingLink: 'https://us05web.zoom.us/j/86238675435?pwd=oo95DlDSI8l2Dwzua4bQiH8PAKA3in.1',
+//   startTime: '2024-12-07T11:52:24Z',
+//   endTime: '2024-12-07T06:15:24.067Z',
+//   agenda: 'Discuss Services'
+// }
+
+
+     if (meetingLink) {
+       // Update the booking with the Zoom meeting ID in the same transaction
+       await ScheduleBooking.findOneAndUpdate(
+         { _id: result[0]._id },
+         { zoomMeetingId: {
+           meetingLink: meetingLink.meetingLink,
+           startTime: meetingLink.startTime,
+           endTime: meetingLink.endTime,
+           agenda: meetingLink.agenda
+         } },
+         { new: true, session }, // Pass session to ensure it's part of the transaction
+       );
+     }
+
+     console.log('......error....5.....');
+
+     console.log('result booking', result[0]);
+    // console.log(meetingDetails);
+    await session.commitTransaction();
+     session.endSession();
+    return result[0];
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
     
-      {
-        $and: [
-          { endTime: { $gte: startTime } },
-          { endTime: { $lte: endTime } },
-        ],
-      },
-   
-    ],
-  });
-
-
-  if (existingBooking) {
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      'Booking time is overlapping with an existing booking',
-    );
   }
-  const result = await ScheduleBooking.create(payload);
-
-  if (!result) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'Failed to add booking');
-  }
-
-  return result;
 };
 
 const reSheduleMentorBookingService = async (id: string, payload: TShedualBooking) => {
   const { bookingDate, startTime, endTime, mentorId } = payload;
 
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+
+    
   const isValidTimeFormat = (time: string) =>
     moment(time, 'hh:mm A', true).isValid();
   if (
@@ -83,24 +146,21 @@ const reSheduleMentorBookingService = async (id: string, payload: TShedualBookin
     mentorId,
     bookingDate,
     $or: [
-     
       {
         $and: [
           { startTime: { $gte: startTime } },
           { startTime: { $lte: endTime } },
         ],
       },
-    
+
       {
         $and: [
           { endTime: { $gte: startTime } },
           { endTime: { $lte: endTime } },
         ],
       },
-   
     ],
   });
-
 
   if (existingBooking) {
     throw new AppError(
@@ -116,19 +176,61 @@ const reSheduleMentorBookingService = async (id: string, payload: TShedualBookin
     endTime: payload.endTime,
   };
 
-    console.log('updateReSheduleData', updateReSheduleData);
+  console.log('updateReSheduleData', updateReSheduleData);
   const result = await ScheduleBooking.findOneAndUpdate(
     { _id: id },
     updateReSheduleData,
     {
-      new: true,}
+      new: true, session
+    },
   );
 
   if (!result) {
     throw new AppError(httpStatus.BAD_REQUEST, 'Failed to add booking');
   }
 
-  return result;
+  // Generate Zoom meeting link after the booking is created
+  const meetingData = {
+    topic: 'Mentoring Service Meeting',
+    agenda: 'Discuss Services',
+    start_time: result.startTime,
+    duration: result.duration,
+  };
+
+  // Example usage
+  const meetingLink = await generateZoomMeetingLink(meetingData);
+
+  if (!meetingLink) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Failed to add booking');
+  }
+
+
+  if (meetingLink) {
+    // Update the booking with the Zoom meeting ID in the same transaction
+    await ScheduleBooking.findOneAndUpdate(
+      { _id: result._id },
+      {
+        zoomMeetingId: {
+          meetingLink: meetingLink.meetingLink,
+          startTime: meetingLink.startTime,
+          endTime: meetingLink.endTime,
+          agenda: meetingLink.agenda,
+        },
+      },
+      { new: true, session }, // Pass session to ensure it's part of the transaction
+    );
+  }
+
+  await session.commitTransaction();
+  session.endSession();
+
+    return result;
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
+  }
+  
 };
 
 const getSingleMentorBookingAvailableTimeSlotsQuery = async (id: string) => {

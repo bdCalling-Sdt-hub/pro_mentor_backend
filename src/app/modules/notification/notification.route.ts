@@ -15,7 +15,6 @@ notificationRoutes.post(
 
 notificationRoutes.get(
   '/',
-  auth(USER_ROLE.MENTEE, USER_ROLE.MENTOR),
   NotificationController.getAllNotificationByUser,
 );
 notificationRoutes.get(
@@ -23,11 +22,20 @@ notificationRoutes.get(
   auth(USER_ROLE.ADMIN),
   NotificationController.getAllNotificationByAdmin,
 );
+notificationRoutes.get(
+  '/all',
+  auth(USER_ROLE.MENTEE, USER_ROLE.MENTOR),
+  NotificationController.getSingleUserNotification,
+);
 notificationRoutes.get('/:id', NotificationController.getSingleNotification);
 notificationRoutes.delete(
   '/:id',
   auth(USER_ROLE.MENTEE, USER_ROLE.MENTOR),
   NotificationController.deletedNotification,
+);
+notificationRoutes.put(
+  '/mark-read/:userId',
+  NotificationController.markNotificationsAsRead,
 );
 notificationRoutes.delete(
   '/admin/:id',

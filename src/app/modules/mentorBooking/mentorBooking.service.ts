@@ -21,6 +21,21 @@ const createMentorBookingService = async (payload: TMentorBooking) => {
   try {
     console.log('payload', payload);
 
+    if (!payload.mentorId || !payload.menteeId) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Mentor or Mentee not found!');
+    }
+
+    const isBookingExist = await MentorBooking.findOne({
+      mentorId: payload.mentorId,
+      menteeId: payload.menteeId,
+    })
+      .session(session)
+      .lean();
+
+    if (isBookingExist) { // Check if a booking already exists for the same mentor and mentee
+      throw new AppError(httpStatus.BAD_REQUEST, 'Mentor Booking already exists!');
+    }
+
     const result = await MentorBooking.create([payload], { session });
 
     if (!result) {

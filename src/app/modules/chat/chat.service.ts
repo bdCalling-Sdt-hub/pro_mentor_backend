@@ -56,80 +56,80 @@ export const getChatByParticipantId = async (filters:any, options:any) => {
 
     const allChatLists = await Chat.aggregate([
       { $match: { participants: participantId } },
-      // {
-      //   $lookup: {
-      //     from: 'messages',
-      //     let: { chatId: '$_id' },
-      //     pipeline: [
-      //       { $match: { $expr: { $eq: ['$chat', '$$chatId'] } } },
-      //       { $sort: { createdAt: -1 } },
-      //       { $limit: 1 },
-      //       { $project: { message: 1, createdAt: 1 } },
-      //     ],
-      //     as: 'latestMessage',
-      //   },
-      // },
-      // { $unwind: { path: '$latestMessage', preserveNullAndEmptyArrays: true } },
-      // { $sort: { 'latestMessage.createdAt': -1 } },
-      // {
-      //   $lookup: {
-      //     from: 'users',
-      //     localField: 'participants',
-      //     foreignField: '_id',
-      //     as: 'participants',
-      //   },
-      // },
-      // {
-      //   $addFields: {
-      //     participants: {
-      //       $map: {
-      //         input: {
-      //           $filter: {
-      //             input: '$participants',
-      //             as: 'participant',
-      //             cond: { $ne: ['$$participant._id', participantId] },
-      //           },
-      //         },
-      //         as: 'participant',
-      //         in: {
-      //           _id: '$$participant._id',
-      //           fullName: '$$participant.fullName',
-      //           image: '$$participant.image',
-      //         },
-      //       },
-      //     },
-      //   },
-      // },
-      // {
-      //   $match: {
-      //     participants: {
-      //       $elemMatch: {
-      //         fullName: { $regex: name },
-      //       },
-      //     },
-      //   },
-      // },
-      // {
-      //   $addFields: {
-      //     participant: { $arrayElemAt: ['$participants', 0] },
-      //   },
-      // },
-      // {
-      //   $project: {
-      //     latestMessage: 1,
-      //     groupName: 1,
-      //     type: 1,
-      //     groupAdmin: 1,
-      //     image: 1,
-      //     participant: 1,
-      //   },
-      // },
-      // {
-      //   $facet: {
-      //     totalCount: [{ $count: 'count' }],
-      //     data: [{ $skip: skip }, { $limit: limit }],
-      //   },
-      // },
+      {
+        $lookup: {
+          from: 'messages',
+          let: { chatId: '$_id' },
+          pipeline: [
+            { $match: { $expr: { $eq: ['$chat', '$$chatId'] } } },
+            { $sort: { createdAt: -1 } },
+            { $limit: 1 },
+            { $project: { message: 1, createdAt: 1 } },
+          ],
+          as: 'latestMessage',
+        },
+      },
+      { $unwind: { path: '$latestMessage', preserveNullAndEmptyArrays: true } },
+      { $sort: { 'latestMessage.createdAt': -1 } },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'participants',
+          foreignField: '_id',
+          as: 'participants',
+        },
+      },
+      {
+        $addFields: {
+          participants: {
+            $map: {
+              input: {
+                $filter: {
+                  input: '$participants',
+                  as: 'participant',
+                  cond: { $ne: ['$$participant._id', participantId] },
+                },
+              },
+              as: 'participant',
+              in: {
+                _id: '$$participant._id',
+                fullName: '$$participant.fullName',
+                image: '$$participant.image',
+              },
+            },
+          },
+        },
+      },
+      {
+        $match: {
+          participants: {
+            $elemMatch: {
+              fullName: { $regex: name },
+            },
+          },
+        },
+      },
+      {
+        $addFields: {
+          participant: { $arrayElemAt: ['$participants', 0] },
+        },
+      },
+      {
+        $project: {
+          latestMessage: 1,
+          groupName: 1,
+          type: 1,
+          groupAdmin: 1,
+          image: 1,
+          participant: 1,
+        },
+      },
+      {
+        $facet: {
+          totalCount: [{ $count: 'count' }],
+          data: [{ $skip: skip }, { $limit: limit }],
+        },
+      },
     ]);
 
     const totalResults =

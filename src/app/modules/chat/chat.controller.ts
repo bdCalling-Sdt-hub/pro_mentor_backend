@@ -10,8 +10,9 @@ const getAllChats = catchAsync(async (req, res) => {
     limit: Number(req.query.limit) || 10,
     page: Number(req.query.page) || 1,
   };
-
-  const filter:any = { participantId: req.body.userId };
+const { userId } = req.user;
+console.log('userId', userId);
+  const filter: any = { participantId: userId };
 
   const search = req.query.search;
 
