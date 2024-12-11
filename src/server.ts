@@ -42,6 +42,7 @@ async function main() {
     global.io = io;
   } catch (err) {
     console.error('Error starting the server:', err);
+    console.log(err);
     process.exit(1); // Exit after error
   }
 }
