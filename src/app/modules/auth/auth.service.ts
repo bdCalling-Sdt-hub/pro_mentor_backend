@@ -23,6 +23,7 @@ import { OTPVerifyAndCreateUserProps, userService } from '../user/user.service';
 
 // Login
 const login = async (payload: TLogin) => {
+  console.log('payload', payload)
   const user = await User.isUserActive(payload?.email);
 
   if (!user) {
@@ -206,9 +207,11 @@ const resetPassword = async ({
     Number(config.bcrypt_salt_rounds),
   );
 
-  const result = await userService.updateUser(userId, {
-    password: hashedPassword,
-  });
+  const result = await User.findByIdAndUpdate(
+    userId,
+    { password: hashedPassword },
+    { new: true },
+  );
 
   return result;
 };
@@ -223,6 +226,7 @@ const changePassword = async ({
   newPassword: string;
   oldPassword: string;
 }) => {
+  console.log({ userId, newPassword, oldPassword });
   const user = await User.IsUserExistById(userId);
 
   if (!user) {
@@ -238,9 +242,11 @@ const changePassword = async ({
     Number(config.bcrypt_salt_rounds),
   );
 
-  const result = await userService.updateUser(userId, {
-    password: hashedPassword,
-  });
+  const result = await User.findByIdAndUpdate(userId, {password: hashedPassword}, { new: true });
+
+  if (!user) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'User updating failed');
+  }
 
   return result;
 };

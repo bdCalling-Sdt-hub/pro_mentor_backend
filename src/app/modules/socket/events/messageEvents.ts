@@ -128,8 +128,9 @@ export const handleMessageEvents = async (
         const participants = populatedMessage.chat.participants;
 
         // // Broadcast the message to the chatroom
-        // const chatRoom = 'new-message::' + data.chat;
-        // socket.broadcast.emit(chatRoom, message);
+        const chatRoom = 'new-message::' + data.chat;
+        console.log('chatRoom', chatRoom);
+        socket.broadcast.emit(chatRoom, message);
 
         // Update the chatlist of both participants
         const eventName1 = 'update-chatlist::' + participants[0].toString();

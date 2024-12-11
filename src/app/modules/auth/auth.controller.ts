@@ -10,8 +10,9 @@ import httpStatus from 'http-status';
 
 // login
 const login = catchAsync(async (req: Request, res: Response) => {
+  console.log('login-1')
   const result = await authServices.login(req.body);
-
+  console.log('login-2');
   const cookieOptions: any = {
     secure: false,
     httpOnly: true,
@@ -34,6 +35,7 @@ const login = catchAsync(async (req: Request, res: Response) => {
 const changePassword = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req?.user;
   const { newPassword, oldPassword } = req.body;
+  // console.log({ newPassword, oldPassword });
 
   const result = await authServices.changePassword({
     userId,
