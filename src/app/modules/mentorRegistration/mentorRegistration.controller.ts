@@ -12,7 +12,7 @@ const createMentorRegistration = catchAsync(async (req, res) => {
 
   console.log('body -1', req.body);
 
- req.body.preferredDays = JSON.parse(req.body.preferredDays);
+//  req.body.preferredDays = JSON.parse(req.body.preferredDays);
 
   console.log('body -2', req.body);
 
@@ -99,15 +99,18 @@ const getallMentorRegistration = catchAsync(async (req, res) => {
   console.log('controller registration query', req.query);
   const query = req.query;
   let filtersQuery={};
-   if (Object.keys(query).length > 0) {
-     filtersQuery = Object.entries(query).reduce((acc:any, [key, value]) => {
-       // Only include key-value pairs where value is not an empty string
-       if (typeof value === 'string' && value.trim() !== '') {
-         acc[key] = value;
-       }
-       return acc;
-     }, {});
-   }
+    if (Object.keys(query).length > 0) {
+      filtersQuery = Object.entries(query).reduce((acc: any, [key, value]) => {
+        // Only include key-value pairs where value is not an empty string or an empty array
+        if (typeof value === 'string' && value.trim() !== '') {
+          acc[key] = value.trim();
+        } else if (Array.isArray(value) && value.length > 0) {
+          // Keep non-empty arrays (e.g., 'industryExpertise')
+          acc[key] = value;
+        }
+        return acc;
+      }, {});
+    }
 
    console.log('filtersQuery', filtersQuery);
   

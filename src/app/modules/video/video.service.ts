@@ -74,42 +74,50 @@ const getAllMentorVideoByRecommendedQuery = async (
 ) => {
   console.log('related', related);
 
-  const cleanedRelated = related.trim();
+  const cleanedRelated = related?.trim();
   console.log('cleanedRelated', cleanedRelated);
 
-  if (!cleanedRelated || typeof cleanedRelated !== 'string') {
+  if (cleanedRelated && typeof cleanedRelated !== 'string') {
     throw new AppError(
       httpStatus.BAD_REQUEST,
-      'Related category is required and should be a string',
+      'Related category must be a string',
     );
   }
 
-  const escapedRelated = escapeRegex(cleanedRelated);
+  let escapedRelated;
+  if (cleanedRelated){
+    escapedRelated = escapeRegex(cleanedRelated);
+  }
   console.log('escapedRelated', escapedRelated);
 
-  const limit = query.limit ? parseInt(query.limit as string, 10) : 10; 
-  const page = query.page ? parseInt(query.page as string, 10) : 1; 
+  const limit = query.limit ? parseInt(query.limit as string, 10) : 10;
+  const page = query.page ? parseInt(query.page as string, 10) : 1;
 
   const skip = (page - 1) * limit;
 
-  const result = await Video.find({
-    $or: [
-      { category: { $regex: escapedRelated, $options: 'i' } },
-      { title: { $regex: escapedRelated, $options: 'i' } },
-    ],
-  })
-    .skip(skip) 
-    .limit(limit) 
-    .populate('mentorId'); 
+  let queryCondition = {};
+
+  if (cleanedRelated) {
+    // If `related` is provided, prioritize related videos first
+    queryCondition = {
+      $or: [
+        { category: { $regex: escapedRelated, $options: 'i' } },
+        { title: { $regex: escapedRelated, $options: 'i' } },
+      ],
+    };
+  } else {
+    // If `related` is not provided, fetch all videos
+    queryCondition = {};
+  }
+
+  const result = await Video.find(queryCondition)
+    .skip(skip)
+    .limit(limit)
+    .populate('mentorId');
 
   console.log('result', result);
 
-  const total = await Video.countDocuments({
-    $or: [
-      { category: { $regex: escapedRelated, $options: 'i' } },
-      { title: { $regex: escapedRelated, $options: 'i' } },
-    ],
-  });
+  const total = await Video.countDocuments(queryCondition);
 
   const totalPage = Math.ceil(total / limit);
 
@@ -122,6 +130,7 @@ const getAllMentorVideoByRecommendedQuery = async (
 
   return { meta, result };
 };
+
 
 
 const getSingleMentorVideoQuery = async (id: string) => {

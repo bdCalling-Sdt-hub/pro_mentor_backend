@@ -22,7 +22,7 @@ async function main() {
     await mongoose.connect(config.database_url as string);
 
     // Start Express server
-    server = app.listen(Number(config.port) || 8008, config.ip as string, () => {
+    server = app.listen(Number(config.port), config.ip as string, () => {
       console.log(
         colors.green(`App is listening on ${config.ip}:${config.port}`).bold,
       );

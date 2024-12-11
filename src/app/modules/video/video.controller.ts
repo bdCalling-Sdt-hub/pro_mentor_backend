@@ -60,10 +60,14 @@ const getMentorVideoByMentor = catchAsync(async (req, res) => {
 const getMentorVideoByRecommended = catchAsync(async (req, res) => {
   const { related }:any = req.query;
   // console.log('related', related);
+  let recommended ;
+  if (related) {
+    recommended = related;
+  }
   const { meta, result } =
     await mentorVideoService.getAllMentorVideoByRecommendedQuery(
       req.query,
-      related,
+      recommended,
     );
 
   sendResponse(res, {
