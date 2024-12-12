@@ -84,6 +84,7 @@ const createUserToken = async (payload: TUserCreate) => {
   }
 
   // send email
+  console.log('before otp send email');
   process.nextTick(async () => {
     await otpSendEmail({
       sentTo: email,
@@ -93,6 +94,7 @@ const createUserToken = async (payload: TUserCreate) => {
       expiredAt: expiredAt,
     });
   });
+  console.log('after otp send email');
 
   // crete token
   const createUserToken = createToken({

@@ -270,22 +270,63 @@ const getMentorRegistrationOnly = async (id: string) => {
 
 const updateMentorRegistrationQuery = async (
   id: string,
-  payload: Partial<TMentorRegistration>,
+  payload: Partial<any>,
 ) => {
-  console.log('id', id);
-  console.log('payload', payload);
-  const registerMentor = await MentorRegistration.findById(id);
-  if (!registerMentor) {
-    throw new AppError(404, 'Register Mentor Not Found!!');
-  }
-  const mentorRegistration = await MentorRegistration.findByIdAndUpdate(
-    id,
-    payload,             
-    { new: true },
-  );
+  // Start a session for the transaction
+  const session = await MentorRegistration.startSession();
+  session.startTransaction();
 
-  return mentorRegistration;
+  try {
+    console.log('payload', payload);
+
+    // Find the mentor registration
+    const registerMentor =
+      await MentorRegistration.findById(id).session(session);
+    if (!registerMentor) {
+      throw new AppError(404, 'Register Mentor Not Found!!');
+    }
+
+    // Update the mentor registration with the payload
+    const mentorRegistration = await MentorRegistration.findByIdAndUpdate(
+      id,
+      payload,
+      { new: true, session },
+    );
+
+    // If there's an image in the payload, update the related user
+    if (payload?.image) {
+      const userData = { image: payload.image };
+
+      // Ensure the mentorId exists before trying to update the user
+      if (registerMentor.mentorId) {
+        const user = await User.findByIdAndUpdate(
+          registerMentor.mentorId,
+          userData,
+          { new: true, session },
+        );
+      } else {
+        console.log('mentorId not found for the mentor');
+      }
+    }
+
+    // Commit the transaction if everything is successful
+    await session.commitTransaction();
+    session.endSession();
+
+    // Return the updated mentor registration
+    return mentorRegistration;
+  } catch (error) {
+    // Rollback the transaction in case of any error
+    await session.abortTransaction();
+    session.endSession();
+
+    // Log or throw error
+    console.error('Error during mentor registration update:', error);
+    throw error;
+  }
 };
+
+
 
 const acceptSingleMentorRegistrationService = async (id: string) => {
   const session = await mongoose.startSession();
@@ -325,13 +366,14 @@ const acceptSingleMentorRegistrationService = async (id: string) => {
       throw new AppError(404, 'Wallet Not Found!!');
     }
 
+    console.log('before send email');
         await acceptanceRegistrationEmail({
           sentTo: mentorRegistration.email,
           subject: 'Mentor Registration Accepted!!',
           name: mentorRegistration.fullName,
         });
 
-
+console.log('after send email');
     await session.commitTransaction();
     session.endSession();
 
