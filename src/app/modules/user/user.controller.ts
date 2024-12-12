@@ -98,7 +98,6 @@ const getAllMenteeCount = catchAsync(async (req, res) => {
 
 const getAllUserRasio = catchAsync(async (req, res) => {
   const yearQuery = req.query.year;
-  const role: any = req.query.role;
 
   // Safely extract year as string
   const year = typeof yearQuery === 'string' ? parseInt(yearQuery) : undefined;
@@ -112,7 +111,7 @@ const getAllUserRasio = catchAsync(async (req, res) => {
     });
   }
 
-  const result = await userService.getAllUserRatio(year, role);
+  const result = await userService.getAllUserRatio(year);
 
   sendResponse(res, {
     success: true,

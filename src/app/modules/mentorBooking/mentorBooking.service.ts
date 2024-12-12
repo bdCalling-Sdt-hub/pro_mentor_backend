@@ -222,6 +222,8 @@ const acceptMentorBookingQuery = async (id: string) => {
 
 const cencelMentorBookingQuery = async (id: string) => {
   const mentorBooking = await MentorBooking.findById(id);
+  console.log('id ', id);
+  console.log('mentorBooking ', mentorBooking);
   if (!mentorBooking) {
     throw new AppError(404, 'Mentor Booking  Not Found!!');
   }
