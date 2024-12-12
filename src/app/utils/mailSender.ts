@@ -9,8 +9,8 @@ export const sendEmail = async (to: string, subject: string, html: string) => {
     secure: config.NODE_ENV === 'production',
     auth: {
       // TODO: replace `user` and `pass` values from <https://forwardemail.net>
-      user: 'team.robust.dev@gmail.com',
-      pass: 'dmvf dwrv jhfc sfpd',
+      user: config.nodemailer_host_email,
+      pass: config.nodemailer_host_pass,
     },
   });
 
