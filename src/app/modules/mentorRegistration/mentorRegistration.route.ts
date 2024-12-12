@@ -70,7 +70,10 @@ mentorRegistrationRouter
   .patch(
     '/:id',
     auth(USER_ROLE.MENTOR, USER_ROLE.MENTEE),
-    documentsUpload.fields([{ name: 'introVideo', maxCount: 1 }]),
+    documentsUpload.fields([
+      { name: 'introVideo', maxCount: 1 },
+      { name: 'image', maxCount: 1 },
+    ]),
     mentorRegistrationController.updateSingleMentorRegistration,
   )
   .patch(

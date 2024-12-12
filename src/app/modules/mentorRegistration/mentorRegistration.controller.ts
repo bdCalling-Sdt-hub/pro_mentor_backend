@@ -12,7 +12,7 @@ const createMentorRegistration = catchAsync(async (req, res) => {
 
   console.log('body -1', req.body);
 
-//  req.body.preferredDays = JSON.parse(req.body.preferredDays);
+  //  req.body.preferredDays = JSON.parse(req.body.preferredDays);
 
   console.log('body -2', req.body);
 
@@ -29,7 +29,7 @@ const createMentorRegistration = catchAsync(async (req, res) => {
   }
 
   const { userId } = decodeData;
- 
+
   const files = req.files as {
     [fieldname: string]: Express.Multer.File[];
   };
@@ -69,7 +69,7 @@ const createMentorRegistration = catchAsync(async (req, res) => {
   console.log({ professionalCredentialPath });
 
   const availableTimeSlots = `${bodyData.startTime} - ${bodyData.endTime}`; // todo
-  const endBreaktime = bodyData.endBreakTime-1;
+  const endBreaktime = bodyData.endBreakTime - 1;
   bodyData.endBreaktime = endBreaktime;
 
   const payload = {
@@ -82,7 +82,7 @@ const createMentorRegistration = catchAsync(async (req, res) => {
   };
 
   // console.log('payload payload', payload);
-console.log('............controller............');
+  console.log('............controller............');
   const result =
     await mentorRegistrationService.createMentorRegistrationService(payload); // todo email sent to admin
   console.log('result result ', result);
@@ -95,25 +95,24 @@ console.log('............controller............');
 });
 
 const getallMentorRegistration = catchAsync(async (req, res) => {
-
   console.log('controller registration query', req.query);
   const query = req.query;
-  let filtersQuery={};
-    if (Object.keys(query).length > 0) {
-      filtersQuery = Object.entries(query).reduce((acc: any, [key, value]) => {
-        // Only include key-value pairs where value is not an empty string or an empty array
-        if (typeof value === 'string' && value.trim() !== '') {
-          acc[key] = value.trim();
-        } else if (Array.isArray(value) && value.length > 0) {
-          // Keep non-empty arrays (e.g., 'industryExpertise')
-          acc[key] = value;
-        }
-        return acc;
-      }, {});
-    }
+  let filtersQuery = {};
+  if (Object.keys(query).length > 0) {
+    filtersQuery = Object.entries(query).reduce((acc: any, [key, value]) => {
+      // Only include key-value pairs where value is not an empty string or an empty array
+      if (typeof value === 'string' && value.trim() !== '') {
+        acc[key] = value.trim();
+      } else if (Array.isArray(value) && value.length > 0) {
+        // Keep non-empty arrays (e.g., 'industryExpertise')
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
+  }
 
-   console.log('filtersQuery', filtersQuery);
-  
+  console.log('filtersQuery', filtersQuery);
+
   const { meta, result } =
     await mentorRegistrationService.getAllMentorRegistrationQuery(filtersQuery);
 
@@ -145,7 +144,6 @@ const getMentorAvailableSlots = catchAsync(async (req, res) => {
     message: 'Mentor Available Slots are requered successful!!',
   });
 });
-
 
 const getSingleMentorRegistration = catchAsync(async (req, res) => {
   const result =
@@ -189,31 +187,50 @@ const getMentorRegistrationOnly = catchAsync(async (req, res) => {
 });
 
 const updateSingleMentorRegistration = catchAsync(async (req, res) => {
-  console.log('update payload');
+  // console.log('update payload');
   const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+  // console.log('files', files);
 
   // Access body and files
   const payload = req.body;
   console.log('payload........1', payload);
-  req.body.preferredDays = JSON.parse(req.body.preferredDays);
-  console.log('payload........2', payload);
+  // req.body.preferredDays = JSON.parse(req.body.preferredDays);
+  if (payload.preferredDays) {
+    try {
+      payload.preferredDays = JSON.parse(payload.preferredDays);
+    } catch (err) {
+      console.log('Error parsing preferredDays:', err);
+    }
+  }
+  // console.log('payload........2', payload);
 
-  // Check if introVideo file exists
+  // Handle introVideo file upload
   if (files && files['introVideo'] && files['introVideo'].length > 0) {
     const introVideo = files['introVideo'][0];
     const videoPath = introVideo.path.replace(/^public[\\/]/, '');
-
     if (videoPath) {
       payload.introVideo = videoPath;
     }
   } else {
     console.log('No intro video uploaded');
   }
+
+  // Handle image file upload
+  if (files && files['image'] && files['image'].length > 0) {
+    const image = files['image'][0];
+    const imagePath = image.path.replace(/^public[\\/]/, '');
+    if (imagePath) {
+      payload.image = imagePath;
+    }
+  } else {
+    console.log('No image uploaded');
+  }
+
   if (payload.startTime && payload.endTime) {
     payload.availableTime = `${payload.startTime} - ${payload.endTime}`;
   }
 
-  console.log('update payload', payload);
+  // console.log('update payload', payload);
 
   const result = await mentorRegistrationService.updateMentorRegistrationQuery(
     req.params.id,
@@ -243,7 +260,7 @@ const acceptSingleMentorRegistration = catchAsync(async (req, res) => {
 });
 
 const cencelSingleMentorRegistration = catchAsync(async (req, res) => {
-   const rejone = req.body;
+  const rejone = req.body;
   const result =
     await mentorRegistrationService.cencelSingleMentorRegistrationService(
       req.params.id,
@@ -257,7 +274,6 @@ const cencelSingleMentorRegistration = catchAsync(async (req, res) => {
     message: 'Updated Single Mentor are successful!!',
   });
 });
-
 
 export const mentorRegistrationController = {
   createMentorRegistration,
