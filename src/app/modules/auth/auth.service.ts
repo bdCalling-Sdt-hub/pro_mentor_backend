@@ -307,3 +307,28 @@ export const authServices = {
   resetPassword,
   refreshToken,
 };
+
+
+
+
+
+// <Table
+//   dataSource={mappedOrders} 
+//   columns={[
+//     {
+//       title: "Order ID",
+//       dataIndex: "orderId",
+//       render: (text, record) => (
+//         <Link
+//           to={{
+//             pathname: `/orders-received-details/${record.orderId}`, // Pass the product ID
+//             state: { order: record }, // Pass the order object as state
+//           }}
+//         >
+//           {text}
+//         </Link>
+//       ),
+//     },
+//     // other columns
+//   ]}
+// />

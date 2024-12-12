@@ -1,11 +1,11 @@
+import { sendEmail } from "../../utils/mailSender";
+
 const axios = require('axios');
 
 const ZOOM_BASE_URL = process.env.ZOOM_BASE_URL;
 const ZOOM_CLIENT_ID = process.env.ZOOM_CLIENT_ID;
 const ZOOM_CLIENT_SECRET = process.env.ZOOM_CLIENT_SECRET;
 const ZOOM_ACCOUNT_ID = process.env.ZOOM_ACCOUNT_ID;
-
-
 
 // Function to get OAuth token
 async function getZoomAccessToken() {
@@ -21,14 +21,14 @@ async function getZoomAccessToken() {
       },
     });
     return response.data.access_token;
-  } catch (error:any) {
+  } catch (error: any) {
     console.error('Error fetching Zoom access token:', error.response.data);
     throw new Error('Failed to retrieve access token');
   }
 }
 
 // Utility to format the date and time into ISO 8601 format
-function formatDateTime(date:any, time:any) {
+function formatDateTime(date: any, time: any) {
   const currentDate = date ? new Date(date) : new Date(); // Use provided date or default to current date
 
   // Parse time (default to '12:00 PM' if time not provided)
@@ -50,15 +50,13 @@ function formatDateTime(date:any, time:any) {
   return currentDate.toISOString();
 }
 
-
-
 export const generateZoomMeetingLink = async ({
   topic,
   agenda,
   date,
   time,
   duration,
-}:any) => {
+}: any) => {
   try {
     const accessToken = await getZoomAccessToken();
 
@@ -73,7 +71,7 @@ export const generateZoomMeetingLink = async ({
       agenda: agenda || '', // Set the agenda
       type: 2, // Scheduled meeting
       start_time: startTime, // Set the formatted start time
-      duration: duration , // Default duration is 60 minutes
+      duration: duration, // Default duration is 60 minutes
       settings: {
         host_video: false, // Do not start with host video on
         participant_video: false, // Do not start with participant video on
@@ -95,7 +93,6 @@ export const generateZoomMeetingLink = async ({
       },
     );
 
-
     // Calculate meeting end time based on start time and duration
     const endTime = new Date(
       new Date(startTime).getTime() + (duration || 60) * 60000,
@@ -108,7 +105,7 @@ export const generateZoomMeetingLink = async ({
       endTime: endTime.toISOString(),
       agenda: response.data.agenda,
     };
-  } catch (error:any) {
+  } catch (error: any) {
     console.error(
       'Error creating Zoom meeting:',
       error.response ? error.response.data : error.message,
@@ -128,11 +125,27 @@ export const generateZoomMeetingLink = async ({
 
 // console.log(meetingDetails);
 
-
-
-
-
-
-
-
 export default { getZoomAccessToken, formatDateTime };
+
+export const joinSheduleBookingZoomLinkEmail = async ({
+  sentTo,
+  subject,
+  name,
+}: {
+  sentTo: string;
+  subject: string;
+  name: string;
+  rejone: any;
+}): Promise<void> => {
+
+  
+
+
+
+
+  await sendEmail(
+    sentTo,
+    subject,
+    ``,
+  );
+};
