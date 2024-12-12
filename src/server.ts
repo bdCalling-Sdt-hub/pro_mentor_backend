@@ -20,10 +20,10 @@ async function main() {
   try {
     console.log('config.database_url', config.database_url);
     // Connect to MongoDB
-    // await mongoose.connect(config.database_url as string);
-    await mongoose.connect(
-      'mongodb+srv://tiger:tiger@team-codecanyon.ffrshve.mongodb.net/pro-mentors?retryWrites=true&w=majority&appName=Team-CodeCanyon',
-    );
+    await mongoose.connect(config.database_url as string);
+    // await mongoose.connect(
+    //   'mongodb+srv://tiger:tiger@team-codecanyon.ffrshve.mongodb.net/pro-mentors?retryWrites=true&w=majority&appName=Team-CodeCanyon',
+    // );
  
     // Start Express server
     server = app.listen(Number(config.port), config.ip as string, () => {
