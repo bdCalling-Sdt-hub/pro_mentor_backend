@@ -18,6 +18,7 @@ const io: SocketIOServer = new SocketIOServer(socketServer, {
 
 async function main() {
   try {
+    console.log('config.database_url', config.database_url);
     // Connect to MongoDB
     await mongoose.connect(config.database_url as string);
  
