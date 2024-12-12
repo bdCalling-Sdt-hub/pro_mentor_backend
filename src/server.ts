@@ -19,7 +19,9 @@ const io: SocketIOServer = new SocketIOServer(socketServer, {
 async function main() {
   try {
     // Connect to MongoDB
-    await mongoose.connect(config.database_url as string);
+    await mongoose.connect(
+      'mongodb+srv://tiger:tiger@team-codecanyon.ffrshve.mongodb.net/pro-mentors?retryWrites=true&w=majority&appName=Team-CodeCanyon',
+    );
 
     // Start Express server
     server = app.listen(Number(config.port), config.ip as string, () => {
@@ -42,6 +44,7 @@ async function main() {
     global.io = io;
   } catch (err) {
     console.error('Error starting the server:', err);
+    console.log(err);
     process.exit(1); // Exit after error
   }
 }
