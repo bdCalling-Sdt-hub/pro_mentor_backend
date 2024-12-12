@@ -2,22 +2,32 @@ import nodemailer from 'nodemailer';
 import config from '../config';
 
 export const sendEmail = async (to: string, subject: string, html: string) => {
+  console.log('mail hit hoise');
   const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
+    host: 'smtp.gmail.com',
     port: 587,
     secure: config.NODE_ENV === 'production',
     auth: {
       // TODO: replace `user` and `pass` values from <https://forwardemail.net>
-      user: config.nodemailer_host_email,
-      pass: config.nodemailer_host_pass,
+      user: 'team.robust.dev@gmail.com',
+      pass: 'dmvf dwrv jhfc sfpd',
     },
   });
 
-  await transporter.sendMail({
-    from: 'nurmdopu428@gmail.com', // sender address
-    to, // list of receivers
-    subject,
-    text: '', // plain text body
-    html, // html body
-  });
+
+  
+
+  try {
+    await transporter.sendMail({
+      from: 'team.robust.dev@gmail.com', // sender address
+      to, // list of receivers
+      subject,
+      text: '', // plain text body
+      html, // html body
+    });
+    
+  } catch (error) {
+    console.log('send mail error:', error);
+    
+  }
 };
