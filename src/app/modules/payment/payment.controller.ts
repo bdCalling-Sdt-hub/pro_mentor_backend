@@ -115,6 +115,15 @@ const getSinglePayment = catchAsync(async (req, res, next) => {
 const getAllPaymentAmountCount = catchAsync(async (req, res) => {
   const result = await paymentService.getAllEarningAmountService();
 
+  if(!result){
+    sendResponse(res, {
+      statusCode: httpStatus.BAD_REQUEST,
+      success: true,
+      message: 'Data is not found',
+      data: {},
+    });
+  }
+
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
