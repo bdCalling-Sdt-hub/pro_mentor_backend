@@ -277,7 +277,7 @@ const updateMentorRegistrationQuery = async (
   session.startTransaction();
 
   try {
-    console.log('payload', payload);
+    // console.log('payload', payload);
 
     // Find the mentor registration
     const registerMentor =
@@ -294,27 +294,32 @@ const updateMentorRegistrationQuery = async (
     );
 
     // If there's an image in the payload, update the related user
+    let image = null;
     if (payload?.image) {
       const userData = { image: payload.image };
 
+      let user;
       // Ensure the mentorId exists before trying to update the user
       if (registerMentor.mentorId) {
-        const user = await User.findByIdAndUpdate(
+         user = await User.findByIdAndUpdate(
           registerMentor.mentorId,
           userData,
           { new: true, session },
         );
+         image = user?.image;
       } else {
         console.log('mentorId not found for the mentor');
       }
     }
 
+    //  const image = user ? user.image : null;
+    // const image = user === null ? null : user.image;
     // Commit the transaction if everything is successful
     await session.commitTransaction();
     session.endSession();
-
+   
     // Return the updated mentor registration
-    return mentorRegistration;
+    return { mentorRegistration, image };
   } catch (error) {
     // Rollback the transaction in case of any error
     await session.abortTransaction();

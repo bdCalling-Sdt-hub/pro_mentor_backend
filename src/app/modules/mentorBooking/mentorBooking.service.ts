@@ -1,6 +1,6 @@
 import AppError from '../../error/AppError';
 import httpStatus from 'http-status';
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { TMentorBooking } from './mentorBooking.interface';
 import MentorBooking from './mentorBooking.model';
@@ -13,6 +13,12 @@ import {
 import { populate } from 'dotenv';
 import { User } from '../user/user.models';
 import { MentorRegistration } from '../mentorRegistration/mentorRegistration.model';
+
+
+interface MentorId {
+  mentorRegistrationId: Types.ObjectId;
+}
+
 
 const createMentorBookingService = async (payload: TMentorBooking) => {
   const session = await mongoose.startSession();
@@ -152,6 +158,7 @@ const getSingleMentorBookingQuery = async (id: string) => {
   return result[0];
 };
 
+
 const acceptMentorBookingQuery = async (id: string) => {
   const session = await mongoose.startSession(); // Start a session
   session.startTransaction(); // Start the transaction
@@ -169,13 +176,17 @@ const acceptMentorBookingQuery = async (id: string) => {
       throw new AppError(404, 'Mentor Booking Not Found!!');
     }
  
-     const mentorRegistrationIDD = mentorBooking.mentorId?.mentorRegistrationId;
+    //  const mentorRegistrationIDD = mentorBooking.mentorId?.mentorRegistrationId;
+
+       const mentorRegistrationIDD = (
+         mentorBooking.mentorId as unknown as MentorId
+       )?.mentorRegistrationId;
  
     // Update the mentor booking status to 'accepted'
     const result = await MentorBooking.findByIdAndUpdate(
       id,
       { status: 'accepted' },
-      { new: true, session }, // Pass session to ensure the update is part of the transaction
+      { new: true, session },
     );
 
     if (!result) {
@@ -222,6 +233,8 @@ const acceptMentorBookingQuery = async (id: string) => {
 
 const cencelMentorBookingQuery = async (id: string) => {
   const mentorBooking = await MentorBooking.findById(id);
+  console.log('id ', id);
+  console.log('mentorBooking ', mentorBooking);
   if (!mentorBooking) {
     throw new AppError(404, 'Mentor Booking  Not Found!!');
   }
