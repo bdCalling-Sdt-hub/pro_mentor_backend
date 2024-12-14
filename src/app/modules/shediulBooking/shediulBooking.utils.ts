@@ -1,4 +1,7 @@
+import moment from "moment";
 import { sendEmail } from "../../utils/mailSender";
+import ScheduleBooking from "./shediulBooking.model";
+import cron from 'node-cron';
 
 const axios = require('axios');
 
@@ -127,25 +130,134 @@ export const generateZoomMeetingLink = async ({
 
 export default { getZoomAccessToken, formatDateTime };
 
-export const joinSheduleBookingZoomLinkEmail = async ({
-  sentTo,
-  subject,
-  name,
-}: {
-  sentTo: string;
-  subject: string;
-  name: string;
-  rejone: any;
-}): Promise<void> => {
+const joinScheduleBookingZoomLinkEmail = async (): Promise<void> => {
+  try {
+    // Fetch all the scheduled bookings and populate mentee and mentor details
+    console.log('current date', new Date());
 
-  
+    // Get the current date without time (midnight of today)
+    const todayStart = moment().startOf('day').toDate();
+    const todayEnd = moment().endOf('day').toDate();
 
+    console.log({ todayStart, todayEnd });
+    const bookingScheduleData = await ScheduleBooking.find({
+      bookingDate: {
+        $gte: todayStart, // Greater than or equal to midnight
+        $lt: todayEnd, // Less than tomorrow
+      },
+    })
+      .populate('menteeId')
+      .populate('mentorId');
+    console.log({ bookingScheduleData });
 
+    const currentTime = new Date().getTime();
+    console.log('currentTime', currentTime);
 
+ 
 
-  await sendEmail(
-    sentTo,
-    subject,
-    ``,
-  );
+    // Loop through all bookings
+    for (const booking of bookingScheduleData) {
+      const mentee: any = booking.menteeId;
+      const mentor: any = booking.mentorId;
+      const zoomLink = booking?.zoomMeetingId?.meetingLink;
+      const bookingTime = booking?.startTime;
+      console.log({ bookingTime });
+const bookingStartTime = moment(bookingTime, 'hh:mm A').toDate().getTime();
+console.log({ bookingStartTime });
+
+      // Calculate the difference in minutes between the booking start time and the current time
+      const timeMinus = bookingStartTime - currentTime;
+      console.log({ timeMinus });
+
+      // const timeMinusInMinutes = timeMinus / 1000 / 60;
+      // console.log({ timeMinusInMinutes });
+
+      // Check if the current time is exactly 2 minutes before the start time
+      if (timeMinus <= 10 * 60 * 1000 && timeMinus > 0) {
+        const subject = `Reminder: Your session on ${booking.subject} is about to start`;
+
+        // Email body template
+        const emailBody = `
+          <h1>Meeting Scheduled for ${booking.subject}</h1>
+          <p>Hello ${mentee?.fullName},</p>
+          <p>Your session with ${mentor?.fullName} is about to start. Please join the meeting 
+  <span style="font-size: 24px; font-weight: bold; color: red;"> ${bookingTime} </span> 
+  before the session starts using the Zoom link below:</p>
+          <p><a href="${zoomLink}" target="_blank">Join Zoom Meeting</a></p>
+          <p>Thank you, and we wish you a great session!</p>
+        `;
+
+        // Send email to mentee
+        await sendEmail(mentee?.email, subject, emailBody);
+
+        // Send email to mentor
+        await sendEmail(mentor?.email, subject, emailBody);
+      } else {
+        console.log('The session is not within 10 minutes.');
+      }
+    }
+  } catch (error) {
+    console.error('Error sending booking emails:', error);
+  }
 };
+
+// Schedule the cron job to check every minute
+cron.schedule('*/5 * * * *', async () => {
+  console.log('Checking for upcoming sessions...');
+  await joinScheduleBookingZoomLinkEmail();
+  console.log('mail send')
+});
+// cron.schedule('* * * * *', async () => {
+//   console.log('Checking for upcoming sessions...');
+//   await joinScheduleBookingZoomLinkEmail();
+// });
+
+
+// {
+//   "_id": "67598a50bbc9d6c263799c9f",
+//   "menteeId": "6759887fbbc9d6c263799c5c",
+//   "mentorId": "6753d20d593e9f58f0814b98",
+//   "subject": "For researching Flower",
+//   "jobTitle": "Flutter Developer",
+//   "industryField": "Founder",
+//   "yearOfExperience": "5 years",
+//   "educationLevel": "PhD",
+//   "description": "This is Flower",
+//   "bookingDate": "2024-12-19T09:00:00.000Z",
+//   "bookingTime": "02:45 AM",
+//   "duration": 60,
+//   "startTime": "02:45 AM",
+//   "endTime": "03:44 AM",
+//   "status": "Booked",
+//   "zoomMeetingId": {
+//     "meetingLink": "https://us05web.zoom.us/j/82741095228?pwd=6blutnEIlWUOP3mkN0oGjLYr5xF6a3.1",
+//     "startTime": "2024-12-11T12:49:21.000Z",
+//     "endTime": "2024-12-11T07:00:20.526Z",
+//     "agenda": "Discuss Services"
+//   }
+// },
+
+// {
+//   "_id": "67598a50bbc9d6c263799c9f",
+//   "menteeId": "6759887fbbc9d6c263799c5c",
+//   "mentorId": "6753d20d593e9f58f0814b98",
+//   "subject": "For researching Flower",
+//   "jobTitle": "Flutter Developer",
+//   "industryField": "Founder",
+//   "yearOfExperience": "5 years",
+//   "educationLevel": "PhD",
+//   "description": "This is Flower",
+//   "bookingDate": "2024-12-19T09:00:00.000Z",
+//   "bookingTime": "02:45 AM",
+//   "duration": 60,
+//   "startTime": "02:45 AM",
+//   "endTime": "03:44 AM",
+//   "status": "Booked",
+//   "zoomMeetingId": {
+//     "meetingLink": "https://us05web.zoom.us/j/82741095228?pwd=6blutnEIlWUOP3mkN0oGjLYr5xF6a3.1",
+//     "startTime": "2024-12-11T12:49:21.000Z",
+//     "endTime": "2024-12-11T07:00:20.526Z",
+//     "agenda": "Discuss Services"
+//   }
+// }
+

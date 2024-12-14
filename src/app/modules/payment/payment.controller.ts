@@ -115,21 +115,23 @@ const getSinglePayment = catchAsync(async (req, res, next) => {
 const getAllPaymentAmountCount = catchAsync(async (req, res) => {
   const result = await paymentService.getAllEarningAmountService();
 
-  if(!result){
-    sendResponse(res, {
-      statusCode: httpStatus.BAD_REQUEST,
-      success: true,
-      message: 'Data is not found',
-      data: {},
-    });
-  }
 
-  sendResponse(res, {
-    success: true,
-    statusCode: httpStatus.OK,
-    data: result,
-    message: 'All Earning Amount successful!!',
-  });
+   if (result === 0) {
+     return sendResponse(res, {
+       success: true,
+       statusCode: httpStatus.OK,
+       message: 'No earnings found',
+       data: 0, // If result is 0, send data as 0
+     });
+   }
+
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: 'All Earning Amount successful!!',
+      data: result , // If result is 0, send 0, else send result
+    });
 });
 
 

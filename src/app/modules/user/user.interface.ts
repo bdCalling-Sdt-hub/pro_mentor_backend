@@ -17,6 +17,8 @@ export interface TUserCreate {
   phone: string;
   role: (typeof USER_ROLE)[keyof typeof USER_ROLE];
   about?: string;
+  dateOfBirth?: string;
+  age?: string;
   professional?: string;
   mentorRegistrationId?:Types.ObjectId;
 }

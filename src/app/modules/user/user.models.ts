@@ -43,6 +43,16 @@ const userSchema = new Schema<TUser>(
       required: false,
       default: '',
     },
+    dateOfBirth: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    age: {
+      type: String,
+      required: false,
+      default: '',
+    },
     isActive: {
       type: Boolean,
       default: true,
@@ -56,7 +66,6 @@ const userSchema = new Schema<TUser>(
       type: Schema.Types.ObjectId,
       ref: 'MentorRegistration',
     },
-   
   },
   {
     timestamps: true,

@@ -197,6 +197,8 @@ const otpVerifyAndCreateUser = async ({
 const updateUser = async (id: string, payload: Partial<TUser>) => {
   const { role, email, isActive, isDeleted,password, ...rest } = payload;
 
+  console.log('rest data',rest)
+
   const user = await User.findByIdAndUpdate(id, rest, { new: true });
 
   if (!user) {
@@ -236,52 +238,63 @@ const getAllMenteeCount = async () => {
 
 
 
-const getAllUserRatio = async (year: number, role: string) => {
+const getAllUserRatio = async (year: number) => {
   const startOfYear = new Date(year, 0, 1); // January 1st of the given year
   const endOfYear = new Date(year + 1, 0, 1); // January 1st of the next year
 
   // Create an array with all 12 months to ensure each month appears in the result
   const months = Array.from({ length: 12 }, (_, i) => ({
     month: i + 1,
-    userCount: 0, // Default count of 0
+    mentorCount: 0, // Default mentor count
+    menteeCount: 0, // Default mentee count
   }));
 
-  const userRatios = await User.aggregate([
+  // Aggregate mentor and mentee counts by month and role
+  const userCounts = await User.aggregate([
     {
       $match: {
-        createdAt: {
-          $gte: startOfYear,
-          $lt: endOfYear,
-        },
-        role: role,
+        createdAt: { $gte: startOfYear, $lt: endOfYear },
+        role: { $in: ['mentor', 'mentee'] }, // Filter for mentors and mentees
       },
     },
     {
       $group: {
-        _id: { $month: '$createdAt' }, // Group by month (1 = January, 12 = December)
-        userCount: { $sum: 1 }, // Count users for each month
+        _id: {
+          month: { $month: '$createdAt' }, // Group by month
+          role: '$role', // Group by role (mentor or mentee)
+        },
+        userCount: { $sum: 1 }, // Count users for each group
       },
     },
     {
       $project: {
-        month: '$_id', // Rename the _id field to month
-        userCount: 1,
-        _id: 0,
+        month: '$_id.month', // Extract month from the group
+        role: '$_id.role', // Extract role from the group
+        userCount: 1, // Include user count
+        _id: 0, // Exclude _id from the result
       },
     },
     {
-      $sort: { month: 1 }, // Sort by month in ascending order (1 = January, 12 = December)
+      $sort: { month: 1, role: 1 }, // Sort by month and role
     },
   ]);
 
-  // Merge the months array with the actual data to ensure all months are included
-  const fullUserRatios = months.map((monthData) => {
-    const found = userRatios.find((data) => data.month === monthData.month);
-    return found ? found : monthData; // Use found data or default to 0
+  // Merge the result with months array
+  userCounts.forEach((count) => {
+    const monthData = months.find((m) => m.month === count.month);
+    if (monthData) {
+      if (count.role === 'mentor') {
+        monthData.mentorCount = count.userCount; // Set mentor count
+      } else if (count.role === 'mentee') {
+        monthData.menteeCount = count.userCount; // Set mentee count
+      }
+    }
   });
 
-  return fullUserRatios;
+  // Return the result
+  return months;
 };
+
 
 const getUserById = async (id: string) => {
   const result = await User.findById(id).populate('mentorRegistrationId');
@@ -326,9 +339,23 @@ const deleteMyAccount = async (id: string, payload: DeleteAccountPayload) => {
 };
 
 const blockedUser = async (id: string) => {
+  const singleUser = await User.IsUserExistById(id);
+
+  if (!singleUser) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  }
+  // let status;
+
+  // if (singleUser?.isActive) {
+  //   status = false;
+  // } else {
+  //   status = true;
+  // }
+  let status = !singleUser.isActive; 
+  console.log('status', status);
   const user = await User.findByIdAndUpdate(
     id,
-    { isActive: false },
+    { isActive: status },
     { new: true },
   );
 
