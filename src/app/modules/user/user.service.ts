@@ -212,7 +212,7 @@ const updateUser = async (id: string, payload: Partial<TUser>) => {
 
 const getAllUserQuery = async (query: Record<string, unknown>) => {
   const userQuery = new QueryBuilder(User.find({}), query)
-    .search([''])
+    .search(['fullName'])
     .filter()
     .sort()
     .paginate()

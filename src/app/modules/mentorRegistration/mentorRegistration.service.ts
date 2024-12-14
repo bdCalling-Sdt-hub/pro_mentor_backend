@@ -241,7 +241,7 @@ const getAdminMentorQuery = async (query: Record<string, unknown>) => {
     MentorRegistration.find({}).populate('mentorId'),
     query,
   )
-    .search([''])
+    .search(['fullName'])
     .filter()
     .sort()
     .paginate()
