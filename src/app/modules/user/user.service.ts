@@ -339,9 +339,23 @@ const deleteMyAccount = async (id: string, payload: DeleteAccountPayload) => {
 };
 
 const blockedUser = async (id: string) => {
+  const singleUser = await User.IsUserExistById(id);
+
+  if (!singleUser) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  }
+  // let status;
+
+  // if (singleUser?.isActive) {
+  //   status = false;
+  // } else {
+  //   status = true;
+  // }
+  let status = !singleUser.isActive; 
+  console.log('status', status);
   const user = await User.findByIdAndUpdate(
     id,
-    { isActive: false },
+    { isActive: status },
     { new: true },
   );
 
