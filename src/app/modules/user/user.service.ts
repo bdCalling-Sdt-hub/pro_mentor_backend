@@ -212,7 +212,7 @@ const updateUser = async (id: string, payload: Partial<TUser>) => {
 
 const getAllUserQuery = async (query: Record<string, unknown>) => {
   const userQuery = new QueryBuilder(User.find({}), query)
-    .search([''])
+    .search(['fullName'])
     .filter()
     .sort()
     .paginate()
@@ -343,6 +343,9 @@ const blockedUser = async (id: string) => {
 
   if (!singleUser) {
     throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  }
+  if (!singleUser.isActive) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User Already Blocked');
   }
   // let status;
 

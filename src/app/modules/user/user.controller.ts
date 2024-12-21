@@ -145,6 +145,10 @@ const updateMyProfile = catchAsync(async (req: Request, res: Response) => {
   if (req?.file) {
     req.body.image = storeFile('profile', req?.file?.filename);
   }
+  // console.log('file', req?.file);
+  // console.log('body data', req.body);
+  
+  
 
   const result = await userService.updateUser(req?.user?.userId, req.body);
   sendResponse(res, {

@@ -273,6 +273,8 @@ const getAllMentorByMenteeBookingByQuery = async (
   query: Record<string, unknown>,
   mentorId: string
 ) => {
+  console.log('query', query);
+  
   const BookingQuery = new QueryBuilder(
     ScheduleBooking.find({ mentorId }).populate('mentorId').populate('menteeId'),
     query,
