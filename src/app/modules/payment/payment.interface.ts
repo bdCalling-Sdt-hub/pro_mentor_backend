@@ -22,4 +22,5 @@ export type TPayment = {
   };
   transactionId: string;
   transactionDate: Date;
+  createdAt: Date;
 };

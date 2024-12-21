@@ -344,6 +344,9 @@ const blockedUser = async (id: string) => {
   if (!singleUser) {
     throw new AppError(httpStatus.NOT_FOUND, 'User not found');
   }
+  if (!singleUser.isActive) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User Already Blocked');
+  }
   // let status;
 
   // if (singleUser?.isActive) {
