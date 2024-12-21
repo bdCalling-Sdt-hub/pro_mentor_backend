@@ -412,13 +412,23 @@ const singlePaymentService = async (id: string) => {
 };
 
 const getAllEarningAmountService = async () => {
-  const payments = await Payment.find();
+  // Use .lean() to get plain objects instead of Mongoose documents
+  const payments = await Payment.find().lean();
+
   const totalEarnings = payments.reduce((total, payment) => {
-    // return total + parseFloat(payment.amount);
-    return total + payment.amount;
+    return total + (payment.amount || 0); // Ensure amount is a number
   }, 0);
 
-  return totalEarnings;
+  const currentDate = new Date();
+  const todayEarnings = payments.reduce((total, payment) => {
+     const paymentDate = new Date(payment.createdAt);
+    if (paymentDate.toDateString() === currentDate.toDateString()) {
+      return total + (payment.amount || 0);
+    }
+    return total;
+  }, 0); // Ensure initialization of reduce with 0
+
+  return { totalEarnings, todayEarnings };
 };
 
 

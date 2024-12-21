@@ -52,6 +52,8 @@ export const getChatByParticipantId = async (filters:any, options:any) => {
     const skip = (page - 1) * limit;
 
     const participantId = new mongoose.Types.ObjectId(filters.participantId);
+    console.log('participantId===', participantId);  
+    
     const name = filters.name || '';
 
     const allChatLists = await Chat.aggregate([
