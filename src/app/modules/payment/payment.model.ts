@@ -21,9 +21,7 @@ const paymentSchema = new Schema<TPayment>(
     status: { type: String, enum: ['pending', 'paid'], default: 'pending' },
 
     bankDetails: {
-      accountNumber: { type: String },
-      accountName: { type: String },
-      bankName: { type: String },
+      accountPiNumber: { type: String },
     },
     paypalPayDetails: {
       paypalId: { type: String },
@@ -47,12 +45,7 @@ const paymentSchema = new Schema<TPayment>(
 
 paymentSchema.pre('validate', function (next) {
   if (this.method === 'bank') {
-    if (
-      !this.bankDetails ||
-      !this.bankDetails.accountNumber ||
-      !this.bankDetails.accountName ||
-      !this.bankDetails.bankName
-    ) {
+    if (!this.bankDetails || !this.bankDetails.accountPiNumber) {
       return next(new Error('Bank details are required for bank withdrawals.'));
     }
   } else if (this.method === 'paypal_pay') {

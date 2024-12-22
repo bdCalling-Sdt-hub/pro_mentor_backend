@@ -12,7 +12,7 @@ const createMentorRegistration = catchAsync(async (req, res) => {
 
   console.log('body -1', req.body);
 
-  //  req.body.preferredDays = JSON.parse(req.body.preferredDays);
+   req.body.preferredDays = JSON.parse(req.body.preferredDays);
 
   console.log('body -2', req.body);
 

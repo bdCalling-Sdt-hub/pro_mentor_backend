@@ -295,8 +295,16 @@ const updateMentorRegistrationQuery = async (
 
     // If there's an image in the payload, update the related user
     let image = null;
-    if (payload?.image) {
-      const userData = { image: payload.image };
+    if (payload?.image || payload.fullName) {
+      const userData:any = {};
+
+      if (payload.fullName) {
+        userData.fullName = payload.fullName;
+      }
+
+      if (payload.image) {
+        userData.image = payload.image;
+      }
 
       let user;
       // Ensure the mentorId exists before trying to update the user
