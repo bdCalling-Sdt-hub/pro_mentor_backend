@@ -116,7 +116,7 @@ const getAllPaymentAmountCount = catchAsync(async (req, res) => {
   const result = await paymentService.getAllEarningAmountService();
 
 
-   if (result === 0) {
+   if (!result) {
      return sendResponse(res, {
        success: true,
        statusCode: httpStatus.OK,
