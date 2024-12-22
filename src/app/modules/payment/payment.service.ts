@@ -33,7 +33,7 @@ const addPaymentService = async (payload: any) => {
   } = payload;
 
   console.log('......payload......');
- 
+
   const status = 'pending';
 
   const paymentData = {
@@ -94,10 +94,7 @@ const addPaymentService = async (payload: any) => {
 
     // Method-specific validation
     if (method === 'bank') {
-      if (
-        !bankDetails ||
-        !bankDetails.accountPiNumber 
-      ) {
+      if (!bankDetails || !bankDetails.accountPiNumber) {
         throw new AppError(
           400,
           'All bank details (account number, account name, bank name) are required for bank Paymentals.',
@@ -197,7 +194,7 @@ const addPaymentService = async (payload: any) => {
     const notificationData3 = {
       role: 'admin',
       message: `Shedule booking successful!`,
-      type:'success',
+      type: 'success',
     };
 
     const notificationResult1 = await notificationService.createNotification(
@@ -224,9 +221,6 @@ const addPaymentService = async (payload: any) => {
     throw error;
   }
 };
-
-
-
 
 // const addPaymentService = async (payload: any) => {
 //   const {
@@ -303,8 +297,6 @@ const addPaymentService = async (payload: any) => {
 //     throw new Error('Failed to payment!!');
 //   }
 // };
-
-
 
 // const addPaymentService = async (payload: any) => {
 //   const {
@@ -419,7 +411,7 @@ const getAllEarningAmountService = async () => {
 
   const currentDate = new Date();
   const todayEarnings = payments.reduce((total, payment) => {
-     const paymentDate = new Date(payment.createdAt);
+    const paymentDate = new Date(payment.createdAt);
     if (paymentDate.toDateString() === currentDate.toDateString()) {
       return total + (payment.amount || 0);
     }
@@ -428,8 +420,6 @@ const getAllEarningAmountService = async () => {
 
   return { totalEarnings, todayEarnings };
 };
-
-
 
 const deleteSinglePaymentService = async (id: string) => {
   const result = await Payment.deleteOne({ _id: id });

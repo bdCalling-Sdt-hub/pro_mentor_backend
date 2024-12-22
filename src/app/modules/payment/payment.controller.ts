@@ -4,6 +4,7 @@ import { paymentService } from './payment.service';
 import sendResponse from '../../utils/sendResponse';
 
 const addPayment = catchAsync(async (req, res, next) => {
+  console.log('asd');
   const { userId } = req.user;
   const paymentData = req.body;
   paymentData.menteeId = userId;
