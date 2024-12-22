@@ -9,10 +9,8 @@ export type TPayment = {
   method: string;
   status: string;
   bankDetails?: {
-    accountNumber: string;
-    accountName: string;
-    bankName: string;
-    routingNumber: string;
+    accountPiNumber: string;
+
   };
   paypalPayDetails?: {
     paypalId: string;
