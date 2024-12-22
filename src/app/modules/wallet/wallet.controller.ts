@@ -2,19 +2,26 @@ import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import httpStatus from 'http-status';
 import { walletService } from './wallet.service';
+import mongoose from 'mongoose';
 
 const createWallet = catchAsync(async (req, res, next) => {
-    const { userId } = req.user;
-  const result = await walletService.addWalletService(userId);
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  const { userId } = req.user;
+  const result = await walletService.addWalletService(userId, session);
 
   if (result) {
-     sendResponse(res, {
-       statusCode: httpStatus.OK,
-       success: true,
-       message: 'Wallet added Successfull!!',
-       data: result,
-     });
+    await session.commitTransaction();
+    session.endSession();
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Wallet added Successfull!!',
+      data: result,
+    });
   } else {
+    await session.abortTransaction();
+    session.endSession();
     sendResponse(res, {
       statusCode: httpStatus.BAD_REQUEST,
       success: true,
