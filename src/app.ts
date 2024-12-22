@@ -31,7 +31,7 @@ app.use(
 app.use('/api/v1', router);
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('server is running');
+  res.send('Promentor server is running');
 });
 app.use(globalErrorHandler);
 

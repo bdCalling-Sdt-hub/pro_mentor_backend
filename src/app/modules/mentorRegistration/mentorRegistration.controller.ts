@@ -12,9 +12,9 @@ const createMentorRegistration = catchAsync(async (req, res) => {
 
   console.log('body -1', req.body);
 
-   req.body.preferredDays = JSON.parse(req.body.preferredDays);
+  req.body.preferredDays = JSON.parse(req.body.preferredDays);
 
-  console.log('body -2', req.body);
+  console.log('token -2', token);
 
   if (!token) {
     throw new AppError(httpStatus.BAD_REQUEST, 'Token is required');
@@ -29,6 +29,10 @@ const createMentorRegistration = catchAsync(async (req, res) => {
   }
 
   const { userId } = decodeData;
+
+  console.log('userId -3', userId);
+
+  console.log('req.files -3', req.files);
 
   const files = req.files as {
     [fieldname: string]: Express.Multer.File[];
@@ -97,50 +101,50 @@ const createMentorRegistration = catchAsync(async (req, res) => {
 const getallMentorRegistration = catchAsync(async (req, res) => {
   const query = req.query;
   console.log('query', query);
-  let filtersQuery:any = {};
+  let filtersQuery: any = {};
 
-// if (Object.keys(query).length > 0) {
-//   filtersQuery = Object.entries(query).reduce((acc: any, [key, value]) => {
-//     // Only include key-value pairs where value is not an empty string or an empty array
-//     if (typeof value === 'string' && value.trim() !== '') {
-//       acc[key] = value.trim();
-//     } else if (Array.isArray(value) && value.length > 0) {
-//       // Keep non-empty arrays (e.g., 'industryExpertise')
-//       acc[key] = value;
-//     }
-//     return acc;
-//   }, {});
-// }
+  // if (Object.keys(query).length > 0) {
+  //   filtersQuery = Object.entries(query).reduce((acc: any, [key, value]) => {
+  //     // Only include key-value pairs where value is not an empty string or an empty array
+  //     if (typeof value === 'string' && value.trim() !== '') {
+  //       acc[key] = value.trim();
+  //     } else if (Array.isArray(value) && value.length > 0) {
+  //       // Keep non-empty arrays (e.g., 'industryExpertise')
+  //       acc[key] = value;
+  //     }
+  //     return acc;
+  //   }, {});
+  // }
 
-// console.log('filtersQuery', filtersQuery);
+  // console.log('filtersQuery', filtersQuery);
 
- if (Object.keys(query).length > 0) {
-   filtersQuery = Object.entries(query).reduce((acc: any, [key, value]) => {
-     // Only process string values
-     if (typeof value === 'string') {
-       try {
-         // Check if the string looks like an array (e.g., "['Finance']")
-         if (value.startsWith('[') && value.endsWith(']')) {
-           // Parse the string to convert to an actual array
-           const parsedValue = JSON.parse(value.replace(/'/g, '"'));
-           // If it's an empty array (e.g., '[]'), ignore it
-           if (Array.isArray(parsedValue) && parsedValue.length > 0) {
-             acc[key] = parsedValue; // Add to filtersQuery
-           }
-         } else {
-           // If not an array-like string, just add it as is
-           acc[key] = value;
-         }
-       } catch (error) {
-         console.error('Error parsing array string:', error);
-       }
-     } else if (Array.isArray(value)) {
-       // If value is already an array (e.g., multiple values for the same key), keep it as is
-       acc[key] = value;
-     }
-     return acc;
-   }, {});
- }
+  if (Object.keys(query).length > 0) {
+    filtersQuery = Object.entries(query).reduce((acc: any, [key, value]) => {
+      // Only process string values
+      if (typeof value === 'string') {
+        try {
+          // Check if the string looks like an array (e.g., "['Finance']")
+          if (value.startsWith('[') && value.endsWith(']')) {
+            // Parse the string to convert to an actual array
+            const parsedValue = JSON.parse(value.replace(/'/g, '"'));
+            // If it's an empty array (e.g., '[]'), ignore it
+            if (Array.isArray(parsedValue) && parsedValue.length > 0) {
+              acc[key] = parsedValue; // Add to filtersQuery
+            }
+          } else {
+            // If not an array-like string, just add it as is
+            acc[key] = value;
+          }
+        } catch (error) {
+          console.error('Error parsing array string:', error);
+        }
+      } else if (Array.isArray(value)) {
+        // If value is already an array (e.g., multiple values for the same key), keep it as is
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
+  }
 
   // Here you can process your filtersQuery or pass it to your database query
   // console.log('Processed filtersQuery:', filtersQuery);

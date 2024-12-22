@@ -24,9 +24,10 @@ async function main() {
     // await mongoose.connect(
     //   'mongodb+srv://tiger:tiger@team-codecanyon.ffrshve.mongodb.net/pro-mentors?retryWrites=true&w=majority&appName=Team-CodeCanyon',
     // );
- 
+
     // Start Express server
-    server = app.listen(Number(config.port), config.ip as string, () => {
+    // server = app.listen(Number(config.port), config.ip as string, () => {
+    server = app.listen(Number(config.port), () => {
       console.log(
         colors.green(`App is listening on ${config.ip}:${config.port}`).bold,
       );

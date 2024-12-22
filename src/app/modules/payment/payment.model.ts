@@ -1,7 +1,6 @@
 import { model, Schema } from 'mongoose';
 import { TPayment } from './payment.interface';
 
-
 const paymentSchema = new Schema<TPayment>(
   {
     mentorId: { type: Schema.Types.ObjectId, ref: 'User', required: true },

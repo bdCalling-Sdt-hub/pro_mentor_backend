@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-
 const bankDetailsSchema = z
   .object({
     accountNumber: z.string().min(1, 'Account number is required.'),
@@ -31,7 +30,7 @@ export const paymentSchema = z.object({
   paypalPayDetails: paypalPayDetailsSchema.optional(),
   applePayDetails: applePayDetailsSchema.optional(),
   transactionId: z.string().min(1, 'Transaction ID is required.'),
-  transactionDate: z.date().default(() => new Date()), 
+  transactionDate: z.date().default(() => new Date()),
 });
 
 export const paymentValidation = {
