@@ -70,6 +70,5 @@ userRoutes
     ),
     userController.deleteMyAccount,
   );
-  
 
 // export default userRoutes;
