@@ -10,7 +10,6 @@ export type TPayment = {
   status: string;
   bankDetails?: {
     accountPiNumber: string;
-
   };
   paypalPayDetails?: {
     paypalId: string;
