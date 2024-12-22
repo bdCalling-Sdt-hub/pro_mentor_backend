@@ -96,9 +96,7 @@ const addPaymentService = async (payload: any) => {
     if (method === 'bank') {
       if (
         !bankDetails ||
-        !bankDetails.accountNumber ||
-        !bankDetails.accountName ||
-        !bankDetails.bankName
+        !bankDetails.accountPiNumber 
       ) {
         throw new AppError(
           400,
