@@ -28,11 +28,11 @@ const addWalletService = async (mentorId: string, session: ClientSession) => {
   // Step 4: If the wallet doesn't exist, create a new wallet
   const payload: TWallet = {
     mentorId: new Types.ObjectId(mentorId), // Ensure the mentorId is of type ObjectId
-    amount: 0, // Initialize the balance to 0
+    amount: 0, 
   };
 
   const wallet = await Wallet.create([payload], { session }); // Use session here to ensure the creation is part of the transaction
-  return wallet[0]; // Return the newly created wallet
+  return wallet[0]; 
 };
 
 

@@ -36,10 +36,10 @@ const addWalletService = (mentorId, session) => __awaiter(void 0, void 0, void 0
     // Step 4: If the wallet doesn't exist, create a new wallet
     const payload = {
         mentorId: new mongoose_1.Types.ObjectId(mentorId), // Ensure the mentorId is of type ObjectId
-        amount: 0, // Initialize the balance to 0
+        amount: 0,
     };
     const wallet = yield wallet_model_1.Wallet.create([payload], { session }); // Use session here to ensure the creation is part of the transaction
-    return wallet[0]; // Return the newly created wallet
+    return wallet[0];
 });
 const userWalletGetService = (mentorId) => __awaiter(void 0, void 0, void 0, function* () {
     if (!mentorId) {

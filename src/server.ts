@@ -5,6 +5,8 @@ import socketIO from './socketio';
 import { Server as SocketIOServer } from 'socket.io'; // For better type safety
 import colors from 'colors'; // Ensure correct import
 import config from './app/config';
+import { mentorAutoShediulPricing } from './app/DB';
+
 
 let server: Server;
 const socketServer = createServer();
@@ -31,6 +33,7 @@ async function main() {
       console.log(
         colors.green(`App is listening on ${config.ip}:${config.port}`).bold,
       );
+      mentorAutoShediulPricing();
     });
 
     // Start Socket server

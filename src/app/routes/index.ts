@@ -17,6 +17,7 @@ import withdrawRouter from '../modules/withdraw/withdraw.route';
 import notificationRoutes from '../modules/notification/notification.route';
 import chatRouter from '../modules/chat/chat.route';
 import messageRouter from '../modules/message/message.route';
+import { shediulPricingRoutes } from '../modules/mentorShediulPricing/mentorShediulPricing.route';
 
 const router = Router();
 
@@ -89,6 +90,10 @@ const moduleRoutes = [
   {
     path: '/message',
     route: messageRouter,
+  },
+  {
+    path: '/shediul-pricing',
+    route: shediulPricingRoutes,
   },
 ];
 moduleRoutes.forEach((route) => router.use(route.path, route.route));
