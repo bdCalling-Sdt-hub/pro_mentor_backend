@@ -9,7 +9,7 @@ export const shediulPricingRoutes = Router();
   shediulPricingRoutes
     .get(
       '/',
-      auth(USER_ROLE.ADMIN),
+      auth(USER_ROLE.ADMIN, USER_ROLE.MENTEE, USER_ROLE.MENTOR),
       mentorShediulPricingController.getAllMentorShedulePricing,
     )
     .patch(
