@@ -15,8 +15,5 @@ export type TWithdraw = {
   paypalPayDetails?: {
     paypalId: string;
   };
-  applePayDetails?: {
-    appleId: string;
-  };
   transactionDate: Date;
 };

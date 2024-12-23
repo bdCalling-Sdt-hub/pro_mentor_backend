@@ -11,8 +11,8 @@ const addWithdrawService = async (payload: TWithdraw) => {
     amount,
     method,
     bankDetails,
-    paypalPayDetails,
-    applePayDetails,
+    paypalPayDetails
+  
   } = payload;
 
   const mentor = await User.findById(mentorId);
@@ -41,7 +41,7 @@ const addWithdrawService = async (payload: TWithdraw) => {
     throw new AppError(400, 'Insufficient funds in the wallet.');
   }
   // Validate Withdrawal Method
-  const validMethods = ['bank', 'paypal_pay', 'apple_pay'];
+  const validMethods = ['bank', 'paypal_pay'];
   if (!method || !validMethods.includes(method)) {
     throw new AppError(400, 'Invalid Withdrawal method.');
   }
@@ -66,14 +66,7 @@ const addWithdrawService = async (payload: TWithdraw) => {
         'Google Pay token is required for Google Pay Withdrawals.',
       );
     }
-  } else if (method === 'apple_pay') {
-    if (!applePayDetails || !applePayDetails.appleId) {
-      throw new AppError(
-        400,
-        'Apple Pay token is required for Apple Pay Withdrawals.',
-      );
-    }
-  }
+  } 
 console.log('payload payload', payload);
   const result = await Withdraw.create(payload);
 

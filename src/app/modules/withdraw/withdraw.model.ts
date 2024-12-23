@@ -22,9 +22,7 @@ const WithdrawSchema = new Schema<TWithdraw>(
     paypalPayDetails: {
       paypalId: { type: String },
     },
-    applePayDetails: {
-      appleId: { type: String },
-    },
+   
     transactionDate: {
       type: Date,
       default: Date.now,
@@ -49,13 +47,7 @@ WithdrawSchema.pre('validate', function (next) {
         new Error('GooglePay details are required for Google withdrawals.'),
       );
     }
-  } else if (this.method === 'apple_pay') {
-    if (!this.applePayDetails || !this.applePayDetails.appleId) {
-      return next(
-        new Error('ApplePay details are required for Apple withdrawals.'),
-      );
-    }
-  }
+  } 
   next();
 });
 
