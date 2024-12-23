@@ -21,6 +21,7 @@ const withdraw_route_1 = __importDefault(require("../modules/withdraw/withdraw.r
 const notification_route_1 = __importDefault(require("../modules/notification/notification.route"));
 const chat_route_1 = __importDefault(require("../modules/chat/chat.route"));
 const message_route_1 = __importDefault(require("../modules/message/message.route"));
+const mentorShediulPricing_route_1 = require("../modules/mentorShediulPricing/mentorShediulPricing.route");
 const router = (0, express_1.Router)();
 const moduleRoutes = [
     {
@@ -90,6 +91,10 @@ const moduleRoutes = [
     {
         path: '/message',
         route: message_route_1.default,
+    },
+    {
+        path: '/shediul-pricing',
+        route: mentorShediulPricing_route_1.shediulPricingRoutes,
     },
 ];
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

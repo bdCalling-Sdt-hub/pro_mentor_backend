@@ -19,6 +19,7 @@ const socketio_1 = __importDefault(require("./socketio"));
 const socket_io_1 = require("socket.io"); // For better type safety
 const colors_1 = __importDefault(require("colors")); // Ensure correct import
 const config_1 = __importDefault(require("./app/config"));
+const DB_1 = require("./app/DB");
 let server;
 const socketServer = (0, http_1.createServer)();
 // Initialize Socket.IO with type safety
@@ -40,6 +41,7 @@ function main() {
             // server = app.listen(Number(config.port), config.ip as string, () => {
             server = app_1.default.listen(Number(config_1.default.port), () => {
                 console.log(colors_1.default.green(`App is listening on ${config_1.default.ip}:${config_1.default.port}`).bold);
+                (0, DB_1.mentorAutoShediulPricing)();
             });
             // Start Socket server
             socketServer.listen(config_1.default.socket_port || 6000, () => {
