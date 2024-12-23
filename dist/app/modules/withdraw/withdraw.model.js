@@ -21,9 +21,6 @@ const WithdrawSchema = new mongoose_1.Schema({
     paypalPayDetails: {
         paypalId: { type: String },
     },
-    applePayDetails: {
-        appleId: { type: String },
-    },
     transactionDate: {
         type: Date,
         default: Date.now,
@@ -41,11 +38,6 @@ WithdrawSchema.pre('validate', function (next) {
     else if (this.method === 'paypal_pay') {
         if (!this.paypalPayDetails || !this.paypalPayDetails.paypalId) {
             return next(new Error('GooglePay details are required for Google withdrawals.'));
-        }
-    }
-    else if (this.method === 'apple_pay') {
-        if (!this.applePayDetails || !this.applePayDetails.appleId) {
-            return next(new Error('ApplePay details are required for Apple withdrawals.'));
         }
     }
     next();

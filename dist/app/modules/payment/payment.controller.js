@@ -22,15 +22,15 @@ const addPayment = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 
     const { userId } = req.user;
     const paymentData = req.body;
     paymentData.menteeId = userId;
-    if (paymentData.method === 'bank') {
-        paymentData.bankDetails = JSON.parse(paymentData.bankDetails);
-    }
-    if (paymentData.method === 'paypal') {
-        paymentData.paypalDetails = JSON.parse(paymentData.paypalDetails);
-    }
-    if (paymentData.method === 'apple_pay') {
-        paymentData.stripeDetails = JSON.parse(paymentData.applePayDetails);
-    }
+    //  if (paymentData.method === 'bank') {
+    //    paymentData.bankDetails = JSON.parse(paymentData.bankDetails);
+    //  }
+    //  if (paymentData.method === 'paypal_pay') {
+    //    paymentData.paypalDetails = JSON.parse(paymentData.paypalDetails);
+    //  }
+    //  if (paymentData.method === 'apple_pay') {
+    //    paymentData.stripeDetails = JSON.parse(paymentData.applePayDetails);
+    //  }
     // console.log('req.body', req.body);
     const result = yield payment_service_1.paymentService.addPaymentService(req.body);
     if (result) {

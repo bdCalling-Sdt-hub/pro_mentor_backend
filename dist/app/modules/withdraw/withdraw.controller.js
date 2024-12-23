@@ -20,16 +20,14 @@ const withdraw_service_1 = require("./withdraw.service");
 const addWithdraw = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('gas');
     const withdrawData = req.body;
-    console.log('withdrawData', withdrawData);
-    if (withdrawData.method === 'bank') {
-        withdrawData.bankDetails = JSON.parse(withdrawData.bankDetails);
-    }
-    if (withdrawData.method === 'paypal') {
-        withdrawData.paypalDetails = JSON.parse(withdrawData.paypalDetails);
-    }
-    if (withdrawData.method === 'apple_pay') {
-        withdrawData.stripeDetails = JSON.parse(withdrawData.applePayDetails);
-    }
+    // console.log('withdrawData', withdrawData);
+    // if(withdrawData.method === 'bank'){
+    //   withdrawData.bankDetails = JSON.parse(withdrawData.bankDetails);
+    // }if(withdrawData.method === 'paypal'){
+    //   withdrawData.paypalDetails = JSON.parse(withdrawData.paypalDetails);
+    // }if (withdrawData.method === 'apple_pay') {
+    //   withdrawData.stripeDetails = JSON.parse(withdrawData.applePayDetails);
+    // }
     const { userId } = req.user;
     withdrawData.mentorId = userId;
     const result = yield withdraw_service_1.withdrawService.addWithdrawService(withdrawData);

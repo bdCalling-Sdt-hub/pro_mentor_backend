@@ -19,7 +19,7 @@ const QueryBuilder_1 = __importDefault(require("../../builder/QueryBuilder"));
 const withdraw_model_1 = require("./withdraw.model");
 const wallet_model_1 = require("../wallet/wallet.model");
 const addWithdrawService = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const { mentorId, amount, method, bankDetails, paypalPayDetails, applePayDetails, } = payload;
+    const { mentorId, amount, method, bankDetails, paypalPayDetails } = payload;
     const mentor = yield user_models_1.User.findById(mentorId);
     if (!mentor) {
         throw new AppError_1.default(400, 'Mentor is not found!');
@@ -39,7 +39,7 @@ const addWithdrawService = (payload) => __awaiter(void 0, void 0, void 0, functi
         throw new AppError_1.default(400, 'Insufficient funds in the wallet.');
     }
     // Validate Withdrawal Method
-    const validMethods = ['bank', 'paypal_pay', 'apple_pay'];
+    const validMethods = ['bank', 'paypal_pay'];
     if (!method || !validMethods.includes(method)) {
         throw new AppError_1.default(400, 'Invalid Withdrawal method.');
     }
@@ -55,11 +55,6 @@ const addWithdrawService = (payload) => __awaiter(void 0, void 0, void 0, functi
     else if (method === 'paypal_pay') {
         if (!paypalPayDetails || !paypalPayDetails.paypalId) {
             throw new AppError_1.default(400, 'Google Pay token is required for Google Pay Withdrawals.');
-        }
-    }
-    else if (method === 'apple_pay') {
-        if (!applePayDetails || !applePayDetails.appleId) {
-            throw new AppError_1.default(400, 'Apple Pay token is required for Apple Pay Withdrawals.');
         }
     }
     console.log('payload payload', payload);
