@@ -6,14 +6,14 @@ import { withdrawService } from './withdraw.service';
 const addWithdraw = catchAsync(async (req, res, next) => {
   console.log('gas');
   const withdrawData = req.body;
-  console.log('withdrawData', withdrawData);
-  if(withdrawData.method === 'bank'){
-    withdrawData.bankDetails = JSON.parse(withdrawData.bankDetails);
-  }if(withdrawData.method === 'paypal'){
-    withdrawData.paypalDetails = JSON.parse(withdrawData.paypalDetails);
-  }if (withdrawData.method === 'apple_pay') {
-    withdrawData.stripeDetails = JSON.parse(withdrawData.applePayDetails);
-  }
+  // console.log('withdrawData', withdrawData);
+  // if(withdrawData.method === 'bank'){
+  //   withdrawData.bankDetails = JSON.parse(withdrawData.bankDetails);
+  // }if(withdrawData.method === 'paypal'){
+  //   withdrawData.paypalDetails = JSON.parse(withdrawData.paypalDetails);
+  // }if (withdrawData.method === 'apple_pay') {
+  //   withdrawData.stripeDetails = JSON.parse(withdrawData.applePayDetails);
+  // }
  
   const { userId } = req.user;
   withdrawData.mentorId = userId;
