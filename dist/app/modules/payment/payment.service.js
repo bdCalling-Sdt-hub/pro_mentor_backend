@@ -81,12 +81,12 @@ const addPaymentService = (payload) => __awaiter(void 0, void 0, void 0, functio
         }
         else if (method === 'paypal_pay') {
             if (!paypalPayDetails || !paypalPayDetails.paypalId) {
-                throw new AppError_1.default(400, 'Paypal Pay token is required for Paypal Pay Paymentals.');
+                throw new AppError_1.default(400, 'Paypal Pay ID is required for Paypal Pay Paymentals.');
             }
         }
         else if (method === 'apple_pay') {
             if (!applePayDetails || !applePayDetails.appleId) {
-                throw new AppError_1.default(400, 'Apple Pay token is required for Apple Pay Paymentals.');
+                throw new AppError_1.default(400, 'Apple Pay Id is required for Apple Pay Paymentals.');
             }
         }
         // Create payment record

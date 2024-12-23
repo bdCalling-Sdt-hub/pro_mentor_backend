@@ -9,15 +9,15 @@ const addPayment = catchAsync(async (req, res, next) => {
   const paymentData = req.body;
   paymentData.menteeId = userId;
 
-  //  if (paymentData.method === 'bank') {
-  //    paymentData.bankDetails = JSON.parse(paymentData.bankDetails);
-  //  }
-  //  if (paymentData.method === 'paypal') {
-  //    paymentData.paypalDetails = JSON.parse(paymentData.paypalDetails);
-  //  }
-  //  if (paymentData.method === 'apple_pay') {
-  //    paymentData.stripeDetails = JSON.parse(paymentData.applePayDetails);
-  //  }
+   if (paymentData.method === 'bank') {
+     paymentData.bankDetails = JSON.parse(paymentData.bankDetails);
+   }
+   if (paymentData.method === 'paypal') {
+     paymentData.paypalDetails = JSON.parse(paymentData.paypalDetails);
+   }
+   if (paymentData.method === 'apple_pay') {
+     paymentData.stripeDetails = JSON.parse(paymentData.applePayDetails);
+   }
 
   // console.log('req.body', req.body);
 

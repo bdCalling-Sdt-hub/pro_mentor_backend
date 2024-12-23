@@ -104,14 +104,14 @@ const addPaymentService = async (payload: any) => {
       if (!paypalPayDetails || !paypalPayDetails.paypalId) {
         throw new AppError(
           400,
-          'Paypal Pay token is required for Paypal Pay Paymentals.',
+          'Paypal Pay ID is required for Paypal Pay Paymentals.',
         );
       }
     } else if (method === 'apple_pay') {
       if (!applePayDetails || !applePayDetails.appleId) {
         throw new AppError(
           400,
-          'Apple Pay token is required for Apple Pay Paymentals.',
+          'Apple Pay Id is required for Apple Pay Paymentals.',
         );
       }
     }
