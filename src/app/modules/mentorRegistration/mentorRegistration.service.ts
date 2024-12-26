@@ -86,7 +86,6 @@ const getAllMentorRegistrationQuery = async (
   const { availableTime, searchTerm, sort, page, limit, ...filters }: any =
     query;
 
-
   let queryStart = '';
   let queryEnd = '';
   if (availableTime) {
@@ -95,23 +94,20 @@ const getAllMentorRegistrationQuery = async (
     queryEnd = queryTimeEnd;
   }
 
-
   let queryConditions: Record<string, any> = {};
   console.log('queryConditions 1', queryConditions);
-
 
   // if (searchTerm) {
   //   queryConditions.$text = { $search: String(searchTerm) };
   // }
   // console.log('queryConditions 2', queryConditions);
-   if (searchTerm) {
-     queryConditions.$or = [
-       { fullName: { $regex: searchTerm, $options: 'i' } },
-       { industryExpertise: { $regex: searchTerm, $options: 'i' } },
-       { specializedSkill: { $regex: searchTerm, $options: 'i' } },
-     ];
-   }
-
+  if (searchTerm) {
+    queryConditions.$or = [
+      { fullName: { $regex: searchTerm, $options: 'i' } },
+      { industryExpertise: { $regex: searchTerm, $options: 'i' } },
+      { specializedSkill: { $regex: searchTerm, $options: 'i' } },
+    ];
+  }
 
   if (filters) {
     for (const [key, value] of Object.entries(filters)) {
@@ -121,27 +117,25 @@ const getAllMentorRegistrationQuery = async (
 
   console.log('queryConditions 3', queryConditions);
 
+  // Count total matching documents
+  const total = await MentorRegistration.countDocuments(queryConditions);
 
   let mentorRegistrations = await MentorRegistration.find(queryConditions)
     .populate('mentorId')
     .sort('-reviewCount')
     .exec();
 
-
   if (queryStart && queryEnd) {
     mentorRegistrations = mentorRegistrations.filter((mentor: any) => {
-    
       if (!mentor.availableTime) return false;
 
       const [mentorStart, mentorEnd] = mentor.availableTime.split(' - ');
 
-    
       if (!mentorStart || !mentorEnd) return false;
 
       return isTimeOverlap(mentorStart, mentorEnd, queryStart, queryEnd);
     });
   }
-
 
   if (sort) {
     console.log('sort', sort);
@@ -156,32 +150,36 @@ const getAllMentorRegistrationQuery = async (
 
     console.log('sortFields', sortFields);
 
-  
     mentorRegistrations = await MentorRegistration.find(queryConditions)
       .populate('mentorId')
       .sort(sortFields)
       .exec();
   }
 
-
   const pageNumber = parseInt(String(page), 10) || 1;
   const limitNumber = parseInt(String(limit), 10) || 10;
   const skip = (pageNumber - 1) * limitNumber;
 
-
   const paginatedResults = mentorRegistrations.slice(skip, skip + limitNumber);
+  console.log({ paginatedResults });
 
+    const totalPage = Math.ceil(total / limitNumber);
 
   return {
     meta: {
       total: mentorRegistrations.length,
       page: pageNumber,
       limit: limitNumber,
+      totalPage,
     },
     result: paginatedResults,
   };
 };
 
+// 67580e3576453bd8b1d4995d
+// 675c0c3c42b6ee5ab9c6142a
+// 6766a7755c0e9cf78f46838f
+// 6767a4bb14e9022494898f0f
 
 
 
