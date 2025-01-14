@@ -7,6 +7,8 @@ interface IChat {
 }
 
 export const handleChatEvents = async (socket:any, data:any, callback:any) => {
+
+  
   console.log('first ', data);
 //   console.log('First:', JSON.stringify(data, null, 2)); 
   console.log('socket decodedToken ', socket?.decodedToken);
