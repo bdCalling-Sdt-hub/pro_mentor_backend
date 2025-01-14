@@ -40,6 +40,7 @@ const getAllNotificationQuery = async (
 
 
 const getUserNotification = async (userId:string) => {
+  console.log({userId});
   const isValidUserId = mongoose.Types.ObjectId.isValid(userId);
   if (!isValidUserId) {
     return null;

@@ -36,6 +36,7 @@ const getAllNotificationByUser = catchAsync(async (req, res) => {
 const getSingleUserNotification = catchAsync(async (req, res) => {
   // const { userId } = req.params;
   const {userId} = req.user
+  console.log('noti',{userId});
   const result = await notificationService.getUserNotification(userId);
   sendResponse(res, {
     success: true,
