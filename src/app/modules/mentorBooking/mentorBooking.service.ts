@@ -53,12 +53,12 @@ const createMentorBookingService = async (payload: TMentorBooking) => {
 
     const notificationData = {
       userId: result[0].mentorId,
-      message: `Booking mentor is successful!`,
+      message: `Booking mentee is successful!`,
       type: 'success',
     };
     const notificationData2 = {
       userId: result[0].menteeId,
-      message: `Booking mentee is successful!`,
+      message: `Booking mentor is successful!`,
       type: 'success',
     };
 
