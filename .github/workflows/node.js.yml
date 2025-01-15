@@ -27,4 +27,5 @@ jobs:
     - name: Change Directory
       run: cd /home/masters/actions-pro_mentor_backend/_work/pro_mentor_backend/pro_mentor_backend
     - name: Restart PM2
-      run: pm2 restart 0
+      run: /home/masters/.npm-global/bin/pm2 restart 0
+
