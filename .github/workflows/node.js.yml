@@ -1,4 +1,3 @@
- 
 name: Pro_Mentor_Backend CI/CD
 
 on:
@@ -13,7 +12,7 @@ jobs:
     strategy:
       matrix:
         node-version: [ 22.x]
-      
+   
     steps:
     - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
@@ -23,6 +22,9 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run build --if-present  
+    - name: Add npm Global Binaries to PATH
+      run: echo 'export PATH=$PATH:/home/masters/.npm-global/bin' >> $GITHUB_ENV
     - name: Change Directory
       run: cd /home/masters/actions-pro_mentor_backend/_work/pro_mentor_backend/pro_mentor_backend
-    - run: pm2 restart 0
+    - name: Restart PM2
+      run: pm2 restart 0
