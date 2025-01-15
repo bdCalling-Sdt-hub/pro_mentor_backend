@@ -24,5 +24,5 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present  
     - name: Change Directory
-      run: cd /actions-pro_mentor_backend/_work/pro_mentor_backend/pro_mentor_backend
+      run: cd /home/masters/actions-pro_mentor_backend/_work/pro_mentor_backend/pro_mentor_backend
     - run: pm2 restart 0
