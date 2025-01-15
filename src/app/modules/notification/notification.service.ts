@@ -47,6 +47,7 @@ const getUserNotification = async (userId:string) => {
   }
   try {
     const notifications = await Notification.find({ userId });
+    console.log({ notifications });
 
     if (notifications.length > 50) {
       const notificationsToDelete = notifications
@@ -60,6 +61,7 @@ const getUserNotification = async (userId:string) => {
       await Promise.all(deletePromises);
     }
 
+    console.log({ notifications });
     // Retrieve the remaining notifications in reverse order
     const remainingNotifications = await Notification.find({ userId }).sort({
       createdAt: -1,
