@@ -5,6 +5,7 @@ import { TTask, TTaskGoal } from './taskGoal.interface';
 const TaskSchema = new Schema<TTask>({
   taskName: { type: String, required: true },
   taskfiles: { type: [String], default: [] },
+  isTaskFile: { type: Boolean, default: false },
   status: { type: String, enum: ['pending', 'completed'], default: 'pending', required: true },
 });
 

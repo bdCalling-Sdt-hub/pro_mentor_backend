@@ -39,8 +39,8 @@ const addTaskToTaskGoalService = async (payload: any) => {
 
   const task = {
     taskName: payload.taskName,
-    taskfiles: Array.isArray(payload.taskfiles) ? payload.taskfiles : [],
     status: payload.status || 'pending',
+    isTaskFile: payload.isTaskFile,
   };
 
   const result = await TaskGoal.updateOne(
@@ -152,7 +152,21 @@ const getSingleMentorTaskGoalQuery = async (id: string) => {
   return taskGoals[0];
 };
 
-const completedTaskStatus = async (taskGoalId: string, taskId: string) => {
+const completedTaskStatus = async (taskGoalId: string, taskId: string, files: any) => {
+  console.log({ taskGoalId });
+  console.log({ taskId });
+  console.log({ files });
+
+  // Extract task file paths
+  // const taskGoalFiles = files['taskfiles']?.map((file:any) =>
+  //   file.path.replace(/^public[\\/]/, ''),
+  // );
+
+   const taskGoalFiles = files?.['taskfiles']
+     ? files['taskfiles'].map((file: any) =>
+         file.path.replace(/^public[\\/]/, ''),
+       )
+     : null;
   
   const taskGoal = await TaskGoal.findById(taskGoalId);
   if (!taskGoal) {
@@ -171,6 +185,9 @@ const completedTaskStatus = async (taskGoalId: string, taskId: string) => {
   }
 
     taskGoal.tasks[taskIndex].status = 'completed';
+    if(taskGoalFiles){
+      taskGoal.tasks[taskIndex].taskfiles = taskGoalFiles;
+    }
 
   const updatedTaskGoal = await taskGoal.save(); 
 

@@ -17,7 +17,6 @@ taskGoalRouter
   )
   .post(
     '/task',
-    taskFiles.fields([{ name: 'taskfiles', maxCount: 5 }]),
     auth(USER_ROLE.MENTOR),
     // validateRequest(videoValidation.VideoSchema),
     taskGoalController.addTaskToTaskGoal,
@@ -31,7 +30,11 @@ taskGoalRouter
     auth(USER_ROLE.MENTOR),
     taskGoalController.updateSingleMentorTaskGoal,
   )
-  .patch('/task/:id', taskGoalController.completedTaskStatus)
+  .patch(
+    '/task/:id',
+    taskFiles.fields([{ name: 'taskfiles', maxCount: 5 }]),
+    taskGoalController.completedTaskStatus,
+  )
   .patch('/status/:id', taskGoalController.taskGoalStatus)
 
   .delete(

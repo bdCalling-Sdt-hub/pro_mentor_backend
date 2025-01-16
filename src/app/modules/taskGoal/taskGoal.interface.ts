@@ -4,6 +4,7 @@ export type TTask = {
   _id:string;
   taskName: string;
   taskfiles?: string[];
+  isTaskFile: boolean;
   status: string;
 }
 export type TTaskGoal = {

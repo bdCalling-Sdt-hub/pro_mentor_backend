@@ -64,19 +64,19 @@ const createMentorTaskGoal = catchAsync(async (req, res) => {
 
 
 const addTaskToTaskGoal = catchAsync(async (req, res) => {
-  const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-  // console.log('files', files);
+  // const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+  // // console.log('files', files);
 
  
-  // Extract task file paths
-  const taskGoalFiles = files['taskfiles']?.map((file) =>
-    file.path.replace(/^public[\\/]/, ''),
-  );
+  // // Extract task file paths
+  // const taskGoalFiles = files['taskfiles']?.map((file) =>
+  //   file.path.replace(/^public[\\/]/, ''),
+  // );
 
   // Construct payload for service
   const taskData = {
     ...req.body,
-    taskfiles: taskGoalFiles,
+    // taskfiles: taskGoalFiles,
     status:"pending",
   };
   console.log('taskData', taskData);
@@ -142,9 +142,19 @@ const completedTaskStatus = catchAsync(async (req, res) => {
   const { id:taskGoalId }:any = req.params;
   const { taskId }:any = req.query;
   // Call the service to update the TaskGoal
+
+  //ddddd
+  const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+  // console.log('files', files);
+
+  // Extract task file paths
+
+
+
   const result = await mentorTaskGoalService.completedTaskStatus(
     taskGoalId,
     taskId,
+    files,
   );
 
   // Send response

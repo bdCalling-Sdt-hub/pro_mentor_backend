@@ -12,13 +12,14 @@ export const handleChatEvents = async (socket:any, data:any, callback:any) => {
   console.log('first ', data);
 //   console.log('First:', JSON.stringify(data, null, 2)); 
   console.log('socket decodedToken ', socket?.decodedToken);
-  console.log('socket decodedToken userId ', socket?.decodedToken?.userId);
+  // console.log('socket decodedToken userId ', socket?.decodedToken?.userId);
   try {
-    console.log('chat first-1')
+    // console.log('chat first-1')
+    console.log("data",data)
     
     let chat = {};
-console.log('chat first-2');
-console.log('data', data);
+// console.log('chat first-2');
+// console.log('data', data);
 console.log('data.participant', data.participant);
     if (data.participant) {
         console.log('chat first-3');
@@ -41,7 +42,7 @@ console.log('data.participant', data.participant);
         socket.decodedToken.userId,
         data.participant,
       );
-
+console.log({chat})
       //   console.log("chat ", chat);
     //   callback({
     //     status: 'Success',
