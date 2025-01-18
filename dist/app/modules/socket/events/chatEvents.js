@@ -13,20 +13,20 @@ exports.handleChatEvents = void 0;
 const chat_service_1 = require("../../chat/chat.service");
 const handleChatEvents = (socket, data, callback) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    console.log('first ', data);
-    //   console.log('First:', JSON.stringify(data, null, 2)); 
-    console.log('socket decodedToken ', socket === null || socket === void 0 ? void 0 : socket.decodedToken);
-    console.log('socket decodedToken userId ', (_a = socket === null || socket === void 0 ? void 0 : socket.decodedToken) === null || _a === void 0 ? void 0 : _a.userId);
+    // console.log('first ', data);
+    //   // console.log('First:', JSON.stringify(data, null, 2)); 
+    // console.log('socket decodedToken ', socket === null || socket === void 0 ? void 0 : socket.decodedToken);
+    // console.log('socket decodedToken userId ', (_a = socket === null || socket === void 0 ? void 0 : socket.decodedToken) === null || _a === void 0 ? void 0 : _a.userId);
     try {
-        console.log('chat first-1');
+        // console.log('chat first-1');
         let chat = {};
-        console.log('chat first-2');
-        console.log('data', data);
-        console.log('data.participant', data.participant);
+        // console.log('chat first-2');
+        // console.log('data', data);
+        // console.log('data.participant', data.participant);
         if (data.participant) {
-            console.log('chat first-3');
+            // console.log('chat first-3');
             const existingChat = yield chat_service_1.chatService.getChatByParticipants(socket.decodedToken.userId, data.participant);
-            console.log('existingChat', existingChat);
+            // console.log('existingChat', existingChat);
             if (existingChat && existingChat.status === 'accepted') {
                 callback({
                     status: 'Success',
@@ -36,7 +36,7 @@ const handleChatEvents = (socket, data, callback) => __awaiter(void 0, void 0, v
                 return;
             }
             chat = yield chat_service_1.chatService.createChat(socket.decodedToken.userId, data.participant);
-            //   console.log("chat ", chat);
+            //   // console.log("chat ", chat);
             //   callback({
             //     status: 'Success',
             //     chatId: chat._id,
@@ -102,7 +102,7 @@ exports.handleChatEvents = handleChatEvents;
 //   //   });
 //   // });
 //   io.on('connection', (socket) => {
-//     console.log(`ID: ${socket.id} just connected`);
+//     // console.log(`ID: ${socket.id} just connected`);
 //     socket.on('request-chat', async (data, callback) => {
 //       try {
 //         let chat;
@@ -123,7 +123,7 @@ exports.handleChatEvents = handleChatEvents;
 //               data: chat,
 //             });
 //           }
-//           console.log(chat);
+//           // console.log(chat);
 //           data.participants.forEach(async (participant) => {
 //             if (participant.toString() !== data.creator) {
 //               const userNotification = {
@@ -134,7 +134,7 @@ exports.handleChatEvents = handleChatEvents;
 //               const userNewNotification =
 //                 await addNotification(userNotification);
 //               const roomId = 'user-notification::' + participant.toString();
-//               console.log(userNewNotification);
+//               // console.log(userNewNotification);
 //               io.emit(roomId, userNewNotification);
 //             }
 //             // const roomID = 'chat-notification::' + participant.toString();
@@ -158,12 +158,12 @@ exports.handleChatEvents = handleChatEvents;
 //       try {
 //         data.messageType = 'message';
 //         const conversation = await addConversaton(data);
-//         console.log(data.chat);
+//         // console.log(data.chat);
 //         const chat = await getChatById(data.chat);
 //         // const sender = await findById(data.sender);
 //         chat.participants.forEach(async (participant) => {
 //           if (participant.toString() !== data?.sender) {
-//             console.log(participant);
+//             // console.log(participant);
 //             const eventName = 'receive-message::' + participant.toString();
 //             const eventData = {
 //               conversation,
@@ -171,7 +171,7 @@ exports.handleChatEvents = handleChatEvents;
 //             io.emit(eventName, eventData);
 //           }
 //         });
-//         console.log(chat);
+//         // console.log(chat);
 //         await Chat.updateOne(
 //           { _id: data.chat },
 //           {
@@ -187,7 +187,7 @@ exports.handleChatEvents = handleChatEvents;
 //           const chatListforUser = await getChatByParticipantId({
 //             participants: participant,
 //           });
-//           console.log(chatListforUser);
+//           // console.log(chatListforUser);
 //           const roomId = 'update-chatlist::' + participant.toString();
 //           io.emit(roomId, chatListforUser);
 //         });
@@ -202,7 +202,7 @@ exports.handleChatEvents = handleChatEvents;
 //       }
 //     });
 //     socket.on('disconnect', () => {
-//       console.log(`ID: ${socket.id} disconnected`);
+//       // console.log(`ID: ${socket.id} disconnected`);
 //     });
 //   });
 // };

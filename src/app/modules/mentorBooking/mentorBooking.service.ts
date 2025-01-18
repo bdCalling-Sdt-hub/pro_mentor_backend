@@ -25,7 +25,7 @@ const createMentorBookingService = async (payload: TMentorBooking) => {
   session.startTransaction();
 
   try {
-    console.log('payload', payload);
+    // console.log('payload', payload);
 
     if (!payload.mentorId || !payload.menteeId) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Mentor or Mentee not found!');
@@ -94,7 +94,7 @@ const getAllMentorBookingByIdQuery = async (
   query: Record<string, unknown>,
   mentorId: string,
 ) => {
-  console.log('mentorId', mentorId);
+  // console.log('mentorId', mentorId);
   const BookingQuery = new QueryBuilder(
     MentorBooking.find({ mentorId }).populate('mentorId').populate('menteeId'),
     query,
@@ -114,7 +114,7 @@ const getAllMenteeBookingByQuery = async (
   query: Record<string, unknown>,
   menteeId: string,
 ) => {
-  console.log('menteeId', menteeId);
+  // console.log('menteeId', menteeId);
 
   // Create the base query using QueryBuilder
   const bookingQuery = new QueryBuilder(
@@ -129,7 +129,7 @@ const getAllMenteeBookingByQuery = async (
 
   // Execute the query to fetch bookings
   const result = await bookingQuery.modelQuery;
-  console.log({result})
+  // console.log({result})
 
   // Now populate 'mentorRegistrationId' for each mentorId
   for (let booking of result) {
@@ -233,8 +233,8 @@ const acceptMentorBookingQuery = async (id: string) => {
 
 const cencelMentorBookingQuery = async (id: string) => {
   const mentorBooking = await MentorBooking.findById(id);
-  console.log('id ', id);
-  console.log('mentorBooking ', mentorBooking);
+  // console.log('id ', id);
+  // console.log('mentorBooking ', mentorBooking);
   if (!mentorBooking) {
     throw new AppError(404, 'Mentor Booking  Not Found!!');
   }

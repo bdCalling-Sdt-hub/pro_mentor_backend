@@ -67,7 +67,7 @@ const addWithdrawService = async (payload: TWithdraw) => {
       );
     }
   } 
-console.log('payload payload', payload);
+// console.log('payload payload', payload);
   const result = await Withdraw.create(payload);
 
   return result;

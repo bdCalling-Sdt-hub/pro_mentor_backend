@@ -44,15 +44,15 @@ export const deleteChatList = async (chatId:any) => {
 
 // Get chats by participant ID with pagination and filtering
 export const getChatByParticipantId = async (filters:any, options:any) => {
-  console.log(filters, options);
-  console.log('filters ----', filters);
+  // console.log(filters, options);
+  // console.log('filters ----', filters);
   try {
     const page = Number(options.page) || 1;
     const limit = Number(options.limit) || 10;
     const skip = (page - 1) * limit;
 
     const participantId = new mongoose.Types.ObjectId(filters.participantId);
-    console.log('participantId===', participantId);  
+    // console.log('participantId===', participantId);  
     
     const name = filters.name || '';
 
@@ -140,7 +140,7 @@ export const getChatByParticipantId = async (filters:any, options:any) => {
         : 0;
     const totalPages = Math.ceil(totalResults / limit);
     const pagination = { totalResults, totalPages, currentPage: page, limit };
-console.log('allChatLists--', allChatLists);
+// console.log('allChatLists--', allChatLists);
     return { chatList: allChatLists[0]?.data, pagination };
   } catch (error) {
     console.error(error);

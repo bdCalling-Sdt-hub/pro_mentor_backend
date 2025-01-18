@@ -13,7 +13,7 @@ const createMentorTaskGoal = catchAsync(async (req, res) => {
   //  taskfiles: taskGoalFiles, // Add the file paths
  };
 
- console.log('bodyData', bodyData);
+ // console.log('bodyData', bodyData);
 
   const result =
     await mentorTaskGoalService.createMentorTaskGoalService(bodyData);
@@ -65,7 +65,7 @@ const createMentorTaskGoal = catchAsync(async (req, res) => {
 
 const addTaskToTaskGoal = catchAsync(async (req, res) => {
   // const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-  // // console.log('files', files);
+  // // // console.log('files', files);
 
  
   // // Extract task file paths
@@ -79,7 +79,7 @@ const addTaskToTaskGoal = catchAsync(async (req, res) => {
     // taskfiles: taskGoalFiles,
     status:"pending",
   };
-  console.log('taskData', taskData);
+  // console.log('taskData', taskData);
 
   const result = await mentorTaskGoalService.addTaskToTaskGoalService(taskData);
 
@@ -145,7 +145,7 @@ const completedTaskStatus = catchAsync(async (req, res) => {
 
   //ddddd
   const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-  // console.log('files', files);
+  // // console.log('files', files);
 
   // Extract task file paths
 

@@ -70,17 +70,17 @@ const createMentorBookingService = async (payload: TShedualBooking) => {
       duration: result[0].duration,
     };
 
-console.log('......error....1.....');
+// console.log('......error....1.....');
     // Example usage
     const meetingLink = await generateZoomMeetingLink(meetingData);
-    console.log('......error......2...');
-    console.log('meetingLink', meetingLink);
-    console.log('......error.......3..');
+    // console.log('......error......2...');
+    // console.log('meetingLink', meetingLink);
+    // console.log('......error.......3..');
 
     if (!meetingLink) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to add booking');
     }
-console.log('......error....4.....');
+// console.log('......error....4.....');
 
 // {
 //   meetingLink: 'https://us05web.zoom.us/j/86238675435?pwd=oo95DlDSI8l2Dwzua4bQiH8PAKA3in.1',
@@ -104,10 +104,10 @@ console.log('......error....4.....');
        );
      }
 
-     console.log('......error....5.....');
+     // console.log('......error....5.....');
 
-     console.log('result booking', result[0]);
-    // console.log(meetingDetails);
+     // console.log('result booking', result[0]);
+    // // console.log(meetingDetails);
     await session.commitTransaction();
      session.endSession();
     return result[0];
@@ -176,7 +176,7 @@ const reSheduleMentorBookingService = async (id: string, payload: TShedualBookin
     endTime: payload.endTime,
   };
 
-  console.log('updateReSheduleData', updateReSheduleData);
+  // console.log('updateReSheduleData', updateReSheduleData);
   const result = await ScheduleBooking.findOneAndUpdate(
     { _id: id },
     updateReSheduleData,
@@ -273,7 +273,7 @@ const getAllMentorByMenteeBookingByQuery = async (
   query: Record<string, unknown>,
   mentorId: string
 ) => {
-  console.log('query', query);
+  // console.log('query', query);
   
   const BookingQuery = new QueryBuilder(
     ScheduleBooking.find({ mentorId }).populate('mentorId').populate('menteeId'),

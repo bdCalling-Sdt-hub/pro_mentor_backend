@@ -8,7 +8,7 @@ import httpStatus from 'http-status';
 import { User } from './user.models';
 
 const createUser = catchAsync(async (req: Request, res: Response) => {
-  console.log(req.body);
+  // console.log(req.body);
   const createUserToken = await userService.createUserToken(req.body);
 
   sendResponse(res, {
@@ -20,11 +20,11 @@ const createUser = catchAsync(async (req: Request, res: Response) => {
 });
 
 const userCreateVarification = catchAsync(async (req, res) => {
-  console.log('..........1..........');
+  // console.log('..........1..........');
   const token = req.headers?.token as string;
-  console.log('token', token);
+  // console.log('token', token);
   const { otp } = req.body;
-  console.log('otp', otp);
+  // console.log('otp', otp);
   const newUser = await userService.otpVerifyAndCreateUser({ otp, token });
 
   return sendResponse(res, {
@@ -145,8 +145,8 @@ const updateMyProfile = catchAsync(async (req: Request, res: Response) => {
   if (req?.file) {
     req.body.image = storeFile('profile', req?.file?.filename);
   }
-  // console.log('file', req?.file);
-  // console.log('body data', req.body);
+  // // console.log('file', req?.file);
+  // // console.log('body data', req.body);
   
   
 

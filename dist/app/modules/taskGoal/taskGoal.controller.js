@@ -22,7 +22,7 @@ const createMentorTaskGoal = (0, catchAsync_1.default)((req, res) => __awaiter(v
     const { userId } = req.user;
     // Construct payload for service
     const bodyData = Object.assign(Object.assign({}, req.body), { mentorId: userId });
-    console.log('bodyData', bodyData);
+    // console.log('bodyData', bodyData);
     const result = yield taskGoal_service_1.mentorTaskGoalService.createMentorTaskGoalService(bodyData);
     // Send response
     (0, sendResponse_1.default)(res, {
@@ -60,12 +60,12 @@ const createMentorTaskGoal = (0, catchAsync_1.default)((req, res) => __awaiter(v
 const addTaskToTaskGoal = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const files = req.files;
-    // console.log('files', files);
+    // // console.log('files', files);
     // Extract task file paths
     const taskGoalFiles = (_a = files['taskfiles']) === null || _a === void 0 ? void 0 : _a.map((file) => file.path.replace(/^public[\\/]/, ''));
     // Construct payload for service
     const taskData = Object.assign(Object.assign({}, req.body), { taskfiles: taskGoalFiles, status: "pending" });
-    console.log('taskData', taskData);
+    // console.log('taskData', taskData);
     const result = yield taskGoal_service_1.mentorTaskGoalService.addTaskToTaskGoalService(taskData);
     // Send response
     (0, sendResponse_1.default)(res, {

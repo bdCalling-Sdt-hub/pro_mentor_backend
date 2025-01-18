@@ -63,7 +63,7 @@ export const generateZoomMeetingLink = async ({
   try {
     const accessToken = await getZoomAccessToken();
 
-    console.log('accessToken accessToken', accessToken);
+    // console.log('accessToken accessToken', accessToken);
 
     // Format the date and time into ISO 8601
     const startTime = formatDateTime(date, time); // Use default date and time if not provided
@@ -126,20 +126,20 @@ export const generateZoomMeetingLink = async ({
 //   duration: 90,
 // });
 
-// console.log(meetingDetails);
+// // console.log(meetingDetails);
 
 export default { getZoomAccessToken, formatDateTime };
 
 const joinScheduleBookingZoomLinkEmail = async (): Promise<void> => {
   try {
     // Fetch all the scheduled bookings and populate mentee and mentor details
-    console.log('current date', new Date());
+    // console.log('current date', new Date());
 
     // Get the current date without time (midnight of today)
     const todayStart = moment().startOf('day').toDate();
     const todayEnd = moment().endOf('day').toDate();
 
-    console.log({ todayStart, todayEnd });
+    // console.log({ todayStart, todayEnd });
     const bookingScheduleData = await ScheduleBooking.find({
       bookingDate: {
         $gte: todayStart, // Greater than or equal to midnight
@@ -148,10 +148,10 @@ const joinScheduleBookingZoomLinkEmail = async (): Promise<void> => {
     })
       .populate('menteeId')
       .populate('mentorId');
-    console.log({ bookingScheduleData });
+    // console.log({ bookingScheduleData });
 
     const currentTime = new Date().getTime();
-    console.log('currentTime', currentTime);
+    // console.log('currentTime', currentTime);
 
  
 
@@ -161,16 +161,16 @@ const joinScheduleBookingZoomLinkEmail = async (): Promise<void> => {
       const mentor: any = booking.mentorId;
       const zoomLink = booking?.zoomMeetingId?.meetingLink;
       const bookingTime = booking?.startTime;
-      console.log({ bookingTime });
+      // console.log({ bookingTime });
 const bookingStartTime = moment(bookingTime, 'hh:mm A').toDate().getTime();
-console.log({ bookingStartTime });
+// console.log({ bookingStartTime });
 
       // Calculate the difference in minutes between the booking start time and the current time
       const timeMinus = bookingStartTime - currentTime;
-      console.log({ timeMinus });
+      // console.log({ timeMinus });
 
       // const timeMinusInMinutes = timeMinus / 1000 / 60;
-      // console.log({ timeMinusInMinutes });
+      // // console.log({ timeMinusInMinutes });
 
       // Check if the current time is exactly 2 minutes before the start time
       if (timeMinus <= 10 * 60 * 1000 && timeMinus > 0) {
@@ -193,7 +193,7 @@ console.log({ bookingStartTime });
         // Send email to mentor
         await sendEmail(mentor?.email, subject, emailBody);
       } else {
-        console.log('The session is not within 10 minutes.');
+        // console.log('The session is not within 10 minutes.');
       }
     }
   } catch (error) {
@@ -203,12 +203,12 @@ console.log({ bookingStartTime });
 
 // Schedule the cron job to check every minute
 cron.schedule('*/5 * * * *', async () => {
-  console.log('Checking for upcoming sessions...');
+  // console.log('Checking for upcoming sessions...');
   await joinScheduleBookingZoomLinkEmail();
-  console.log('mail send')
+  // console.log('mail send')
 });
 // cron.schedule('* * * * *', async () => {
-//   console.log('Checking for upcoming sessions...');
+//   // console.log('Checking for upcoming sessions...');
 //   await joinScheduleBookingZoomLinkEmail();
 // });
 

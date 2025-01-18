@@ -11,12 +11,12 @@ import ScheduleBooking from '../shediulBooking/shediulBooking.model';
 
 const createAvailableService = async (payload: TAvailableTime) => {
 
-  console.log('availableTime', payload);
+  // console.log('availableTime', payload);
 
 //  const result = generateSlotsForDays(
 
 //  );
-//  console.log('result', result);
+//  // console.log('result', result);
 
 //   const result = await AvailableTime.create(payload);
 //   if (!result) {
@@ -87,11 +87,11 @@ const filterUnavailableSlots = (availableSlots: string[], bookings: any[]) => {
 
 // Main service function to get available slots
 const getMentorAvailableTimeService = async (mentorId: string, date: string) => {
-  console.log('mentorId:', mentorId);
-  console.log('date:', date);
+  // console.log('mentorId:', mentorId);
+  // console.log('date:', date);
 
   const dayName = new Date(date).toLocaleDateString('en-US', { weekday: 'long' });
-  console.log('Day of the week:', dayName);
+  // console.log('Day of the week:', dayName);
 
   // 1. Check if the mentor is available on the specified day
   const mentorAvailability = await MentorRegistration.findOne({
@@ -103,7 +103,7 @@ const getMentorAvailableTimeService = async (mentorId: string, date: string) => 
     throw new Error('The mentor is not available on this day');
   }
 
-  console.log('Mentor available:', mentorAvailability);
+  // console.log('Mentor available:', mentorAvailability);
 
   const { startTime: mentorStartTime, endTime: mentorEndTime } = mentorAvailability;
 
@@ -113,23 +113,23 @@ const getMentorAvailableTimeService = async (mentorId: string, date: string) => 
     bookingDate: new Date(date), // Date should match exactly
   });
 
-  console.log('Bookings on this day:', bookings);
+  // console.log('Bookings on this day:', bookings);
 
   // 3. Generate all possible time slots for the mentor's available time range
   const availableSlots = generateSlotsForDays(mentorStartTime, mentorEndTime);
-  console.log('availableSlots:', availableSlots);
+  // console.log('availableSlots:', availableSlots);
 
   // 4. Filter out unavailable slots based on existing bookings
   const unavailableSlots = filterUnavailableSlots(availableSlots, bookings);
 
-  console.log('unavailableSlots:', unavailableSlots);
+  // console.log('unavailableSlots:', unavailableSlots);
 
   // 5. Filter out the unavailable slots from the available slots
   const finalAvailableSlots = availableSlots.filter(
     (slot) => !unavailableSlots.includes(slot),
   );
 
-  console.log('Final Available Slots:', finalAvailableSlots);
+  // console.log('Final Available Slots:', finalAvailableSlots);
 
   return finalAvailableSlots;
 };

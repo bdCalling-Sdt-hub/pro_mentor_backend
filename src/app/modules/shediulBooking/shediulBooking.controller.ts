@@ -8,16 +8,16 @@ import ScheduleBooking from './shediulBooking.model';
 
 const createMentorBooking = catchAsync(async (req, res) => {
   const bodyData = req.body;
-  console.log('bodyData', bodyData);
+  // console.log('bodyData', bodyData);
   const { userId } = req.user;
   bodyData.menteeId = userId;
-  console.log('bodyData.bookingTime', bodyData.bookingTime);
+  // console.log('bodyData.bookingTime', bodyData.bookingTime);
   const startTime = moment(bodyData.bookingTime, 'hh:mm A');
   const endTime = startTime.clone().add(bodyData.duration - 1, 'minutes');
   bodyData.startTime = startTime.format('hh:mm A');
   bodyData.endTime = endTime.format('hh:mm A');
 
-  console.log({ startTime, endTime });
+  // console.log({ startTime, endTime });
 
   const result =
     await mentorBookingService.createMentorBookingService(bodyData);

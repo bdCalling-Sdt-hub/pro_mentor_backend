@@ -25,7 +25,7 @@ const notification_service_1 = require("../notification/notification.service");
 const wallet_model_1 = require("../wallet/wallet.model");
 const addPaymentService = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const { mentorId, menteeId, sheduleBookingId, amount, method, bankDetails, paypalPayDetails, applePayDetails, transactionId, transactionDate, bookingDate, bookingTime, duration, subject, jobTitle, industryField, yearOfExperience, educationLevel, description, } = payload;
-    console.log('......payload......');
+    // console.log('......payload......');
     const status = 'pending';
     const paymentData = {
         mentorId,
@@ -40,15 +40,15 @@ const addPaymentService = (payload) => __awaiter(void 0, void 0, void 0, functio
         transactionId,
         transactionDate,
     };
-    console.log('......paymentData......');
+    // console.log('......paymentData......');
     // Start a session for transaction
     const session = yield mongoose_1.default.startSession();
     session.startTransaction();
     try {
-        console.log('......try......');
+        // console.log('......try......');
         // Validate mentor
         const mentor = yield user_models_1.User.findById(mentorId).session(session);
-        console.log('mentor', mentor);
+        // console.log('mentor', mentor);
         if (!mentor) {
             throw new AppError_1.default(400, 'Mentor is not found!');
         }
@@ -57,7 +57,7 @@ const addPaymentService = (payload) => __awaiter(void 0, void 0, void 0, functio
         }
         // Validate mentee
         const mentee = yield user_models_1.User.findById(menteeId).session(session);
-        console.log('mentee', mentee);
+        // console.log('mentee', mentee);
         if (!mentee) {
             throw new AppError_1.default(400, 'Mentee is not found!');
         }
@@ -91,7 +91,7 @@ const addPaymentService = (payload) => __awaiter(void 0, void 0, void 0, functio
         }
         // Create payment record
         const result = yield payment_model_1.Payment.create([paymentData], { session });
-        console.log('result', result);
+        // console.log('result', result);
         if (!result || !result[0]) {
             throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Failed to add Payment!');
         }
@@ -120,7 +120,7 @@ const addPaymentService = (payload) => __awaiter(void 0, void 0, void 0, functio
             educationLevel,
             description,
         };
-        console.log('bookingData', bookingData);
+        // console.log('bookingData', bookingData);
         const bookingResult = yield shediulBooking_service_1.mentorBookingService.createMentorBookingService(bookingData);
         if (!bookingResult) {
             throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Failed to add Booking!');
@@ -196,19 +196,19 @@ const addPaymentService = (payload) => __awaiter(void 0, void 0, void 0, functio
 //   try {
 //     session.startTransaction();
 //     const mentor = await User.findById(payload.mentorId);
-//     console.log('.....try-1.......');
+//     // console.log('.....try-1.......');
 //     if (!mentor) {
 //       throw new AppError(400, 'Mentor is not found!');
 //     }
 //     if (mentor.role !== 'mentor') {
 //       throw new AppError(400, 'User is not authorized as a Mentor!');
 //     }
-//     console.log('.....try-2.......');
-//     // console.log(paymentData);
+//     // console.log('.....try-2.......');
+//     // // console.log(paymentData);
 //     const result = await Payment.create([paymentData], { session });
 //     // const result = await Payment.create([paymentData], { session });
-//     console.log('result', result);
-//     console.log('.....try-3.......');
+//     // console.log('result', result);
+//     // console.log('.....try-3.......');
 //     // const result = await Order.create([data], { session });
 //     // if (!result.length) {
 //     //   throw new Error('Failed to payment');
@@ -261,18 +261,18 @@ const addPaymentService = (payload) => __awaiter(void 0, void 0, void 0, functio
 //     transactionDate,
 //   };
 //     const mentor = await User.findById(payload.mentorId);
-//     console.log('.....try-1.......');
+//     // console.log('.....try-1.......');
 //     if (!mentor) {
 //       throw new AppError(400, 'Mentor is not found!');
 //     }
 //     if (mentor.role !== 'mentor') {
 //       throw new AppError(400, 'User is not authorized as a Mentor!');
 //     }
-//     console.log('.....try-2.......');
-//     console.log(paymentData);
+//     // console.log('.....try-2.......');
+//     // console.log(paymentData);
 //     const result = await Payment.create(paymentData);
-//     // console.log('result', result);
-//     console.log('.....try-3.......');
+//     // // console.log('result', result);
+//     // console.log('.....try-3.......');
 //     // const result = await Order.create([data], { session });
 //     if (!result) {
 //       throw new Error('Failed to payment');

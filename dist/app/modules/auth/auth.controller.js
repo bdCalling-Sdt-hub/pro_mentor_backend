@@ -20,9 +20,9 @@ const config_1 = __importDefault(require("../../config"));
 const http_status_1 = __importDefault(require("http-status"));
 // login
 const login = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('login-1');
+    // console.log('login-1');
     const result = yield auth_service_1.authServices.login(req.body);
-    console.log('login-2');
+    // console.log('login-2');
     const cookieOptions = {
         secure: false,
         httpOnly: true,

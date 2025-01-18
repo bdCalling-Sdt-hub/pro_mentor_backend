@@ -22,15 +22,15 @@ const AppError_1 = __importDefault(require("../../error/AppError"));
 const shediulBooking_model_1 = __importDefault(require("./shediulBooking.model"));
 const createMentorBooking = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const bodyData = req.body;
-    console.log('bodyData', bodyData);
+    // console.log('bodyData', bodyData);
     const { userId } = req.user;
     bodyData.menteeId = userId;
-    console.log('bodyData.bookingTime', bodyData.bookingTime);
+    // console.log('bodyData.bookingTime', bodyData.bookingTime);
     const startTime = (0, moment_1.default)(bodyData.bookingTime, 'hh:mm A');
     const endTime = startTime.clone().add(bodyData.duration - 1, 'minutes');
     bodyData.startTime = startTime.format('hh:mm A');
     bodyData.endTime = endTime.format('hh:mm A');
-    console.log({ startTime, endTime });
+    // console.log({ startTime, endTime });
     const result = yield shediulBooking_service_1.mentorBookingService.createMentorBookingService(bodyData);
     // Send response
     (0, sendResponse_1.default)(res, {

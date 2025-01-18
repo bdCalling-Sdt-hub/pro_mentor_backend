@@ -59,14 +59,14 @@ exports.deleteChatList = deleteChatList;
 // Get chats by participant ID with pagination and filtering
 const getChatByParticipantId = (filters, options) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c, _d, _e;
-    console.log(filters, options);
-    console.log('filters ----', filters);
+    // console.log(filters, options);
+    // console.log('filters ----', filters);
     try {
         const page = Number(options.page) || 1;
         const limit = Number(options.limit) || 10;
         const skip = (page - 1) * limit;
         const participantId = new mongoose_1.default.Types.ObjectId(filters.participantId);
-        console.log('participantId===', participantId);
+        // console.log('participantId===', participantId);
         const name = filters.name || '';
         const allChatLists = yield chat_model_1.default.aggregate([
             { $match: { participants: participantId } },
@@ -150,7 +150,7 @@ const getChatByParticipantId = (filters, options) => __awaiter(void 0, void 0, v
             : 0;
         const totalPages = Math.ceil(totalResults / limit);
         const pagination = { totalResults, totalPages, currentPage: page, limit };
-        console.log('allChatLists--', allChatLists);
+        // console.log('allChatLists--', allChatLists);
         return { chatList: (_e = allChatLists[0]) === null || _e === void 0 ? void 0 : _e.data, pagination };
     }
     catch (error) {

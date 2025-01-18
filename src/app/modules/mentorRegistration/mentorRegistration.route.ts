@@ -91,7 +91,7 @@ mentorRegistrationRouter.use(
   (err: any, req: Request, res: Response, next: NextFunction): any => {
     // Handle multer errors (file upload issues)
     if (err instanceof multer.MulterError) {
-      console.log(err);
+      // console.log(err);
       return res.status(400).json({ message: err.message });
     }
     // Handle custom validation errors or other errors

@@ -26,7 +26,7 @@ export interface OTPVerifyAndCreateUserProps {
 }
 
 const createUserToken = async (payload: TUserCreate) => {
-  console.log('payload service user')
+  // console.log('payload service user')
   const { role, email, fullName, password, phone, about, professional } =
     payload;
 
@@ -84,7 +84,7 @@ const createUserToken = async (payload: TUserCreate) => {
   }
 
   // send email
-  console.log('before otp send email');
+  // console.log('before otp send email');
   process.nextTick(async () => {
     await otpSendEmail({
       sentTo: email,
@@ -94,7 +94,7 @@ const createUserToken = async (payload: TUserCreate) => {
       expiredAt: expiredAt,
     });
   });
-  console.log('after otp send email');
+  // console.log('after otp send email');
 
   // crete token
   const createUserToken = createToken({
@@ -182,8 +182,8 @@ const otpVerifyAndCreateUser = async ({
       role: user?.role,
     };
 
-    // console.log({ jwtPayload });
-    console.log('user user', user);
+    // // console.log({ jwtPayload });
+    // console.log('user user', user);
 
     const accessToken = createToken({
       payload: jwtPayload,
@@ -197,7 +197,7 @@ const otpVerifyAndCreateUser = async ({
 const updateUser = async (id: string, payload: Partial<TUser>) => {
   const { role, email, isActive, isDeleted,password, ...rest } = payload;
 
-  console.log('rest data',rest)
+  // console.log('rest data',rest)
 
   const user = await User.findByIdAndUpdate(id, rest, { new: true });
 
@@ -355,7 +355,7 @@ const blockedUser = async (id: string) => {
   //   status = true;
   // }
   let status = !singleUser.isActive; 
-  console.log('status', status);
+  // console.log('status', status);
   const user = await User.findByIdAndUpdate(
     id,
     { isActive: status },

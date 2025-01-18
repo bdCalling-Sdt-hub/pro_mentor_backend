@@ -23,7 +23,7 @@ import { OTPVerifyAndCreateUserProps, userService } from '../user/user.service';
 
 // Login
 const login = async (payload: TLogin) => {
-  console.log('payload', payload)
+  // console.log('payload', payload)
   const user = await User.isUserActive(payload?.email);
 
   if (!user) {
@@ -42,7 +42,7 @@ const login = async (payload: TLogin) => {
     role: user?.role,
   };
 
-  console.log({ jwtPayload });
+  // console.log({ jwtPayload });
 
   const accessToken = createToken({
     payload: jwtPayload,
@@ -50,7 +50,7 @@ const login = async (payload: TLogin) => {
     expity_time: config.jwt_access_expires_in as string,
   });
 
-  console.log({ accessToken });
+  // console.log({ accessToken });
 
   const refreshToken = createToken({
     payload: jwtPayload,
@@ -118,7 +118,7 @@ const forgotPasswordOtpMatch = async ({
   otp,
   token,
 }: OTPVerifyAndCreateUserProps) => {
-  console.log({ otp, token });
+  // console.log({ otp, token });
   if (!token) {
     throw new AppError(httpStatus.BAD_REQUEST, 'Token not found');
   }
@@ -176,7 +176,7 @@ const resetPassword = async ({
   newPassword: string;
   confirmPassword: string;
 }) => {
-  console.log(newPassword, confirmPassword);
+  // console.log(newPassword, confirmPassword);
   if (newPassword !== confirmPassword) {
     throw new AppError(httpStatus.BAD_REQUEST, 'Password does not match');
   }
@@ -226,7 +226,7 @@ const changePassword = async ({
   newPassword: string;
   oldPassword: string;
 }) => {
-  console.log({ userId, newPassword, oldPassword });
+  // console.log({ userId, newPassword, oldPassword });
   const user = await User.IsUserExistById(userId);
 
   if (!user) {

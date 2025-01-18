@@ -17,10 +17,10 @@ const mentorRegistration_model_1 = require("../mentorRegistration/mentorRegistra
 const shediulBooking_model_1 = __importDefault(require("../shediulBooking/shediulBooking.model"));
 // import { generateSlotsForDays } from './availableTime.utils';
 const createAvailableService = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('availableTime', payload);
+   // console.log('availableTime', payload);
     //  const result = generateSlotsForDays(
     //  );
-    //  console.log('result', result);
+    // // console.log('result', result);
     //   const result = await AvailableTime.create(payload);
     //   if (!result) {
     //     throw new AppError(httpStatus.BAD_REQUEST, 'Failed to Available time added!!');
@@ -73,10 +73,10 @@ const filterUnavailableSlots = (availableSlots, bookings) => {
 };
 // Main service function to get available slots
 const getMentorAvailableTimeService = (mentorId, date) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('mentorId:', mentorId);
-    console.log('date:', date);
+   // console.log('mentorId:', mentorId);
+   // console.log('date:', date);
     const dayName = new Date(date).toLocaleDateString('en-US', { weekday: 'long' });
-    console.log('Day of the week:', dayName);
+   // console.log('Day of the week:', dayName);
     // 1. Check if the mentor is available on the specified day
     const mentorAvailability = yield mentorRegistration_model_1.MentorRegistration.findOne({
         mentorId,
@@ -85,23 +85,23 @@ const getMentorAvailableTimeService = (mentorId, date) => __awaiter(void 0, void
     if (!mentorAvailability) {
         throw new Error('The mentor is not available on this day');
     }
-    console.log('Mentor available:', mentorAvailability);
+   // console.log('Mentor available:', mentorAvailability);
     const { startTime: mentorStartTime, endTime: mentorEndTime } = mentorAvailability;
     // 2. Find all bookings for the mentor on the specified date
     const bookings = yield shediulBooking_model_1.default.find({
         mentorId,
         bookingDate: new Date(date), // Date should match exactly
     });
-    console.log('Bookings on this day:', bookings);
+   // console.log('Bookings on this day:', bookings);
     // 3. Generate all possible time slots for the mentor's available time range
     const availableSlots = generateSlotsForDays(mentorStartTime, mentorEndTime);
-    console.log('availableSlots:', availableSlots);
+   // console.log('availableSlots:', availableSlots);
     // 4. Filter out unavailable slots based on existing bookings
     const unavailableSlots = filterUnavailableSlots(availableSlots, bookings);
-    console.log('unavailableSlots:', unavailableSlots);
+   // console.log('unavailableSlots:', unavailableSlots);
     // 5. Filter out the unavailable slots from the available slots
     const finalAvailableSlots = availableSlots.filter((slot) => !unavailableSlots.includes(slot));
-    console.log('Final Available Slots:', finalAvailableSlots);
+   // console.log('Final Available Slots:', finalAvailableSlots);
     return finalAvailableSlots;
 });
 // const getSingleAvailableQuery = async (id: string) => {

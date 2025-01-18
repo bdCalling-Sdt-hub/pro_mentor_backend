@@ -22,7 +22,7 @@ const mentorRegistration_model_1 = require("../mentorRegistration/mentorRegistra
 const user_models_1 = require("../user/user.models");
 const createReviewService = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log('Payload:', payload);
+        // console.log('Payload:', payload);
         const result = yield review_model_1.Review.create(payload);
         if (!result) {
             throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Failed to add video review!');
@@ -111,21 +111,21 @@ const deletedReviewQuery = (id, userId) => __awaiter(void 0, void 0, void 0, fun
         throw new AppError_1.default(404, 'Mentor Registration Not Found!');
     }
     const { reviewCount, ratingCount } = registration;
-    console.log('reviewCount ratingCount', reviewCount, ratingCount);
-    console.log('result.rating', result.rating);
+    // console.log('reviewCount ratingCount', reviewCount, ratingCount);
+    // console.log('result.rating', result.rating);
     const newRatingCount = ratingCount - result.rating;
-    console.log('newRatingCount', newRatingCount);
+    // console.log('newRatingCount', newRatingCount);
     const newReviewCount = reviewCount - 1;
-    console.log('newReviewCount', newReviewCount);
+    // console.log('newReviewCount', newReviewCount);
     let newAverageRating = 0;
-    console.log('newAverageRating', newAverageRating);
+    // console.log('newAverageRating', newAverageRating);
     if (newReviewCount > 0) {
         newAverageRating = newRatingCount / newReviewCount;
     }
     if (newReviewCount <= 0) {
         newAverageRating = 0;
     }
-    console.log('newAverageRating-2', newAverageRating);
+    // console.log('newAverageRating-2', newAverageRating);
     const updatedRegistration = yield mentorRegistration_model_1.MentorRegistration.findByIdAndUpdate(mentor.mentorRegistrationId, {
         reviewCount: newReviewCount,
         ratingCount: newAverageRating,

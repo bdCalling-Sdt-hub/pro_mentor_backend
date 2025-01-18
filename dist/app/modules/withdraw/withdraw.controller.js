@@ -18,9 +18,9 @@ const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
 const withdraw_service_1 = require("./withdraw.service");
 const addWithdraw = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('gas');
+    // console.log('gas');
     const withdrawData = req.body;
-    // console.log('withdrawData', withdrawData);
+    // // console.log('withdrawData', withdrawData);
     // if(withdrawData.method === 'bank'){
     //   withdrawData.bankDetails = JSON.parse(withdrawData.bankDetails);
     // }if(withdrawData.method === 'paypal'){
@@ -50,7 +50,7 @@ const addWithdraw = (0, catchAsync_1.default)((req, res, next) => __awaiter(void
 }));
 const getAllWithdraw = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield withdraw_service_1.withdrawService.getAllWithdrawService(req.query);
-    // console.log('result',result)
+    // // console.log('result',result)
     if (result) {
         (0, sendResponse_1.default)(res, {
             statusCode: http_status_1.default.OK,
@@ -69,11 +69,11 @@ const getAllWithdraw = (0, catchAsync_1.default)((req, res, next) => __awaiter(v
     }
 }));
 const getAllWithdrawByMentor = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('...........');
+    // console.log('...........');
     const { userId } = req.user;
-    console.log('userId', userId);
+    // console.log('userId', userId);
     const result = yield withdraw_service_1.withdrawService.getAllWithdrawByMentorService(req.query, userId);
-    // console.log('result',result)
+    // // console.log('result',result)
     if (result) {
         (0, sendResponse_1.default)(res, {
             statusCode: http_status_1.default.OK,

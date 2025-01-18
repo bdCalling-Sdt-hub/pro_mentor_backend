@@ -6,57 +6,41 @@ import { handleMessageEvents } from './app/modules/socket/events/messageEvents';
 import { verifyToken } from './app/utils/tokenManage';
 import { socketVerifyToken } from './app/helpers/socketVerifyToken';
 
-
 const socketIO = (io: Server) => {
   // Initialize an object to store the active users
   let activeUsers: { [key: string]: any } = {};
 
   // Middleware to handle JWT authentication
-   io.use(async (socket: Socket, next) => {
-     const token = socket.handshake.headers.authorization;
+  io.use(async (socket: Socket, next) => {
+    const token = socket?.handshake?.headers?.authorization;
 
-     if (!token) {
-       return next(new Error('Authentication error: Token not provided.'));
-     }
+    console.log(token);
 
-     const tokenParts = token.split(' ');
-     const tokenValue = tokenParts[1];
+    if (!token) {
+      return next(new Error('Authentication error: Token not provided.'));
+    }
 
-     try {
-       // Verify token using the utility function
-       const decoded = await socketVerifyToken(
-         tokenValue,
-         config.jwt_access_secret as string,
-       ); // Ensures secret is a string
-       socket.decodedToken = decoded;
-       next();
-     } catch (err) {
-       console.error('JWT Verification Error:', err);
-       return next(new Error('Authentication error: Invalid token.'));
-     }
-   });
+    const tokenParts = token.split(' ');
+    const tokenValue = tokenParts[1];
+
+    try {
+      // Verify token using the utility function
+      const decoded = await socketVerifyToken(
+        tokenValue,
+        config.jwt_access_secret as string,
+      ); // Ensures secret is a string
+      socket.decodedToken = decoded;
+      next();
+    } catch (err) {
+      console.error('JWT Verification Error:', err);
+      return next(new Error('Authentication error: Invalid token.'));
+    }
+  });
   // On new socket connection
   io.on('connection', (socket: Socket) => {
-    console.log('connected')
+    console.log('connected');
     console.log('socket decodedToken', socket.decodedToken);
     try {
-
-      // socket.on('message', (data, callback) => {
-      //   console.log('Data message:', data); // Log the incoming message
-
-      //   // Optionally call the callback to acknowledge receipt
-      //   if (callback) {
-      //     callback({
-      //       status: 'received',
-      //       message: 'Message received successfully',
-      //     });
-      //   }
-
-      //   // Emit a message back to the client or other clients
-      //   socket.emit('message', { data: data }); // Emitting the message back
-      // });
-console.log('activeUsers top', activeUsers);
-
       if (!socket?.decodedToken?.userId) {
         console.error('No user ID in decoded token');
         return;
@@ -82,7 +66,7 @@ console.log('activeUsers top', activeUsers);
       );
       // Handle other events, like 'add-new-message'
       socket.on('add-new-message', (data, callback) =>
-         handleMessageEvents(socket, data, callback, io),
+        handleMessageEvents(socket, data, callback, io),
       );
       // Other socket events...
     } catch (error) {

@@ -57,7 +57,7 @@ const addWithdrawService = (payload) => __awaiter(void 0, void 0, void 0, functi
             throw new AppError_1.default(400, 'Google Pay token is required for Google Pay Withdrawals.');
         }
     }
-    console.log('payload payload', payload);
+    // console.log('payload payload', payload);
     const result = yield withdraw_model_1.Withdraw.create(payload);
     return result;
 });

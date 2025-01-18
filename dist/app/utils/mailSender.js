@@ -27,7 +27,7 @@ const sendEmail = (to, subject, html) => __awaiter(void 0, void 0, void 0, funct
         },
     });
     try {
-        console.log('mail send started');
+        // console.log('mail send started');
         yield transporter.sendMail({
             from: 'team.robust.dev@gmail.com', // sender address
             to, // list of receivers
@@ -37,8 +37,8 @@ const sendEmail = (to, subject, html) => __awaiter(void 0, void 0, void 0, funct
         });
     }
     catch (error) {
-        console.log('send mail error:', error);
+        // console.log('send mail error:', error);
     }
-    console.log('mail sended stopped');
+    // console.log('mail sended stopped');
 });
 exports.sendEmail = sendEmail;

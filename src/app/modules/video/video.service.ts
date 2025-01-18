@@ -9,7 +9,7 @@ import { escapeRegex } from './video.utils';
 
 const createMentorVideoService = async (payload: TVideo) => {
   
-  console.log('Payload:', payload);
+  // console.log('Payload:', payload);
 
   
   const { mentorId, title, description, category, ...rest } = payload;
@@ -72,10 +72,10 @@ const getAllMentorVideoByRecommendedQuery = async (
   query: Record<string, unknown>,
   related: string,
 ) => {
-  console.log('related', related);
+  // console.log('related', related);
 
   const cleanedRelated = related?.trim();
-  console.log('cleanedRelated', cleanedRelated);
+  // console.log('cleanedRelated', cleanedRelated);
 
   if (cleanedRelated && typeof cleanedRelated !== 'string') {
     throw new AppError(
@@ -88,7 +88,7 @@ const getAllMentorVideoByRecommendedQuery = async (
   if (cleanedRelated){
     escapedRelated = escapeRegex(cleanedRelated);
   }
-  console.log('escapedRelated', escapedRelated);
+  // console.log('escapedRelated', escapedRelated);
 
   const limit = query.limit ? parseInt(query.limit as string, 10) : 10;
   const page = query.page ? parseInt(query.page as string, 10) : 1;
@@ -115,7 +115,7 @@ const getAllMentorVideoByRecommendedQuery = async (
     .limit(limit)
     .populate('mentorId');
 
-  console.log('result', result);
+  // console.log('result', result);
 
   const total = await Video.countDocuments(queryCondition);
 

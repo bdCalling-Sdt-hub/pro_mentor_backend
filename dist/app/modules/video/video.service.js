@@ -32,7 +32,7 @@ const video_model_1 = require("./video.model");
 const user_models_1 = require("../user/user.models");
 const video_utils_1 = require("./video.utils");
 const createMentorVideoService = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('Payload:', payload);
+    // console.log('Payload:', payload);
     const { mentorId, title, description, category } = payload, rest = __rest(payload, ["mentorId", "title", "description", "category"]);
     if (!mentorId || !title || !description) {
         throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Missing required fields: mentorId, title, or description');
@@ -67,9 +67,9 @@ const getAllMentorVideoByIdQuery = (query, mentorId) => __awaiter(void 0, void 0
     return { meta, result };
 });
 const getAllMentorVideoByRecommendedQuery = (query, related) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('related', related);
+    // console.log('related', related);
     const cleanedRelated = related === null || related === void 0 ? void 0 : related.trim();
-    console.log('cleanedRelated', cleanedRelated);
+    // console.log('cleanedRelated', cleanedRelated);
     if (cleanedRelated && typeof cleanedRelated !== 'string') {
         throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Related category must be a string');
     }
@@ -77,7 +77,7 @@ const getAllMentorVideoByRecommendedQuery = (query, related) => __awaiter(void 0
     if (cleanedRelated) {
         escapedRelated = (0, video_utils_1.escapeRegex)(cleanedRelated);
     }
-    console.log('escapedRelated', escapedRelated);
+    // console.log('escapedRelated', escapedRelated);
     const limit = query.limit ? parseInt(query.limit, 10) : 10;
     const page = query.page ? parseInt(query.page, 10) : 1;
     const skip = (page - 1) * limit;
@@ -99,7 +99,7 @@ const getAllMentorVideoByRecommendedQuery = (query, related) => __awaiter(void 0
         .skip(skip)
         .limit(limit)
         .populate('mentorId');
-    console.log('result', result);
+    // console.log('result', result);
     const total = yield video_model_1.Video.countDocuments(queryCondition);
     const totalPage = Math.ceil(total / limit);
     const meta = {

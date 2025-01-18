@@ -37,14 +37,14 @@ const notification_service_1 = require("../notification/notification.service");
 const createMentorRegistrationService = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const session = yield mongoose_1.default.startSession();
     session.startTransaction();
-    // console.log('payload payload payload', payload);
-    console.log('............service 1............');
+    // // console.log('payload payload payload', payload);
+    // console.log('............service 1............');
     try {
         const user = yield user_models_1.User.findById(payload.mentorId).session(session);
         if (!user) {
             throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'User Not Found!!');
         }
-        console.log({ payload });
+        // console.log({ payload });
         const result = yield mentorRegistration_model_1.MentorRegistration.create([payload], { session });
         if (!result) {
             throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Failed to create mentor registration');
@@ -71,7 +71,7 @@ const createMentorRegistrationService = (payload) => __awaiter(void 0, void 0, v
     }
 });
 const getAllMentorRegistrationQuery = (query) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('query -----11111', query);
+    // console.log('query -----11111', query);
     const { availableTime, searchTerm, sort, page, limit } = query, filters = __rest(query, ["availableTime", "searchTerm", "sort", "page", "limit"]);
     let queryStart = '';
     let queryEnd = '';
@@ -81,17 +81,17 @@ const getAllMentorRegistrationQuery = (query) => __awaiter(void 0, void 0, void 
         queryEnd = queryTimeEnd;
     }
     let queryConditions = {};
-    console.log('queryConditions 1', queryConditions);
+    // console.log('queryConditions 1', queryConditions);
     if (searchTerm) {
         queryConditions.$text = { $search: String(searchTerm) };
     }
-    console.log('queryConditions 2', queryConditions);
+    // console.log('queryConditions 2', queryConditions);
     if (filters) {
         for (const [key, value] of Object.entries(filters)) {
             queryConditions[key] = value;
         }
     }
-    console.log('queryConditions 3', queryConditions);
+    // console.log('queryConditions 3', queryConditions);
     let mentorRegistrations = yield mentorRegistration_model_1.MentorRegistration.find(queryConditions)
         .populate('mentorId')
         .sort('-reviewCount')
@@ -107,7 +107,7 @@ const getAllMentorRegistrationQuery = (query) => __awaiter(void 0, void 0, void 
         });
     }
     if (sort) {
-        console.log('sort', sort);
+        // console.log('sort', sort);
         const sortFields = sort
             .split(',')
             .reduce((acc, field) => {
@@ -116,7 +116,7 @@ const getAllMentorRegistrationQuery = (query) => __awaiter(void 0, void 0, void 
             acc[fieldName] = direction;
             return acc;
         }, {});
-        console.log('sortFields', sortFields);
+        // console.log('sortFields', sortFields);
         mentorRegistrations = yield mentorRegistration_model_1.MentorRegistration.find(queryConditions)
             .populate('mentorId')
             .sort(sortFields)
@@ -137,7 +137,7 @@ const getAllMentorRegistrationQuery = (query) => __awaiter(void 0, void 0, void 
 });
 const getMentorAvailableSlots = (query) => __awaiter(void 0, void 0, void 0, function* () {
     const { mentorId, duration, date } = query;
-    console.log('mentorId', mentorId, 'duration', duration, 'date', date);
+    // console.log('mentorId', mentorId, 'duration', duration, 'date', date);
     const registerMentor = yield mentorRegistration_model_1.MentorRegistration.findOne({ mentorId });
     if (!registerMentor) {
         throw new AppError_1.default(404, 'Register Mentor Not Found!!');
@@ -146,13 +146,13 @@ const getMentorAvailableSlots = (query) => __awaiter(void 0, void 0, void 0, fun
         mentorId,
         bookingDate: new Date(date),
     }).select('startTime  endTime');
-    console.log('startTime  ', registerMentor.startTime);
-    console.log('endTime  ', registerMentor.endTime);
-    console.log('startBreakTime  ', registerMentor.startBreakTime);
-    console.log('endBreakTime  ', registerMentor.endBreakTime);
-    console.log({ duration });
-    console.log({ bookings });
-    console.log('minimumSlotTime  ', 15);
+    // console.log('startTime  ', registerMentor.startTime);
+    // console.log('endTime  ', registerMentor.endTime);
+    // console.log('startBreakTime  ', registerMentor.startBreakTime);
+    // console.log('endBreakTime  ', registerMentor.endBreakTime);
+    // console.log({ duration });
+    // console.log({ bookings });
+    // console.log('minimumSlotTime  ', 15);
     const durationNum = Number(duration);
     const availableSlots = (0, mentorRegistration_utils_1.generateAvailableSlots)({ startTime: registerMentor.startTime,
         endTime: registerMentor.endTime,
@@ -161,7 +161,7 @@ const getMentorAvailableSlots = (query) => __awaiter(void 0, void 0, void 0, fun
         bookings,
         duration: durationNum,
         minimumSlotTime: 15, });
-    console.log({ availableSlots });
+    // console.log({ availableSlots });
     return { result: availableSlots };
 });
 const getSingleMentorRegistrationQuery = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -206,7 +206,7 @@ const updateMentorRegistrationQuery = (id, payload) => __awaiter(void 0, void 0,
     const session = yield mentorRegistration_model_1.MentorRegistration.startSession();
     session.startTransaction();
     try {
-        // console.log('payload', payload);
+        // // console.log('payload', payload);
         // Find the mentor registration
         const registerMentor = yield mentorRegistration_model_1.MentorRegistration.findById(id).session(session);
         if (!registerMentor) {
@@ -231,7 +231,7 @@ const updateMentorRegistrationQuery = (id, payload) => __awaiter(void 0, void 0,
                 image = user === null || user === void 0 ? void 0 : user.image;
             }
             else {
-                console.log('mentorId not found for the mentor');
+                // console.log('mentorId not found for the mentor');
             }
         }
         //  const image = user ? user.image : null;
@@ -255,7 +255,7 @@ const acceptSingleMentorRegistrationService = (id) => __awaiter(void 0, void 0, 
     const session = yield mongoose_1.default.startSession();
     session.startTransaction();
     try {
-        console.log('id id', id);
+        // console.log('id id', id);
         const registerMentor = yield mentorRegistration_model_1.MentorRegistration.findById(id).session(session);
         if (!registerMentor) {
             throw new AppError_1.default(404, 'Register Mentor Not Found!!');
@@ -270,13 +270,13 @@ const acceptSingleMentorRegistrationService = (id) => __awaiter(void 0, void 0, 
         if (!addWallet) {
             throw new AppError_1.default(404, 'Wallet Not Found!!');
         }
-        console.log('before send email');
+        // console.log('before send email');
         yield (0, mentorRegistration_utils_1.acceptanceRegistrationEmail)({
             sentTo: mentorRegistration.email,
             subject: 'Mentor Registration Accepted!!',
             name: mentorRegistration.fullName,
         });
-        console.log('after send email');
+        // console.log('after send email');
         yield session.commitTransaction();
         session.endSession();
         return mentorRegistration;
@@ -289,7 +289,7 @@ const acceptSingleMentorRegistrationService = (id) => __awaiter(void 0, void 0, 
     }
 });
 const cencelSingleMentorRegistrationService = (id, rejone) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('rejone ---1', rejone);
+    // console.log('rejone ---1', rejone);
     const registerMentor = yield mentorRegistration_model_1.MentorRegistration.findById(id);
     if (!registerMentor) {
         throw new AppError_1.default(404, 'Register Mentor Not Found!!');
@@ -309,7 +309,7 @@ const cencelSingleMentorRegistrationService = (id, rejone) => __awaiter(void 0, 
             name: mentorRegistration.fullName,
             rejone,
         });
-        console.log('Cancellation email sent successfully');
+        // console.log('Cancellation email sent successfully');
     }
     catch (error) {
         console.error('Error sending cancellation email:', error);

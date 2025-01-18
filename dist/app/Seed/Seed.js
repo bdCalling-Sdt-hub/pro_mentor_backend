@@ -82,7 +82,7 @@ const usersData = [
 // const dropDatabase = async () => {
 //   try {
 //     await mongoose.connection.dropDatabase();
-//     console.log('------------> Database dropped successfully! <------------');
+//     // console.log('------------> Database dropped successfully! <------------');
 //   } catch (err) {
 //     console.error('Error dropping database:', err);
 //   }
@@ -103,7 +103,7 @@ const hashPassword = (password) => __awaiter(void 0, void 0, void 0, function* (
 //       }),
 //     );
 //     await User.insertMany(hashedUsersData);
-//     console.log('Users seeded successfully!');
+//     // console.log('Users seeded successfully!');
 //   } catch (err) {
 //     console.error('Error seeding users:', err);
 //   }
@@ -114,7 +114,7 @@ const mentorShediulPricingSeed = () => __awaiter(void 0, void 0, void 0, functio
         yield mentorShediulPricing_model_1.default.deleteMany(); // Clears existing data
         const priceData = { price: 15 };
         yield mentorShediulPricing_model_1.default.create(priceData); // Correct method to insert data
-        console.log('Mentor Pricing seeded successfully!');
+        // console.log('Mentor Pricing seeded successfully!');
     }
     catch (err) {
         console.error('Error seeding Mentor Pricing:', err);
@@ -124,7 +124,7 @@ const mentorShediulPricingSeed = () => __awaiter(void 0, void 0, void 0, functio
 const connectToDatabase = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield mongoose_1.default.connect(index_1.default.database_url); // Simplified connection options
-        console.log('Connected to MongoDB');
+        // console.log('Connected to MongoDB');
     }
     catch (err) {
         console.error('Error connecting to MongoDB:', err.message || err);
@@ -138,7 +138,7 @@ const seedDatabase = () => __awaiter(void 0, void 0, void 0, function* () {
         // await dropDatabase();
         // await seedUsers();
         yield mentorShediulPricingSeed();
-        console.log('------------> Database seeding completed! <------------');
+        // console.log('------------> Database seeding completed! <------------');
     }
     catch (err) {
         console.error('Error seeding database:', err);
