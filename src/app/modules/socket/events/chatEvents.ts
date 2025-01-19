@@ -21,11 +21,13 @@ export const handleChatEvents = async (socket:any, data:any, callback:any) => {
 // console.log('chat first-2');
 // console.log('data', data);
 console.log('data.participant', data.participant);
-    if (data.participant) {
-        console.log('chat first-3');
+const updateData = JSON.parse(data);
+console.log({ updateData });
+    if (updateData.participant) {
+      console.log('chat first-3');
       const existingChat = await chatService.getChatByParticipants(
         socket.decodedToken.userId,
-        data.participant,
+        updateData.participant,
       );
       console.log('existingChat', existingChat);
 
@@ -40,28 +42,27 @@ console.log('data.participant', data.participant);
 
       chat = await chatService.createChat(
         socket.decodedToken.userId,
-        data.participant,
+        updateData.participant,
       );
-console.log({chat})
+      console.log({ chat });
       //   console.log("chat ", chat);
-    //   callback({
-    //     status: 'Success',
-    //     chatId: chat._id,
-    //     message: 'Chat created successfully',
-    //   });
-     if (chat && (chat as IChat)._id) {
-       callback({
-         status: 'Success',
-         chatId: (chat as IChat)._id, // Type assertion to IChat
-         message: 'Chat created successfully',
-       });
-     } else {
-       callback({
-         status: 'Error',
-         message: 'Failed to create chat',
-       });
-     }
-
+      //   callback({
+      //     status: 'Success',
+      //     chatId: chat._id,
+      //     message: 'Chat created successfully',
+      //   });
+      if (chat && (chat as IChat)._id) {
+        callback({
+          status: 'Success',
+          chatId: (chat as IChat)._id, // Type assertion to IChat
+          message: 'Chat created successfully',
+        });
+      } else {
+        callback({
+          status: 'Error',
+          message: 'Failed to create chat',
+        });
+      }
     } else {
       callback({
         status: 'Error',
