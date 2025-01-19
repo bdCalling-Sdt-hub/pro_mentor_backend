@@ -1,9 +1,9 @@
 import { chatService } from '../../chat/chat.service';
 
 interface IChat {
-  _id: string; // The type of _id (usually string in MongoDB)
+  _id: string; 
   status: string;
-  participants: string[]; // Or adjust according to your actual schema
+  participants: string[]; 
 }
 
 export const handleChatEvents = async (
