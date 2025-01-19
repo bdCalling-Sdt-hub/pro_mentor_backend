@@ -6,8 +6,6 @@ import { Server as SocketIOServer } from 'socket.io'; // For better type safety
 import colors from 'colors'; // Ensure correct import
 import config from './app/config';
 
-
-
 let server: Server;
 const socketServer = createServer();
 
@@ -23,9 +21,6 @@ async function main() {
     // console.log('config.database_url', config.database_url);
     // Connect to MongoDB
     await mongoose.connect(config.database_url as string);
-    // await mongoose.connect(
-    //   'mongodb+srv://tiger:tiger@team-codecanyon.ffrshve.mongodb.net/pro-mentors?retryWrites=true&w=majority&appName=Team-CodeCanyon',
-    // );
 
     // Start Express server
     // server = app.listen(Number(config.port), config.ip as string, () => {
@@ -33,7 +28,6 @@ async function main() {
       console.log(
         colors.green(`App is listening on ${config.ip}:${config.port}`).bold,
       );
-     
     });
 
     // Start Socket server

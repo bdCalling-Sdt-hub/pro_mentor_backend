@@ -10,9 +10,9 @@ import httpStatus from 'http-status';
 
 // login
 const login = catchAsync(async (req: Request, res: Response) => {
-  console.log('login-1')
+  // console.log('login-1')
   const result = await authServices.login(req.body);
-  console.log('login-2');
+  // console.log('login-2');
   const cookieOptions: any = {
     secure: false,
     httpOnly: true,
@@ -35,7 +35,7 @@ const login = catchAsync(async (req: Request, res: Response) => {
 const changePassword = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req?.user;
   const { newPassword, oldPassword } = req.body;
-  // console.log({ newPassword, oldPassword });
+  // // console.log({ newPassword, oldPassword });
 
   const result = await authServices.changePassword({
     userId,
@@ -53,8 +53,8 @@ const changePassword = catchAsync(async (req: Request, res: Response) => {
 
 // forgot password
 const forgotPassword = catchAsync(async (req: Request, res: Response) => {
-  // console.log("email");
-  // console.log(req?.body?.email);
+  // // console.log("email");
+  // // console.log(req?.body?.email);
   const { email } = req.body;
   const result = await authServices.forgotPassword(email);
 
@@ -90,7 +90,7 @@ const resetPassword = catchAsync(async (req: Request, res: Response) => {
 
   const { newPassword, confirmPassword } = req.body;
 
-  console.log(newPassword, confirmPassword);
+  // console.log(newPassword, confirmPassword);
 
   const result = await authServices.resetPassword({
     token,

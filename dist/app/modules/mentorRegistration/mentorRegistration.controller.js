@@ -24,9 +24,9 @@ const tokenManage_1 = require("../../utils/tokenManage");
 const createMentorRegistration = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const token = (_a = req.headers) === null || _a === void 0 ? void 0 : _a.token;
-    console.log('body -1', req.body);
+    // console.log('body -1', req.body);
     req.body.preferredDays = JSON.parse(req.body.preferredDays);
-    console.log('token -2', token);
+    // console.log('token -2', token);
     if (!token) {
         throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Token is required');
     }
@@ -38,13 +38,13 @@ const createMentorRegistration = (0, catchAsync_1.default)((req, res) => __await
         throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Invalid token');
     }
     const { userId } = decodeData;
-    console.log('userId -3', userId);
-    console.log('req.files -3', req.files);
+    // console.log('userId -3', userId);
+    // console.log('req.files -3', req.files);
     const files = req.files;
     // Access body and files
     const bodyData = req.body;
     // duplicate check by email  // todo
-    // console.log(files);
+    // // console.log(files);
     if (!files ||
         !files['introVideo'] ||
         !files['professionalCredential'] ||
@@ -57,16 +57,16 @@ const createMentorRegistration = (0, catchAsync_1.default)((req, res) => __await
     const videoPath = introVideo.path.replace(/^public[\\/]/, '');
     const professionalCredentialPath = professionalCredential.map((credential) => credential.path.replace(/^public[\\/]/, ''));
     const additionalDocumentPath = additionalDocument.map((credential) => credential.path.replace(/^public[\\/]/, ''));
-    console.log({ professionalCredential });
-    console.log({ professionalCredentialPath });
+    // console.log({ professionalCredential });
+    // console.log({ professionalCredentialPath });
     const availableTimeSlots = `${bodyData.startTime} - ${bodyData.endTime}`; // todo
     const endBreaktime = bodyData.endBreakTime - 1;
     bodyData.endBreaktime = endBreaktime;
     const payload = Object.assign(Object.assign({}, bodyData), { mentorId: userId, introVideo: videoPath, professionalCredential: professionalCredentialPath, additionalDocument: additionalDocumentPath, availableTime: availableTimeSlots });
-    // console.log('payload payload', payload);
-    console.log('............controller............');
+    // // console.log('payload payload', payload);
+    // console.log('............controller............');
     const result = yield mentorRegistration_service_1.mentorRegistrationService.createMentorRegistrationService(payload); // todo email sent to admin
-    console.log('result result ', result);
+    // console.log('result result ', result);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -76,7 +76,7 @@ const createMentorRegistration = (0, catchAsync_1.default)((req, res) => __await
 }));
 const getallMentorRegistration = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const query = req.query;
-    console.log('query', query);
+    // console.log('query', query);
     let filtersQuery = {};
     // if (Object.keys(query).length > 0) {
     //   filtersQuery = Object.entries(query).reduce((acc: any, [key, value]) => {
@@ -90,7 +90,7 @@ const getallMentorRegistration = (0, catchAsync_1.default)((req, res) => __await
     //     return acc;
     //   }, {});
     // }
-    // console.log('filtersQuery', filtersQuery);
+    // // console.log('filtersQuery', filtersQuery);
     if (Object.keys(query).length > 0) {
         filtersQuery = Object.entries(query).reduce((acc, [key, value]) => {
             // Only process string values
@@ -122,7 +122,7 @@ const getallMentorRegistration = (0, catchAsync_1.default)((req, res) => __await
         }, {});
     }
     // Here you can process your filtersQuery or pass it to your database query
-    // console.log('Processed filtersQuery:', filtersQuery);
+    // // console.log('Processed filtersQuery:', filtersQuery);
     const { meta, result } = yield mentorRegistration_service_1.mentorRegistrationService.getAllMentorRegistrationQuery(filtersQuery);
     (0, sendResponse_1.default)(res, {
         success: true,
@@ -178,22 +178,22 @@ const getMentorRegistrationOnly = (0, catchAsync_1.default)((req, res) => __awai
     });
 }));
 const updateSingleMentorRegistration = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // console.log('update payload');
+    // // console.log('update payload');
     const files = req.files;
-    // console.log('files', files);
+    // // console.log('files', files);
     // Access body and files
     const payload = req.body;
-    console.log('payload........1', payload);
+    // console.log('payload........1', payload);
     // req.body.preferredDays = JSON.parse(req.body.preferredDays);
     if (payload.preferredDays) {
         try {
             payload.preferredDays = JSON.parse(payload.preferredDays);
         }
         catch (err) {
-            console.log('Error parsing preferredDays:', err);
+            // console.log('Error parsing preferredDays:', err);
         }
     }
-    // console.log('payload........2', payload);
+    // // console.log('payload........2', payload);
     // Handle introVideo file upload
     if (files && files['introVideo'] && files['introVideo'].length > 0) {
         const introVideo = files['introVideo'][0];
@@ -203,7 +203,7 @@ const updateSingleMentorRegistration = (0, catchAsync_1.default)((req, res) => _
         }
     }
     else {
-        console.log('No intro video uploaded');
+        // console.log('No intro video uploaded');
     }
     // Handle image file upload
     if (files && files['image'] && files['image'].length > 0) {
@@ -214,12 +214,12 @@ const updateSingleMentorRegistration = (0, catchAsync_1.default)((req, res) => _
         }
     }
     else {
-        console.log('No image uploaded');
+        // console.log('No image uploaded');
     }
     if (payload.startTime && payload.endTime) {
         payload.availableTime = `${payload.startTime} - ${payload.endTime}`;
     }
-    // console.log('update payload', payload);
+    // // console.log('update payload', payload);
     const result = yield mentorRegistration_service_1.mentorRegistrationService.updateMentorRegistrationQuery(req.params.id, payload);
     (0, sendResponse_1.default)(res, {
         success: true,

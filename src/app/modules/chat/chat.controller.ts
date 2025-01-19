@@ -11,12 +11,12 @@ const getAllChats = catchAsync(async (req, res) => {
     page: Number(req.query.page) || 1,
   };
 const { userId } = req.user;
-console.log('userId', userId);
+// console.log('userId', userId);
   const filter: any = { participantId: userId };
 
   const search = req.query.search;
 
-  console.log(search);
+  // console.log(search);
 
   if (search && search !== 'null' && search !== '' && search !== undefined) {
     const searchRegExp = new RegExp('.*' + search + '.*', 'i');

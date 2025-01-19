@@ -28,7 +28,7 @@ const createMentorVideo = catchAsync(async (req, res) => {
     videoUrl: videoPath,
     thumbnailUrl: thumbnailPath,
   };
-// console.log('bodyData', bodyData);
+// // console.log('bodyData', bodyData);
   const result = await mentorVideoService.createMentorVideoService(bodyData);
 
   // Send response
@@ -59,7 +59,7 @@ const getMentorVideoByMentor = catchAsync(async (req, res) => {
 
 const getMentorVideoByRecommended = catchAsync(async (req, res) => {
   const { related }:any = req.query;
-  // console.log('related', related);
+  // // console.log('related', related);
   let recommended ;
   if (related) {
     recommended = related;
@@ -95,12 +95,12 @@ const getSingleMentorVideo = catchAsync(async (req, res) => {
 
 const updateSingleMentorVideo = catchAsync(async (req, res) => {
   const { id } = req.params; // Get video ID from the route
-  console.log('id', id);
+  // console.log('id', id);
   const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
   // Initialize updateData with request body
   const updateData: any = { ...req.body };
-  console.log('updateData111', updateData);
+  // console.log('updateData111', updateData);
 
   // Check if new video or thumbnail files are provided
   if (files) {
@@ -114,7 +114,7 @@ const updateSingleMentorVideo = catchAsync(async (req, res) => {
       updateData.thumbnailUrl = thumbnailFile.path.replace(/^public[\\/]/, '');
     }
   }
-console.log('updateData222', updateData);
+// console.log('updateData222', updateData);
   // Call the service to update the video
   const result = await mentorVideoService.updateMentorVideoQuery(
     id,

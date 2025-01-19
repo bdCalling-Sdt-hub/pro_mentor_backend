@@ -18,7 +18,7 @@ const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const payment_service_1 = require("./payment.service");
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
 const addPayment = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('asd');
+    // console.log('asd');
     const { userId } = req.user;
     const paymentData = req.body;
     paymentData.menteeId = userId;
@@ -31,7 +31,7 @@ const addPayment = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 
     //  if (paymentData.method === 'apple_pay') {
     //    paymentData.stripeDetails = JSON.parse(paymentData.applePayDetails);
     //  }
-    // console.log('req.body', req.body);
+    // // console.log('req.body', req.body);
     const result = yield payment_service_1.paymentService.addPaymentService(req.body);
     if (result) {
         (0, sendResponse_1.default)(res, {
@@ -52,7 +52,7 @@ const addPayment = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 
 }));
 const getAllPayment = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield payment_service_1.paymentService.getAllPaymentService(req.query);
-    // console.log('result',result)
+    // // console.log('result',result)
     if (result) {
         (0, sendResponse_1.default)(res, {
             statusCode: http_status_1.default.OK,
@@ -73,7 +73,7 @@ const getAllPayment = (0, catchAsync_1.default)((req, res, next) => __awaiter(vo
 const getAllPaymentByMentor = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.user;
     const result = yield payment_service_1.paymentService.getAllPaymentByMentorService(req.query, userId);
-    // console.log('result',result)
+    // // console.log('result',result)
     if (result) {
         (0, sendResponse_1.default)(res, {
             statusCode: http_status_1.default.OK,

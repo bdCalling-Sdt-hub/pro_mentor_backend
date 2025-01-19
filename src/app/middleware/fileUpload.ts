@@ -72,8 +72,8 @@ const fileUpload = (uploadDirectory: string) => {
   const storage = multer.diskStorage({
     destination: function (req: Request, file, cb) {
       // Set destination based on the provided upload directory
-      // console.log(file);
-      // console.log(req);
+      // // console.log(file);
+      // // console.log(req);
       if (file.fieldname === 'introVideo' || file.fieldname === 'video') {
         cb(null, './public/uploads/video');
       } else {

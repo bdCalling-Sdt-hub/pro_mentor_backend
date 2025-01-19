@@ -30,7 +30,7 @@ const createMentorVideo = (0, catchAsync_1.default)((req, res) => __awaiter(void
     const thumbnailPath = thumbnailFile1.path.replace(/^public[\\/]/, '');
     // Construct payload
     const bodyData = Object.assign(Object.assign({}, req.body), { mentorId: userId, videoUrl: videoPath, thumbnailUrl: thumbnailPath });
-    // console.log('bodyData', bodyData);
+    // // console.log('bodyData', bodyData);
     const result = yield video_service_1.mentorVideoService.createMentorVideoService(bodyData);
     // Send response
     (0, sendResponse_1.default)(res, {
@@ -53,7 +53,7 @@ const getMentorVideoByMentor = (0, catchAsync_1.default)((req, res) => __awaiter
 }));
 const getMentorVideoByRecommended = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { related } = req.query;
-    // console.log('related', related);
+    // // console.log('related', related);
     let recommended;
     if (related) {
         recommended = related;
@@ -78,11 +78,11 @@ const getSingleMentorVideo = (0, catchAsync_1.default)((req, res) => __awaiter(v
 }));
 const updateSingleMentorVideo = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params; // Get video ID from the route
-    console.log('id', id);
+    // console.log('id', id);
     const files = req.files;
     // Initialize updateData with request body
     const updateData = Object.assign({}, req.body);
-    console.log('updateData111', updateData);
+    // console.log('updateData111', updateData);
     // Check if new video or thumbnail files are provided
     if (files) {
         if (files['videoUrl'] && files['videoUrl'][0]) {
@@ -94,7 +94,7 @@ const updateSingleMentorVideo = (0, catchAsync_1.default)((req, res) => __awaite
             updateData.thumbnailUrl = thumbnailFile.path.replace(/^public[\\/]/, '');
         }
     }
-    console.log('updateData222', updateData);
+    // console.log('updateData222', updateData);
     // Call the service to update the video
     const result = yield video_service_1.mentorVideoService.updateMentorVideoQuery(id, updateData);
     // Send response

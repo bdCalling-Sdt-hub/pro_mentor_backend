@@ -118,7 +118,7 @@ userSchema.pre('aggregate', function (next) {
 });
 userSchema.statics.isUserExist = function (email) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log({ email });
+        // console.log({ email });
         return yield exports.User.findOne({ email: email }).select('+password');
     });
 };

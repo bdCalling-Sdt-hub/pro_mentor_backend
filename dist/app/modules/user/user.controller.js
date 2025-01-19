@@ -20,7 +20,7 @@ const fileHelper_1 = require("../../utils/fileHelper");
 const http_status_1 = __importDefault(require("http-status"));
 const user_models_1 = require("./user.models");
 const createUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.body);
+    // console.log(req.body);
     const createUserToken = yield user_service_1.userService.createUserToken(req.body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
@@ -31,11 +31,11 @@ const createUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
 }));
 const userCreateVarification = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    console.log('..........1..........');
+    // console.log('..........1..........');
     const token = (_a = req.headers) === null || _a === void 0 ? void 0 : _a.token;
-    console.log('token', token);
+    // console.log('token', token);
     const { otp } = req.body;
-    console.log('otp', otp);
+    // console.log('otp', otp);
     const newUser = yield user_service_1.userService.otpVerifyAndCreateUser({ otp, token });
     return (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
@@ -137,8 +137,8 @@ const updateMyProfile = (0, catchAsync_1.default)((req, res) => __awaiter(void 0
     if (req === null || req === void 0 ? void 0 : req.file) {
         req.body.image = (0, fileHelper_1.storeFile)('profile', (_a = req === null || req === void 0 ? void 0 : req.file) === null || _a === void 0 ? void 0 : _a.filename);
     }
-    // console.log('file', req?.file);
-    // console.log('body data', req.body);
+    // // console.log('file', req?.file);
+    // // console.log('body data', req.body);
     const result = yield user_service_1.userService.updateUser((_b = req === null || req === void 0 ? void 0 : req.user) === null || _b === void 0 ? void 0 : _b.userId, req.body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,

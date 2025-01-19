@@ -23,10 +23,10 @@ const getAllChats = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
         page: Number(req.query.page) || 1,
     };
     const { userId } = req.user;
-    console.log('userId', userId);
+    // console.log('userId', userId);
     const filter = { participantId: userId };
     const search = req.query.search;
-    console.log(search);
+    // console.log(search);
     if (search && search !== 'null' && search !== '' && search !== undefined) {
         const searchRegExp = new RegExp('.*' + search + '.*', 'i');
         filter.name = searchRegExp;

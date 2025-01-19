@@ -4,9 +4,9 @@ import sendResponse from '../../utils/sendResponse';
 import { withdrawService } from './withdraw.service';
 
 const addWithdraw = catchAsync(async (req, res, next) => {
-  console.log('gas');
+  // console.log('gas');
   const withdrawData = req.body;
-  // console.log('withdrawData', withdrawData);
+  // // console.log('withdrawData', withdrawData);
   // if(withdrawData.method === 'bank'){
   //   withdrawData.bankDetails = JSON.parse(withdrawData.bankDetails);
   // }if(withdrawData.method === 'paypal'){
@@ -39,7 +39,7 @@ const addWithdraw = catchAsync(async (req, res, next) => {
 
 const getAllWithdraw = catchAsync(async (req, res, next) => {
   const result = await withdrawService.getAllWithdrawService(req.query);
-  // console.log('result',result)
+  // // console.log('result',result)
 
   if (result) {
     sendResponse(res, {
@@ -59,14 +59,14 @@ const getAllWithdraw = catchAsync(async (req, res, next) => {
 });
 
 const getAllWithdrawByMentor = catchAsync(async (req, res, next) => {
-  console.log('...........');
+  // console.log('...........');
   const { userId } = req.user;
-  console.log('userId', userId);
+  // console.log('userId', userId);
   const result = await withdrawService.getAllWithdrawByMentorService(
     req.query,
     userId,
   );
-  // console.log('result',result)
+  // // console.log('result',result)
   if (result) {
     sendResponse(res, {
       statusCode: httpStatus.OK,

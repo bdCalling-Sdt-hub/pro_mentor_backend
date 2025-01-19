@@ -25,7 +25,7 @@ const eamilNotifiacation_1 = require("../../utils/eamilNotifiacation");
 // Login
 const login = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    console.log('payload', payload);
+    // // console.log('payload', payload);
     const user = yield user_models_1.User.isUserActive(payload === null || payload === void 0 ? void 0 : payload.email);
     if (!user) {
         throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'User not found');
@@ -40,13 +40,13 @@ const login = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         userId: (_a = user === null || user === void 0 ? void 0 : user._id) === null || _a === void 0 ? void 0 : _a.toString(),
         role: user === null || user === void 0 ? void 0 : user.role,
     };
-    console.log({ jwtPayload });
+    // // console.log({ jwtPayload });
     const accessToken = (0, tokenManage_1.createToken)({
         payload: jwtPayload,
         access_secret: config_1.default.jwt_access_secret,
         expity_time: config_1.default.jwt_access_expires_in,
     });
-    console.log({ accessToken });
+    // console.log({ accessToken });
     const refreshToken = (0, tokenManage_1.createToken)({
         payload: jwtPayload,
         access_secret: config_1.default.jwt_refresh_secret,
@@ -99,7 +99,7 @@ const forgotPassword = (email) => __awaiter(void 0, void 0, void 0, function* ()
 });
 // forgot  Password Otp Match
 const forgotPasswordOtpMatch = (_a) => __awaiter(void 0, [_a], void 0, function* ({ otp, token, }) {
-    console.log({ otp, token });
+    // console.log({ otp, token });
     if (!token) {
         throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Token not found');
     }
@@ -137,7 +137,7 @@ const forgotPasswordOtpMatch = (_a) => __awaiter(void 0, [_a], void 0, function*
 });
 // Reset password
 const resetPassword = (_a) => __awaiter(void 0, [_a], void 0, function* ({ token, newPassword, confirmPassword, }) {
-    console.log(newPassword, confirmPassword);
+    // console.log(newPassword, confirmPassword);
     if (newPassword !== confirmPassword) {
         throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Password does not match');
     }
@@ -162,7 +162,7 @@ const resetPassword = (_a) => __awaiter(void 0, [_a], void 0, function* ({ token
 });
 // Change password
 const changePassword = (_a) => __awaiter(void 0, [_a], void 0, function* ({ userId, newPassword, oldPassword, }) {
-    console.log({ userId, newPassword, oldPassword });
+    // console.log({ userId, newPassword, oldPassword });
     const user = yield user_models_1.User.IsUserExistById(userId);
     if (!user) {
         throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'User not found');

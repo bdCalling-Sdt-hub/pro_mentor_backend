@@ -10,7 +10,7 @@ import { User } from '../user/user.models';
 
 const createReviewService = async (payload: TReview) => {
   try {
-    console.log('Payload:', payload);
+    // console.log('Payload:', payload);
 
     const result = await Review.create(payload);
 
@@ -160,17 +160,17 @@ const deletedReviewQuery = async (id: string, userId: string) => {
 
 
   const { reviewCount, ratingCount } = registration;
-  console.log('reviewCount ratingCount',reviewCount, ratingCount);
-  console.log('result.rating', result.rating);
+  // console.log('reviewCount ratingCount',reviewCount, ratingCount);
+  // console.log('result.rating', result.rating);
 
   const newRatingCount = ratingCount - result.rating;
-  console.log('newRatingCount', newRatingCount);
+  // console.log('newRatingCount', newRatingCount);
   const newReviewCount = reviewCount - 1;
-  console.log('newReviewCount', newReviewCount);
+  // console.log('newReviewCount', newReviewCount);
 
 
   let newAverageRating = 0;
-  console.log('newAverageRating', newAverageRating);
+  // console.log('newAverageRating', newAverageRating);
   if (newReviewCount > 0) {
     newAverageRating = newRatingCount / newReviewCount;
   }
@@ -180,7 +180,7 @@ const deletedReviewQuery = async (id: string, userId: string) => {
     newAverageRating = 0;
   }
 
-  console.log('newAverageRating-2', newAverageRating);
+  // console.log('newAverageRating-2', newAverageRating);
 
   const updatedRegistration = await MentorRegistration.findByIdAndUpdate(
     mentor.mentorRegistrationId,

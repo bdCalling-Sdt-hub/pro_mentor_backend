@@ -51,7 +51,7 @@ const deleteFromS3 = (key) => __awaiter(void 0, void 0, void 0, function* () {
         yield aws_1.s3Client.send(command);
     }
     catch (error) {
-        console.log('🚀 ~ deleteFromS3 ~ error:', error);
+        // console.log('🚀 ~ deleteFromS3 ~ error:', error);
         throw new Error('s3 file delete failed');
     }
 });

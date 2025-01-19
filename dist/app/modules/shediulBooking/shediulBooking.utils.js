@@ -63,7 +63,7 @@ function formatDateTime(date, time) {
 const generateZoomMeetingLink = (_a) => __awaiter(void 0, [_a], void 0, function* ({ topic, agenda, date, time, duration, }) {
     try {
         const accessToken = yield getZoomAccessToken();
-        console.log('accessToken accessToken', accessToken);
+        // console.log('accessToken accessToken', accessToken);
         // Format the date and time into ISO 8601
         const startTime = formatDateTime(date, time); // Use default date and time if not provided
         // Create meeting options
@@ -112,17 +112,17 @@ exports.generateZoomMeetingLink = generateZoomMeetingLink;
 //   time: '3:30 PM',
 //   duration: 90,
 // });
-// console.log(meetingDetails);
+// // console.log(meetingDetails);
 exports.default = { getZoomAccessToken, formatDateTime };
 const joinScheduleBookingZoomLinkEmail = () => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
         // Fetch all the scheduled bookings and populate mentee and mentor details
-        console.log('current date', new Date());
+        // console.log('current date', new Date());
         // Get the current date without time (midnight of today)
         const todayStart = (0, moment_1.default)().startOf('day').toDate();
         const todayEnd = (0, moment_1.default)().endOf('day').toDate();
-        console.log({ todayStart, todayEnd });
+        // console.log({ todayStart, todayEnd });
         const bookingScheduleData = yield shediulBooking_model_1.default.find({
             bookingDate: {
                 $gte: todayStart, // Greater than or equal to midnight
@@ -131,23 +131,23 @@ const joinScheduleBookingZoomLinkEmail = () => __awaiter(void 0, void 0, void 0,
         })
             .populate('menteeId')
             .populate('mentorId');
-        console.log({ bookingScheduleData });
+        // console.log({ bookingScheduleData });
         const currentTime = new Date().getTime();
-        console.log('currentTime', currentTime);
+        // console.log('currentTime', currentTime);
         // Loop through all bookings
         for (const booking of bookingScheduleData) {
             const mentee = booking.menteeId;
             const mentor = booking.mentorId;
             const zoomLink = (_a = booking === null || booking === void 0 ? void 0 : booking.zoomMeetingId) === null || _a === void 0 ? void 0 : _a.meetingLink;
             const bookingTime = booking === null || booking === void 0 ? void 0 : booking.startTime;
-            console.log({ bookingTime });
+            // console.log({ bookingTime });
             const bookingStartTime = (0, moment_1.default)(bookingTime, 'hh:mm A').toDate().getTime();
-            console.log({ bookingStartTime });
+            // console.log({ bookingStartTime });
             // Calculate the difference in minutes between the booking start time and the current time
             const timeMinus = bookingStartTime - currentTime;
-            console.log({ timeMinus });
+            // console.log({ timeMinus });
             // const timeMinusInMinutes = timeMinus / 1000 / 60;
-            // console.log({ timeMinusInMinutes });
+            // // console.log({ timeMinusInMinutes });
             // Check if the current time is exactly 2 minutes before the start time
             if (timeMinus <= 10 * 60 * 1000 && timeMinus > 0) {
                 const subject = `Reminder: Your session on ${booking.subject} is about to start`;
@@ -167,7 +167,7 @@ const joinScheduleBookingZoomLinkEmail = () => __awaiter(void 0, void 0, void 0,
                 yield (0, mailSender_1.sendEmail)(mentor === null || mentor === void 0 ? void 0 : mentor.email, subject, emailBody);
             }
             else {
-                console.log('The session is not within 10 minutes.');
+                // console.log('The session is not within 10 minutes.');
             }
         }
     }
@@ -177,12 +177,12 @@ const joinScheduleBookingZoomLinkEmail = () => __awaiter(void 0, void 0, void 0,
 });
 // Schedule the cron job to check every minute
 node_cron_1.default.schedule('*/5 * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('Checking for upcoming sessions...');
+    // console.log('Checking for upcoming sessions...');
     yield joinScheduleBookingZoomLinkEmail();
-    console.log('mail send');
+    // console.log('mail send');
 }));
 // cron.schedule('* * * * *', async () => {
-//   console.log('Checking for upcoming sessions...');
+//   // console.log('Checking for upcoming sessions...');
 //   await joinScheduleBookingZoomLinkEmail();
 // });
 // {

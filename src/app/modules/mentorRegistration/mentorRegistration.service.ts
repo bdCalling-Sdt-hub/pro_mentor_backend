@@ -18,8 +18,8 @@ const createMentorRegistrationService = async (
   const session = await mongoose.startSession();
   session.startTransaction();
 
-  // console.log('payload payload payload', payload);
-  console.log('............service 1............')
+  // // console.log('payload payload payload', payload);
+  // console.log('............service 1............')
 
   try {
     const user = await User.findById(payload.mentorId).session(session);
@@ -28,7 +28,7 @@ const createMentorRegistrationService = async (
       throw new AppError(httpStatus.NOT_FOUND, 'User Not Found!!');
     }
 
-    console.log({ payload });
+    // console.log({ payload });
 
   
     const result = await MentorRegistration.create([payload], { session });
@@ -81,7 +81,7 @@ const createMentorRegistrationService = async (
 const getAllMentorRegistrationQuery = async (
   query: Record<string, unknown>,
 ) => {
-  console.log('query -----11111', query);
+  // console.log('query -----11111', query);
 
   const { availableTime, searchTerm, sort, page, limit, ...filters }: any =
     query;
@@ -95,12 +95,12 @@ const getAllMentorRegistrationQuery = async (
   }
 
   let queryConditions: Record<string, any> = {};
-  console.log('queryConditions 1', queryConditions);
+  // console.log('queryConditions 1', queryConditions);
 
   // if (searchTerm) {
   //   queryConditions.$text = { $search: String(searchTerm) };
   // }
-  // console.log('queryConditions 2', queryConditions);
+  // // console.log('queryConditions 2', queryConditions);
   if (searchTerm) {
     queryConditions.$or = [
       { fullName: { $regex: searchTerm, $options: 'i' } },
@@ -115,7 +115,7 @@ const getAllMentorRegistrationQuery = async (
     }
   }
 
-  console.log('queryConditions 3', queryConditions);
+  // console.log('queryConditions 3', queryConditions);
 
   // Count total matching documents
   const total = await MentorRegistration.countDocuments(queryConditions);
@@ -138,7 +138,7 @@ const getAllMentorRegistrationQuery = async (
   }
 
   if (sort) {
-    console.log('sort', sort);
+    // console.log('sort', sort);
     const sortFields = sort
       .split(',')
       .reduce((acc: Record<string, number>, field: string) => {
@@ -148,7 +148,7 @@ const getAllMentorRegistrationQuery = async (
         return acc;
       }, {});
 
-    console.log('sortFields', sortFields);
+    // console.log('sortFields', sortFields);
 
     mentorRegistrations = await MentorRegistration.find(queryConditions)
       .populate('mentorId')
@@ -161,7 +161,7 @@ const getAllMentorRegistrationQuery = async (
   const skip = (pageNumber - 1) * limitNumber;
 
   const paginatedResults = mentorRegistrations.slice(skip, skip + limitNumber);
-  console.log({ paginatedResults });
+  // console.log({ paginatedResults });
 
     const totalPage = Math.ceil(total / limitNumber);
 
@@ -186,7 +186,7 @@ const getAllMentorRegistrationQuery = async (
 const getMentorAvailableSlots = async (query: Record<string, unknown>) => {
   const { mentorId, duration, date }: any = query;
 
-console.log('mentorId', mentorId, 'duration', duration, 'date', date);
+// console.log('mentorId', mentorId, 'duration', duration, 'date', date);
   const registerMentor = await MentorRegistration.findOne({ mentorId });
 
   if (!registerMentor) {
@@ -200,13 +200,13 @@ console.log('mentorId', mentorId, 'duration', duration, 'date', date);
     bookingDate: new Date(date),
   }).select('startTime  endTime');
 
-  console.log('startTime  ', registerMentor.startTime);
-  console.log('endTime  ', registerMentor.endTime);
-  console.log('startBreakTime  ', registerMentor.startBreakTime);
-  console.log('endBreakTime  ', registerMentor.endBreakTime);
-  console.log({ duration });
-  console.log({ bookings });
-  console.log('minimumSlotTime  ', 15);
+  // console.log('startTime  ', registerMentor.startTime);
+  // console.log('endTime  ', registerMentor.endTime);
+  // console.log('startBreakTime  ', registerMentor.startBreakTime);
+  // console.log('endBreakTime  ', registerMentor.endBreakTime);
+  // console.log({ duration });
+  // console.log({ bookings });
+  // console.log('minimumSlotTime  ', 15);
   const durationNum = Number(duration);
 
 
@@ -219,7 +219,7 @@ console.log('mentorId', mentorId, 'duration', duration, 'date', date);
     duration:durationNum,
     minimumSlotTime: 15,}
   );
-  console.log({availableSlots});
+  // console.log({availableSlots});
 
   return { result: availableSlots };
 };
@@ -282,7 +282,7 @@ const updateMentorRegistrationQuery = async (
   session.startTransaction();
 
   try {
-    // console.log('payload', payload);
+    // // console.log('payload', payload);
 
     // Find the mentor registration
     const registerMentor =
@@ -321,7 +321,7 @@ const updateMentorRegistrationQuery = async (
         );
          image = user?.image;
       } else {
-        console.log('mentorId not found for the mentor');
+        // console.log('mentorId not found for the mentor');
       }
     }
 
@@ -351,7 +351,7 @@ const acceptSingleMentorRegistrationService = async (id: string) => {
   session.startTransaction();
 
   try {
-    console.log('id id', id);
+    // console.log('id id', id);
 
     const registerMentor =
       await MentorRegistration.findById(id).session(session);
@@ -384,14 +384,14 @@ const acceptSingleMentorRegistrationService = async (id: string) => {
       throw new AppError(404, 'Wallet Not Found!!');
     }
 
-    console.log('before send email');
+    // console.log('before send email');
         await acceptanceRegistrationEmail({
           sentTo: mentorRegistration.email,
           subject: 'Mentor Registration Accepted!!',
           name: mentorRegistration.fullName,
         });
 
-console.log('after send email');
+// console.log('after send email');
     await session.commitTransaction();
     session.endSession();
 
@@ -406,7 +406,7 @@ console.log('after send email');
 
 
 const cencelSingleMentorRegistrationService = async (id: string, rejone:string) => {
-  console.log('rejone ---1', rejone);
+  // console.log('rejone ---1', rejone);
   const registerMentor = await MentorRegistration.findById(id);
   if (!registerMentor) {
     throw new AppError(404, 'Register Mentor Not Found!!');
@@ -432,7 +432,7 @@ const cencelSingleMentorRegistrationService = async (id: string, rejone:string) 
       name: mentorRegistration.fullName,
       rejone,
     });
-    console.log('Cancellation email sent successfully');
+    // console.log('Cancellation email sent successfully');
   } catch (error) {
     console.error('Error sending cancellation email:', error);
     throw new AppError(500, 'Failed to send cancellation email');

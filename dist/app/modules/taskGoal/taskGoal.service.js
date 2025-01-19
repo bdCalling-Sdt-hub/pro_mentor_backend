@@ -19,7 +19,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const QueryBuilder_1 = __importDefault(require("../../builder/QueryBuilder"));
 const taskGoal_model_1 = __importDefault(require("./taskGoal.model"));
 const createMentorTaskGoalService = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('payuload', payload);
+    // console.log('payuload', payload);
     const result = yield taskGoal_model_1.default.create(payload);
     if (!result) {
         throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Failed to Task Goal added!!');
@@ -27,7 +27,7 @@ const createMentorTaskGoalService = (payload) => __awaiter(void 0, void 0, void 
     return result;
 });
 const addTaskToTaskGoalService = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('task add', payload);
+    // console.log('task add', payload);
     if (!payload.taskGoalId) {
         throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Task Goal ID is required!');
     }
@@ -53,7 +53,7 @@ const addTaskToTaskGoalService = (payload) => __awaiter(void 0, void 0, void 0, 
     return task;
 });
 const getAllMentorGoalsService = (query, mentorId) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('query', query.menteeId);
+    // console.log('query', query.menteeId);
     const taskGoalQuery = new QueryBuilder_1.default(taskGoal_model_1.default.find({ mentorId, menteeId: query.menteeId }).populate('mentorId').populate('menteeId'), query)
         .search([''])
         .filter()

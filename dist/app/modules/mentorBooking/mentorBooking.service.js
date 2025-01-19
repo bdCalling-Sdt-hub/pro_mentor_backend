@@ -24,7 +24,7 @@ const createMentorBookingService = (payload) => __awaiter(void 0, void 0, void 0
     const session = yield mongoose_1.default.startSession();
     session.startTransaction();
     try {
-        console.log('payload', payload);
+        // console.log('payload', payload);
         if (!payload.mentorId || !payload.menteeId) {
             throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Mentor or Mentee not found!');
         }
@@ -68,7 +68,7 @@ const createMentorBookingService = (payload) => __awaiter(void 0, void 0, void 0
     }
 });
 const getAllMentorBookingByIdQuery = (query, mentorId) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('mentorId', mentorId);
+    // console.log('mentorId', mentorId);
     const BookingQuery = new QueryBuilder_1.default(mentorBooking_model_1.default.find({ mentorId }).populate('mentorId').populate('menteeId'), query)
         .search([''])
         .filter()
@@ -80,7 +80,7 @@ const getAllMentorBookingByIdQuery = (query, mentorId) => __awaiter(void 0, void
     return { meta, result };
 });
 const getAllMenteeBookingByQuery = (query, menteeId) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('menteeId', menteeId);
+    // console.log('menteeId', menteeId);
     // Create the base query using QueryBuilder
     const bookingQuery = new QueryBuilder_1.default(mentorBooking_model_1.default.find({ menteeId }).populate('mentorId'), query)
         .search([''])
@@ -90,7 +90,7 @@ const getAllMenteeBookingByQuery = (query, menteeId) => __awaiter(void 0, void 0
         .fields();
     // Execute the query to fetch bookings
     const result = yield bookingQuery.modelQuery;
-    console.log({ result });
+    // console.log({ result });
     // Now populate 'mentorRegistrationId' for each mentorId
     for (let booking of result) {
         if (booking && booking.mentorId) {
@@ -161,8 +161,8 @@ const acceptMentorBookingQuery = (id) => __awaiter(void 0, void 0, void 0, funct
 });
 const cencelMentorBookingQuery = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const mentorBooking = yield mentorBooking_model_1.default.findById(id);
-    console.log('id ', id);
-    console.log('mentorBooking ', mentorBooking);
+    // console.log('id ', id);
+    // console.log('mentorBooking ', mentorBooking);
     if (!mentorBooking) {
         throw new AppError_1.default(404, 'Mentor Booking  Not Found!!');
     }

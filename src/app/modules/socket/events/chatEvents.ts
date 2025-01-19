@@ -1,4 +1,4 @@
-import { chatService } from "../../chat/chat.service";
+import { chatService } from '../../chat/chat.service';
 
 interface IChat {
   _id: string; // The type of _id (usually string in MongoDB)
@@ -6,23 +6,20 @@ interface IChat {
   participants: string[]; // Or adjust according to your actual schema
 }
 
-export const handleChatEvents = async (socket:any, data:any, callback:any) => {
-
-  
-  console.log('first ', data);
-//   console.log('First:', JSON.stringify(data, null, 2)); 
-  console.log('socket decodedToken ', socket?.decodedToken);
-  // console.log('socket decodedToken userId ', socket?.decodedToken?.userId);
+export const handleChatEvents = async (
+  socket: any,
+  data: any,
+  callback: any,
+) => {
   try {
-    // console.log('chat first-1')
-    console.log("data",data)
-    
+    console.log('add new Chat ', data);
+    console.log(callback);
+
     let chat = {};
 // console.log('chat first-2');
 // console.log('data', data);
 console.log('data.participant', data.participant);
-const updateData = JSON.parse(data);
-console.log({ updateData });
+const updateData =  JSON.parse(data);
     if (updateData.participant) {
       console.log('chat first-3');
       const existingChat = await chatService.getChatByParticipants(
@@ -69,17 +66,12 @@ console.log({ updateData });
         message: 'Must provide at least 2 participants',
       });
     }
-  } catch (error:any) {
+  } catch (error: any) {
     console.error('Error adding new chat:', error.message);
     // logger.error('Error adding new chat:', error.message);
     callback({ status: 'Error', message: error.message });
   }
 };
-
-
-
-
-
 
 // const {
 //   addChat,
@@ -117,7 +109,7 @@ console.log({ updateData });
 //   // });
 
 //   io.on('connection', (socket) => {
-//     console.log(`ID: ${socket.id} just connected`);
+//     // console.log(`ID: ${socket.id} just connected`);
 
 //     socket.on('request-chat', async (data, callback) => {
 //       try {
@@ -144,7 +136,7 @@ console.log({ updateData });
 //             });
 //           }
 
-//           console.log(chat);
+//           // console.log(chat);
 
 //           data.participants.forEach(async (participant) => {
 //             if (participant.toString() !== data.creator) {
@@ -156,7 +148,7 @@ console.log({ updateData });
 //               const userNewNotification =
 //                 await addNotification(userNotification);
 //               const roomId = 'user-notification::' + participant.toString();
-//               console.log(userNewNotification);
+//               // console.log(userNewNotification);
 //               io.emit(roomId, userNewNotification);
 //             }
 //             // const roomID = 'chat-notification::' + participant.toString();
@@ -182,14 +174,14 @@ console.log({ updateData });
 //       try {
 //         data.messageType = 'message';
 //         const conversation = await addConversaton(data);
-//         console.log(data.chat);
+//         // console.log(data.chat);
 
 //         const chat = await getChatById(data.chat);
 //         // const sender = await findById(data.sender);
 
 //         chat.participants.forEach(async (participant) => {
 //           if (participant.toString() !== data?.sender) {
-//             console.log(participant);
+//             // console.log(participant);
 //             const eventName = 'receive-message::' + participant.toString();
 
 //             const eventData = {
@@ -199,7 +191,7 @@ console.log({ updateData });
 //           }
 //         });
 
-//         console.log(chat);
+//         // console.log(chat);
 
 //         await Chat.updateOne(
 //           { _id: data.chat },
@@ -218,7 +210,7 @@ console.log({ updateData });
 //             participants: participant,
 //           });
 
-//           console.log(chatListforUser);
+//           // console.log(chatListforUser);
 //           const roomId = 'update-chatlist::' + participant.toString();
 //           io.emit(roomId, chatListforUser);
 //         });
@@ -235,7 +227,7 @@ console.log({ updateData });
 //     });
 
 //     socket.on('disconnect', () => {
-//       console.log(`ID: ${socket.id} disconnected`);
+//       // console.log(`ID: ${socket.id} disconnected`);
 //     });
 //   });
 // };

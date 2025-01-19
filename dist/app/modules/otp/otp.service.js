@@ -36,29 +36,29 @@ const checkOtpByEmail = (email) => __awaiter(void 0, void 0, void 0, function* (
     const isExist = yield otp_model_1.default.findOne({
         sentTo: email,
     });
-    console.log({ email });
-    console.log({ isExist });
+    // console.log({ email });
+    // console.log({ isExist });
     const isExpireOtp = yield otp_model_1.default.findOne({
         sentTo: email,
         expiredAt: { $lt: new Date() }, // Use the `$gt` operator for comparison
     });
-    console.log({ isExpireOtp });
-    console.log('.........');
+    // console.log({ isExpireOtp });
+    // console.log('.........');
     return { isExist, isExpireOtp };
 });
 const otpMatch = (email, otp) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(email, otp);
+    // console.log(email, otp);
     const isOtpMatch = yield otp_model_1.default.findOne({
         sentTo: email,
         otp,
         status: 'pending',
         expiredAt: { $gt: new Date() },
     });
-    console.log({ isOtpMatch });
+    // console.log({ isOtpMatch });
     return isOtpMatch;
 });
 const updateOtpByEmail = (email, payload) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(payload);
+    // console.log(payload);
     const otpUpdate = yield otp_model_1.default.findOneAndUpdate({
         sentTo: email,
     }, payload, { new: true });

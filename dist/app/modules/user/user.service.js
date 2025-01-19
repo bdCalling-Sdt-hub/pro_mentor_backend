@@ -37,7 +37,7 @@ const otp_utils_1 = require("../otp/otp.utils");
 const eamilNotifiacation_1 = require("../../utils/eamilNotifiacation");
 const tokenManage_1 = require("../../utils/tokenManage");
 const createUserToken = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('payload service user');
+    // console.log('payload service user');
     const { role, email, fullName, password, phone, about, professional } = payload;
     // user role check
     if (!(role === user_constants_1.USER_ROLE.MENTEE || role === user_constants_1.USER_ROLE.MENTOR)) {
@@ -85,7 +85,7 @@ const createUserToken = (payload) => __awaiter(void 0, void 0, void 0, function*
         otpBody.professional = professional;
     }
     // send email
-    console.log('before otp send email');
+    // console.log('before otp send email');
     process.nextTick(() => __awaiter(void 0, void 0, void 0, function* () {
         yield (0, eamilNotifiacation_1.otpSendEmail)({
             sentTo: email,
@@ -95,7 +95,7 @@ const createUserToken = (payload) => __awaiter(void 0, void 0, void 0, function*
             expiredAt: expiredAt,
         });
     }));
-    console.log('after otp send email');
+    // console.log('after otp send email');
     // crete token
     const createUserToken = (0, tokenManage_1.createToken)({
         payload: otpBody,
@@ -153,8 +153,8 @@ const otpVerifyAndCreateUser = (_a) => __awaiter(void 0, [_a], void 0, function*
         userId: (_b = user === null || user === void 0 ? void 0 : user._id) === null || _b === void 0 ? void 0 : _b.toString(),
         role: user === null || user === void 0 ? void 0 : user.role,
     };
-    // console.log({ jwtPayload });
-    console.log('user user', user);
+    // // console.log({ jwtPayload });
+    // console.log('user user', user);
     const accessToken = (0, tokenManage_1.createToken)({
         payload: jwtPayload,
         access_secret: config_1.default.jwt_access_secret,
@@ -164,7 +164,7 @@ const otpVerifyAndCreateUser = (_a) => __awaiter(void 0, [_a], void 0, function*
 });
 const updateUser = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
     const { role, email, isActive, isDeleted, password } = payload, rest = __rest(payload, ["role", "email", "isActive", "isDeleted", "password"]);
-    console.log('rest data', rest);
+    // console.log('rest data', rest);
     const user = yield user_models_1.User.findByIdAndUpdate(id, rest, { new: true });
     if (!user) {
         throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'User updating failed');
@@ -291,7 +291,7 @@ const blockedUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
     //   status = true;
     // }
     let status = !singleUser.isActive;
-    console.log('status', status);
+    // console.log('status', status);
     const user = yield user_models_1.User.findByIdAndUpdate(id, { isActive: status }, { new: true });
     if (!user) {
         throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'user deleting failed');

@@ -32,7 +32,7 @@ const addPaymentService = async (payload: any) => {
     description,
   } = payload;
 
-  console.log('......payload......');
+  // console.log('......payload......');
 
   const status = 'pending';
 
@@ -50,17 +50,17 @@ const addPaymentService = async (payload: any) => {
     transactionDate,
   };
 
-  console.log('......paymentData......');
+  // console.log('......paymentData......');
 
   // Start a session for transaction
   const session = await mongoose.startSession();
   session.startTransaction();
 
   try {
-    console.log('......try......');
+    // console.log('......try......');
     // Validate mentor
     const mentor = await User.findById(mentorId).session(session);
-    console.log('mentor', mentor);
+    // console.log('mentor', mentor);
     if (!mentor) {
       throw new AppError(400, 'Mentor is not found!');
     }
@@ -70,7 +70,7 @@ const addPaymentService = async (payload: any) => {
 
     // Validate mentee
     const mentee = await User.findById(menteeId).session(session);
-    console.log('mentee', mentee);
+    // console.log('mentee', mentee);
     if (!mentee) {
       throw new AppError(400, 'Mentee is not found!');
     }
@@ -118,7 +118,7 @@ const addPaymentService = async (payload: any) => {
 
     // Create payment record
     const result = await Payment.create([paymentData], { session });
-    console.log('result', result);
+    // console.log('result', result);
     if (!result || !result[0]) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to add Payment!');
     }
@@ -155,7 +155,7 @@ const addPaymentService = async (payload: any) => {
       description,
     };
 
-    console.log('bookingData', bookingData);
+    // console.log('bookingData', bookingData);
 
     const bookingResult =
       await mentorBookingService.createMentorBookingService(bookingData);
@@ -260,19 +260,19 @@ const addPaymentService = async (payload: any) => {
 //     session.startTransaction();
 
 //     const mentor = await User.findById(payload.mentorId);
-//     console.log('.....try-1.......');
+//     // console.log('.....try-1.......');
 //     if (!mentor) {
 //       throw new AppError(400, 'Mentor is not found!');
 //     }
 //     if (mentor.role !== 'mentor') {
 //       throw new AppError(400, 'User is not authorized as a Mentor!');
 //     }
-//     console.log('.....try-2.......');
-//     // console.log(paymentData);
+//     // console.log('.....try-2.......');
+//     // // console.log(paymentData);
 //     const result = await Payment.create([paymentData], { session });
 //     // const result = await Payment.create([paymentData], { session });
-//     console.log('result', result);
-//     console.log('.....try-3.......');
+//     // console.log('result', result);
+//     // console.log('.....try-3.......');
 
 //     // const result = await Order.create([data], { session });
 //     // if (!result.length) {
@@ -332,18 +332,18 @@ const addPaymentService = async (payload: any) => {
 //   };
 
 //     const mentor = await User.findById(payload.mentorId);
-//     console.log('.....try-1.......');
+//     // console.log('.....try-1.......');
 //     if (!mentor) {
 //       throw new AppError(400, 'Mentor is not found!');
 //     }
 //     if (mentor.role !== 'mentor') {
 //       throw new AppError(400, 'User is not authorized as a Mentor!');
 //     }
-//     console.log('.....try-2.......');
-//     console.log(paymentData);
+//     // console.log('.....try-2.......');
+//     // console.log(paymentData);
 //     const result = await Payment.create(paymentData);
-//     // console.log('result', result);
-//     console.log('.....try-3.......');
+//     // // console.log('result', result);
+//     // console.log('.....try-3.......');
 
 //     // const result = await Order.create([data], { session });
 //     if (!result) {

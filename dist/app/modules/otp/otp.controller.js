@@ -20,7 +20,7 @@ const http_status_1 = __importDefault(require("http-status"));
 const resendOtp = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const token = (_a = req.headers) === null || _a === void 0 ? void 0 : _a.token;
-    console.log({ token });
+    // console.log({ token });
     yield otp_service_1.otpServices.resendOtpEmail({ token });
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,

@@ -7,7 +7,7 @@ import TaskGoal from './taskGoal.model';
 
 
 const createMentorTaskGoalService = async (payload: TTaskGoal) => {
-  console.log('payuload', payload);
+  // console.log('payuload', payload);
 
   const result = await TaskGoal.create(payload);
   if (!result) {
@@ -18,7 +18,7 @@ const createMentorTaskGoalService = async (payload: TTaskGoal) => {
 };
 
 const addTaskToTaskGoalService = async (payload: any) => {
-  console.log('task add', payload);
+  // console.log('task add', payload);
 
   if (!payload.taskGoalId) {
     throw new AppError(httpStatus.BAD_REQUEST, 'Task Goal ID is required!');
@@ -70,7 +70,7 @@ const getAllMentorGoalsService = async (
   query: Record<string, unknown>,
   mentorId: string,
 ) => {
-console.log('query', query.menteeId);
+// console.log('query', query.menteeId);
   const taskGoalQuery = new QueryBuilder(
     TaskGoal.find({ mentorId, menteeId:query.menteeId }).populate('mentorId').populate('menteeId'),
     query,
@@ -153,9 +153,9 @@ const getSingleMentorTaskGoalQuery = async (id: string) => {
 };
 
 const completedTaskStatus = async (taskGoalId: string, taskId: string, files: any) => {
-  console.log({ taskGoalId });
-  console.log({ taskId });
-  console.log({ files });
+  // console.log({ taskGoalId });
+  // console.log({ taskId });
+  // console.log({ files });
 
   // Extract task file paths
   // const taskGoalFiles = files['taskfiles']?.map((file:any) =>

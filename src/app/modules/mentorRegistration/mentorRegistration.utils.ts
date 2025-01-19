@@ -9,30 +9,30 @@ function generateAvailableSlots({
   duration,
   minimumSlotTime,
 }: any) {
-  console.log({
-    startTime,
-    endTime,
-    startBreakTime,
-    endBreakTime,
-    bookings,
-    duration,
-    minimumSlotTime,
-  });
+  // // console.log({
+  //   startTime,
+  //   endTime,
+  //   startBreakTime,
+  //   endBreakTime,
+  //   bookings,
+  //   duration,
+  //   minimumSlotTime,
+  // });
   // Helper function to convert time string to Date object (for easier comparison)
   function convertToDate(time: any) {
-    console.log({ time });
+    // console.log({ time });
     const [timeStr, period] = time.split(' ');
-    console.log({ timeStr });
-    console.log({ period });
+    // console.log({ timeStr });
+    // console.log({ period });
     const [hours, minutes] = timeStr.split(':').map(Number);
-    console.log({ hours });
-    console.log({ minutes });
-    // console.log({ hours, minutes });
+    // console.log({ hours });
+    // console.log({ minutes });
+    // // console.log({ hours, minutes });
     const formattedTime = new Date();
 
     // Handle AM/PM conversion
     if (period === 'AM') {
-      console.log('period AM', period);
+      // console.log('period AM', period);
       if (hours === 12) {
         formattedTime.setHours(hours + 12);
       } else {
@@ -51,22 +51,22 @@ function generateAvailableSlots({
 
   // Helper function to generate time slots between start and end times
   function generateTimeSlots(start: any, end: any, minSlotDuration: any) {
-    console.log('start', start);
-    console.log('end', end);
+    // console.log('start', start);
+    // console.log('end', end);
     const slots = [];
     let currentTime = convertToDate(start);
     const endTime = convertToDate(end);
 
-    console.log({ currentTime });
-    console.log({ endTime });
+    // console.log({ currentTime });
+    // console.log({ endTime });
 
     // Generate slots based on minimum slot time
     while (currentTime < endTime) {
       const nextTime = new Date(currentTime.getTime());
-      console.log({ nextTime });
+      // console.log({ nextTime });
       nextTime.setMinutes(currentTime.getMinutes() + minSlotDuration);
 
-      console.log({ nextTime });
+      // console.log({ nextTime });
 
       if (nextTime <= endTime) {
         slots.push(
@@ -82,15 +82,15 @@ function generateAvailableSlots({
   // Generate all possible slots between startTime and endTime
   const allSlots = generateTimeSlots(startTime, endTime, minimumSlotTime);
 
-  console.log({ allSlots });
+  // console.log({ allSlots });
 
   // Convert break times and bookings to comparable date objects
   const breakStart = convertToDate(startBreakTime);
 
-  console.log({ breakStart });
+  // console.log({ breakStart });
   const breakEnd = convertToDate(endBreakTime);
 
-  console.log({ breakEnd });
+  // console.log({ breakEnd });
 
   const bookedSlots = bookings.map((booking: any) => {
     return {
@@ -99,35 +99,35 @@ function generateAvailableSlots({
     };
   });
 
-  console.log('.........1............');
-  console.log('bookedSlots', bookedSlots);
-  console.log('.........2............');
+  // console.log('.........1............');
+  // console.log('bookedSlots', bookedSlots);
+  // console.log('.........2............');
 
-  // console.log(bookedSlots);
-  console.log('convertToDate endTime');
-  console.log(convertToDate(endTime));
+  // // console.log(bookedSlots);
+  // console.log('convertToDate endTime');
+  // console.log(convertToDate(endTime));
 
   // Filter out slots that are already booked or fall within break time
 
   const availableSlots = allSlots.filter((slot, i) => {
-    console.log('.........1............');
-    console.log(slot)
-    console.log('.........2............');
+    // console.log('.........1............');
+    // console.log(slot)
+    // console.log('.........2............');
     const slotStart = convertToDate(slot);
     const slotEnd = new Date(slotStart.getTime());
     slotEnd.setMinutes(slotStart.getMinutes() + duration - 1);
 
-    // console.log('.........start............');
-    // console.log({ slotStart });
-    // console.log({ breakStart });
-    // console.log({ slotEnd });
-    // console.log(convertToDate(endTime));
-    // console.log({ breakEnd });
-    // console.log('.........end............');
+    // // console.log('.........start............');
+    // // console.log({ slotStart });
+    // // console.log({ breakStart });
+    // // console.log({ slotEnd });
+    // // console.log(convertToDate(endTime));
+    // // console.log({ breakEnd });
+    // // console.log('.........end............');
 
     // Check if the slot is during the break time
     if (slotStart >= breakStart && slotStart <= breakEnd) {
-      // console.log('ttttttttttttttttttttttttttttttttttttttttttttttttttttttttt');
+      // // console.log('ttttttttttttttttttttttttttttttttttttttttttttttttttttttttt');
       return false; // Slot is during break time
     }
 
@@ -138,9 +138,9 @@ function generateAvailableSlots({
         (slotEnd > booking.start && slotEnd <= booking.end),
     );
 
-    console.log({ slotStart });
-    console.log({ isBooked });
-    console.log({ slotEnd });
+    // console.log({ slotStart });
+    // console.log({ isBooked });
+    // console.log({ slotEnd });
 
     if (isBooked) {
       return false; // Slot is already booked
@@ -154,7 +154,7 @@ function generateAvailableSlots({
     return true; // This slot is available
   });
 
-  console.log(availableSlots);
+  // console.log(availableSlots);
 
   return availableSlots;
 }
