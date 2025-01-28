@@ -7,11 +7,26 @@ import config from '../../config';
 import { otpServices } from '../otp/otp.service';
 import jwt, { JwtPayload, Secret } from 'jsonwebtoken';
 import httpStatus from 'http-status';
+import { User } from '../user/user.models';
 
 // login
 const login = catchAsync(async (req: Request, res: Response) => {
   // console.log('login-1')
   const result = await authServices.login(req.body);
+  // console.log(result)
+  let newResult;
+  if(result){
+  const user:any =  await User.findOne({email: result.user.email});
+  console.log('======',{ user });
+
+
+  if(user.role === 'mentor'){
+    newResult = { ...result, mentorRegistrationId : user.mentorRegistrationId ? user.mentorRegistrationId : null };
+  }else{
+    newResult = result;
+  }
+
+  }
   // console.log('login-2');
   const cookieOptions: any = {
     secure: false,
@@ -23,11 +38,13 @@ const login = catchAsync(async (req: Request, res: Response) => {
     cookieOptions.sameSite = 'none';
   }
 
+  console.log({newResult});
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Logged in successfully',
-    data: result,
+    data: newResult,
   });
 });
 
