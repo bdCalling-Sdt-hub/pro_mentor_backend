@@ -188,7 +188,7 @@ const otpVerifyAndCreateUser = async ({
     const accessToken = createToken({
       payload: jwtPayload,
       access_secret: config.jwt_access_secret as string,
-      expity_time: '3m',
+      expity_time: '60m',
     });
 
   return accessToken;
