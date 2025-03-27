@@ -46,7 +46,7 @@ MentorRegistrationSchema.index({
   industryExpertise: 'text',
   specializedSkill: 'text',
 });
- 
+  
 export const MentorRegistration = model<TMentorRegistration>(
   'MentorRegistration',
   MentorRegistrationSchema,

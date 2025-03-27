@@ -7,7 +7,12 @@ import { userService } from '../user/user.service';
 import mongoose from 'mongoose';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { walletService } from '../wallet/wallet.service';
-import { acceptanceRegistrationEmail, cancellationRegistrationEmail, generateAvailableSlots, isTimeOverlap } from './mentorRegistration.utils';
+import {
+  acceptanceRegistrationEmail,
+  cancellationRegistrationEmail,
+  generateAvailableSlots,
+  isTimeOverlap,
+} from './mentorRegistration.utils';
 import ScheduleBooking from '../shediulBooking/shediulBooking.model';
 import moment from 'moment';
 import { notificationService } from '../notification/notification.service';
@@ -30,7 +35,6 @@ const createMentorRegistrationService = async (
 
     // console.log({ payload });
 
-  
     const result = await MentorRegistration.create([payload], { session });
 
     if (!result) {
@@ -40,15 +44,13 @@ const createMentorRegistrationService = async (
       );
     }
 
-  
     const notificationData = {
       userId: result[0].mentorId._id,
-      role:'admin',
+      role: 'admin',
       message: `Mentor Registration is successful!`,
       type: 'success',
     };
 
-  
     const notificationResult = await notificationService.createNotification(
       notificationData,
       session,
@@ -61,22 +63,18 @@ const createMentorRegistrationService = async (
       );
     }
 
-  
     await session.commitTransaction();
 
-  
     session.endSession();
 
     return result;
   } catch (error) {
-  
     await session.abortTransaction();
     console.error('Error in createMentorRegistrationService:', error);
     session.endSession();
     throw error;
   }
 };
-
 
 const getAllMentorRegistrationQuery = async (
   query: Record<string, unknown>,
@@ -163,7 +161,7 @@ const getAllMentorRegistrationQuery = async (
   const paginatedResults = mentorRegistrations.slice(skip, skip + limitNumber);
   // console.log({ paginatedResults });
 
-    const totalPage = Math.ceil(total / limitNumber);
+  const totalPage = Math.ceil(total / limitNumber);
 
   return {
     meta: {
@@ -181,19 +179,15 @@ const getAllMentorRegistrationQuery = async (
 // 6766a7755c0e9cf78f46838f
 // 6767a4bb14e9022494898f0f
 
-
-
 const getMentorAvailableSlots = async (query: Record<string, unknown>) => {
   const { mentorId, duration, date }: any = query;
 
-// console.log('mentorId', mentorId, 'duration', duration, 'date', date);
+  // console.log('mentorId', mentorId, 'duration', duration, 'date', date);
   const registerMentor = await MentorRegistration.findOne({ mentorId });
 
   if (!registerMentor) {
     throw new AppError(404, 'Register Mentor Not Found!!');
   }
-
-  
 
   const bookings = await ScheduleBooking.find({
     mentorId,
@@ -209,22 +203,19 @@ const getMentorAvailableSlots = async (query: Record<string, unknown>) => {
   // console.log('minimumSlotTime  ', 15);
   const durationNum = Number(duration);
 
-
-  const availableSlots = generateAvailableSlots(
-   { startTime:registerMentor.startTime,
-    endTime:registerMentor.endTime,
-    startBreakTime:registerMentor.startBreakTime,
-    endBreakTime:registerMentor.endBreakTime,
+  const availableSlots = generateAvailableSlots({
+    startTime: registerMentor.startTime,
+    endTime: registerMentor.endTime,
+    startBreakTime: registerMentor.startBreakTime,
+    endBreakTime: registerMentor.endBreakTime,
     bookings,
-    duration:durationNum,
-    minimumSlotTime: 15,}
-  );
+    duration: durationNum,
+    minimumSlotTime: 15,
+  });
   // console.log({availableSlots});
 
   return { result: availableSlots };
 };
-
-
 
 const getSingleMentorRegistrationQuery = async (id: string) => {
   const registerMentor = await MentorRegistration.findById(id);
@@ -258,15 +249,19 @@ const getAdminMentorQuery = async (query: Record<string, unknown>) => {
 };
 
 const getMentorRegistrationOnly = async (id: string) => {
+  // const mentor: any = await User.findById(id).populate('mentorRegistrationId');
   const mentor = await User.findById(id).populate({
     path: 'mentorRegistrationId',
     populate: { path: 'mentorId' },
   });
-
+  
   if (!mentor) {
     throw new AppError(404, 'Mentor is Not Found!!');
   }
-  if (!mentor?.mentorRegistrationId) {
+
+  console.log('=========', mentor.mentorRegistrationId);
+
+  if (!mentor.mentorRegistrationId) {
     throw new AppError(404, 'Mentor Registration is Not Found!!');
   }
 
@@ -301,7 +296,7 @@ const updateMentorRegistrationQuery = async (
     // If there's an image in the payload, update the related user
     let image = null;
     if (payload?.image || payload.fullName) {
-      const userData:any = {};
+      const userData: any = {};
 
       if (payload.fullName) {
         userData.fullName = payload.fullName;
@@ -314,12 +309,11 @@ const updateMentorRegistrationQuery = async (
       let user;
       // Ensure the mentorId exists before trying to update the user
       if (registerMentor.mentorId) {
-         user = await User.findByIdAndUpdate(
-          registerMentor.mentorId,
-          userData,
-          { new: true, session },
-        );
-         image = user?.image;
+        user = await User.findByIdAndUpdate(registerMentor.mentorId, userData, {
+          new: true,
+          session,
+        });
+        image = user?.image;
       } else {
         // console.log('mentorId not found for the mentor');
       }
@@ -330,7 +324,7 @@ const updateMentorRegistrationQuery = async (
     // Commit the transaction if everything is successful
     await session.commitTransaction();
     session.endSession();
-   
+
     // Return the updated mentor registration
     return { mentorRegistration, image };
   } catch (error) {
@@ -343,8 +337,6 @@ const updateMentorRegistrationQuery = async (
     throw error;
   }
 };
-
-
 
 const acceptSingleMentorRegistrationService = async (id: string) => {
   const session = await mongoose.startSession();
@@ -385,13 +377,13 @@ const acceptSingleMentorRegistrationService = async (id: string) => {
     }
 
     // console.log('before send email');
-        await acceptanceRegistrationEmail({
-          sentTo: mentorRegistration.email,
-          subject: 'Mentor Registration Accepted!!',
-          name: mentorRegistration.fullName,
-        });
+    await acceptanceRegistrationEmail({
+      sentTo: mentorRegistration.email,
+      subject: 'Mentor Registration Accepted!!',
+      name: mentorRegistration.fullName,
+    });
 
-// console.log('after send email');
+    // console.log('after send email');
     await session.commitTransaction();
     session.endSession();
 
@@ -404,8 +396,10 @@ const acceptSingleMentorRegistrationService = async (id: string) => {
   }
 };
 
-
-const cencelSingleMentorRegistrationService = async (id: string, rejone:string) => {
+const cencelSingleMentorRegistrationService = async (
+  id: string,
+  rejone: string,
+) => {
   // console.log('rejone ---1', rejone);
   const registerMentor = await MentorRegistration.findById(id);
   if (!registerMentor) {
@@ -451,5 +445,4 @@ export const mentorRegistrationService = {
   updateMentorRegistrationQuery,
   acceptSingleMentorRegistrationService,
   cencelSingleMentorRegistrationService,
-
 };
