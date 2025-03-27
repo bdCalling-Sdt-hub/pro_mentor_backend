@@ -26,4 +26,4 @@ jobs:
       - run: npm ci
       - name: Change Directory
         run: cd /home/finn/actions-promentor-backend/_work/pro_mentor_backend/pro_mentor_backend
-      - run: pm2 restart 40
+      - run: pm2 restart 38
