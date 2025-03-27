@@ -22,7 +22,7 @@ const chatSchema = new Schema<IChat>(
   },
 );
 
-// Check if the model is already defined to avoid OverwriteModelError
+
 const Chat =  model('Chat', chatSchema);
 
 export default Chat;

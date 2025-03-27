@@ -223,24 +223,20 @@ const getMentorRegistrationOnly = catchAsync(async (req, res) => {
 });
 
 const updateSingleMentorRegistration = catchAsync(async (req, res) => {
-  // // console.log('update payload');
+ 
   const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-  // // console.log('files', files);
 
-  // Access body and files
   const payload = req.body;
-  // console.log('payload........1', payload);
-  // req.body.preferredDays = JSON.parse(req.body.preferredDays);
+
   if (payload.preferredDays) {
     try {
       payload.preferredDays = JSON.parse(payload.preferredDays);
     } catch (err) {
-      // console.log('Error parsing preferredDays:', err);
+      
     }
   }
-  // // console.log('payload........2', payload);
 
-  // Handle introVideo file upload
+
   if (files && files['introVideo'] && files['introVideo'].length > 0) {
     const introVideo = files['introVideo'][0];
     const videoPath = introVideo.path.replace(/^public[\\/]/, '');
@@ -248,10 +244,10 @@ const updateSingleMentorRegistration = catchAsync(async (req, res) => {
       payload.introVideo = videoPath;
     }
   } else {
-    // console.log('No intro video uploaded');
+    
   }
 
-  // Handle image file upload
+
   if (files && files['image'] && files['image'].length > 0) {
     const image = files['image'][0];
     const imagePath = image.path.replace(/^public[\\/]/, '');
@@ -259,14 +255,14 @@ const updateSingleMentorRegistration = catchAsync(async (req, res) => {
       payload.image = imagePath;
     }
   } else {
-    // console.log('No image uploaded');
+   
   }
 
   if (payload.startTime && payload.endTime) {
     payload.availableTime = `${payload.startTime} - ${payload.endTime}`;
   }
 
-  // // console.log('update payload', payload);
+
 
   const result = await mentorRegistrationService.updateMentorRegistrationQuery(
     req.params.id,
