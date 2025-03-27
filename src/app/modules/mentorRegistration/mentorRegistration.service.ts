@@ -249,7 +249,6 @@ const getAdminMentorQuery = async (query: Record<string, unknown>) => {
 };
 
 const getMentorRegistrationOnly = async (id: string) => {
-  // const mentor: any = await User.findById(id).populate('mentorRegistrationId');
   const mentor = await User.findById(id).populate({
     path: 'mentorRegistrationId',
     populate: { path: 'mentorId' },
@@ -277,23 +276,18 @@ const updateMentorRegistrationQuery = async (
   session.startTransaction();
 
   try {
-    // // console.log('payload', payload);
-
-    // Find the mentor registration
     const registerMentor =
       await MentorRegistration.findById(id).session(session);
     if (!registerMentor) {
       throw new AppError(404, 'Register Mentor Not Found!!');
     }
 
-    // Update the mentor registration with the payload
     const mentorRegistration = await MentorRegistration.findByIdAndUpdate(
       id,
       payload,
       { new: true, session },
     );
 
-    // If there's an image in the payload, update the related user
     let image = null;
     if (payload?.image || payload.fullName) {
       const userData: any = {};
@@ -307,7 +301,6 @@ const updateMentorRegistrationQuery = async (
       }
 
       let user;
-      // Ensure the mentorId exists before trying to update the user
       if (registerMentor.mentorId) {
         user = await User.findByIdAndUpdate(registerMentor.mentorId, userData, {
           new: true,
@@ -315,24 +308,17 @@ const updateMentorRegistrationQuery = async (
         });
         image = user?.image;
       } else {
-        // console.log('mentorId not found for the mentor');
       }
     }
 
-    //  const image = user ? user.image : null;
-    // const image = user === null ? null : user.image;
-    // Commit the transaction if everything is successful
     await session.commitTransaction();
     session.endSession();
 
-    // Return the updated mentor registration
     return { mentorRegistration, image };
   } catch (error) {
-    // Rollback the transaction in case of any error
     await session.abortTransaction();
     session.endSession();
 
-    // Log or throw error
     console.error('Error during mentor registration update:', error);
     throw error;
   }
@@ -343,7 +329,6 @@ const acceptSingleMentorRegistrationService = async (id: string) => {
   session.startTransaction();
 
   try {
-    // console.log('id id', id);
 
     const registerMentor =
       await MentorRegistration.findById(id).session(session);
@@ -376,14 +361,12 @@ const acceptSingleMentorRegistrationService = async (id: string) => {
       throw new AppError(404, 'Wallet Not Found!!');
     }
 
-    // console.log('before send email');
     await acceptanceRegistrationEmail({
       sentTo: mentorRegistration.email,
       subject: 'Mentor Registration Accepted!!',
       name: mentorRegistration.fullName,
     });
 
-    // console.log('after send email');
     await session.commitTransaction();
     session.endSession();
 
@@ -400,7 +383,6 @@ const cencelSingleMentorRegistrationService = async (
   id: string,
   rejone: string,
 ) => {
-  // console.log('rejone ---1', rejone);
   const registerMentor = await MentorRegistration.findById(id);
   if (!registerMentor) {
     throw new AppError(404, 'Register Mentor Not Found!!');
@@ -418,7 +400,6 @@ const cencelSingleMentorRegistrationService = async (
     throw new AppError(404, 'Failed to cencel Mentor Registration!');
   }
 
-  // Send cancellation email
   try {
     await cancellationRegistrationEmail({
       sentTo: mentorRegistration.email,
@@ -426,7 +407,6 @@ const cencelSingleMentorRegistrationService = async (
       name: mentorRegistration.fullName,
       rejone,
     });
-    // console.log('Cancellation email sent successfully');
   } catch (error) {
     console.error('Error sending cancellation email:', error);
     throw new AppError(500, 'Failed to send cancellation email');
