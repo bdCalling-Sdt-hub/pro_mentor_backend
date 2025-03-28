@@ -160,15 +160,14 @@ const getSingleMentorBookingQuery = async (id: string) => {
 
 
 const acceptMentorBookingQuery = async (id: string) => {
-  const session = await mongoose.startSession(); // Start a session
-  session.startTransaction(); // Start the transaction
+  const session = await mongoose.startSession(); 
+  session.startTransaction(); 
 
   try {
-    // Find the mentor booking by ID and populate the necessary fields
     const mentorBooking = await MentorBooking.findById(id)
       .populate({
-        path: 'mentorId', // Populate the full mentorId object (not just the ObjectId)
-        populate: { path: 'mentorRegistrationId' }, // Populate mentorRegistrationId inside mentorId
+        path: 'mentorId', 
+        populate: { path: 'mentorRegistrationId' }, 
       })
       .session(session);
 
@@ -215,6 +214,25 @@ const acceptMentorBookingQuery = async (id: string) => {
         'Failed to update Mentor Registration membership count!',
       );
     }
+
+    const notificationData = {
+      userId: result.menteeId,
+      message: `Booking Accept is successful!`,
+      type: 'success',
+    };
+   
+
+    const notificationResult = await notificationService.createNotification(
+      notificationData,
+      session,
+    );
+
+
+    if (!notificationResult) {
+      throw new AppError(403, 'Notification send faield');
+    }
+
+
 
     // Commit the transaction after all updates succeed
     await session.commitTransaction();

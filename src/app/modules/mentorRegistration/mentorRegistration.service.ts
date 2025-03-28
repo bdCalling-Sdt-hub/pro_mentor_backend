@@ -99,11 +99,19 @@ const getAllMentorRegistrationQuery = async (
   //   queryConditions.$text = { $search: String(searchTerm) };
   // }
   // // console.log('queryConditions 2', queryConditions);
+
+
+  // if (searchTerm) {
+  //   queryConditions.$or = [
+  //     { fullName: { $regex: searchTerm, $options: 'i' } },
+  //     { industryExpertise: { $regex: searchTerm, $options: 'i' } },
+  //     { specializedSkill: { $regex: searchTerm, $options: 'i' } },
+  //   ];
+  // }
+
   if (searchTerm) {
     queryConditions.$or = [
       { fullName: { $regex: searchTerm, $options: 'i' } },
-      { industryExpertise: { $regex: searchTerm, $options: 'i' } },
-      { specializedSkill: { $regex: searchTerm, $options: 'i' } },
     ];
   }
 
