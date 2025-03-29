@@ -183,7 +183,7 @@ const addPaymentService = async (payload: any) => {
     /// notification for mentor
     const notificationData1 = {
       userId: mentor._id,
-      message: `Shedule booking successful!`,
+      message: `Your mentoring session has been successfully scheduled!`,
       type: 'success',
     };
     const notificationData2 = {
@@ -193,7 +193,7 @@ const addPaymentService = async (payload: any) => {
     };
     const notificationData3 = {
       role: 'admin',
-      message: `Shedule booking successful!`,
+      message: `A mentoring session has been successfully scheduled!`,
       type: 'success',
     };
 
