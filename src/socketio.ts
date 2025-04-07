@@ -14,7 +14,8 @@ const socketIO = (io: Server) => {
   io.use(async (socket: Socket, next) => {
     const token = socket?.handshake?.headers?.authorization;
 
-    console.log(token);
+    console.log('token ==', token);
+
 
     if (!token) {
       return next(new Error('Authentication error: Token not provided.'));
@@ -30,6 +31,7 @@ const socketIO = (io: Server) => {
         config.jwt_access_secret as string,
       ); // Ensures secret is a string
       socket.decodedToken = decoded;
+      console.log('bearer ', decoded);
       next();
     } catch (err) {
       console.error('JWT Verification Error:', err);

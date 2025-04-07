@@ -20,6 +20,7 @@ const auth = (...userRoles: string[]) => {
     });
 
     const { role, userId } = decodeData;
+    console.log('userId==', userId);
     const isUserExist = await User.IsUserExistById(userId);
 
     if (!isUserExist) {

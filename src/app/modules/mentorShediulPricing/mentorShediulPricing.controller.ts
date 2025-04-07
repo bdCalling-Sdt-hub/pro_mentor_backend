@@ -17,7 +17,6 @@ const getAllMentorShedulePricing = catchAsync(async (req, res) => {
 
 const updateMentorShedulePricing = catchAsync(async (req, res) => {
     const data = req.body;
-    const id = req.params.id;
     if(!data.price){
         throw new AppError(httpStatus.BAD_REQUEST, "Price is required")
     }
@@ -25,7 +24,6 @@ const updateMentorShedulePricing = catchAsync(async (req, res) => {
     data.price = Number(data.price);
     const result =
       await mentorShediulPricingService.updateMentorShediulPricingService(
-        id,
         data,
       );
     sendResponse(res, {

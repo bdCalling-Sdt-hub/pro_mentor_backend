@@ -13,7 +13,7 @@ export const shediulPricingRoutes = Router();
       mentorShediulPricingController.getAllMentorShedulePricing,
     )
     .patch(
-      '/:id',
+      '/update-pricing',
       auth(USER_ROLE.ADMIN),
       mentorShediulPricingController.updateMentorShedulePricing,
     );

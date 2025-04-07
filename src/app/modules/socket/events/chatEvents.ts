@@ -12,13 +12,14 @@ export const handleChatEvents = async (
   callback: any,
 ) => {
   try {
-    console.log('add new Chat ', data);
+    console.log('add new Chat ===***', data);
     console.log(callback);
 
     let chat = {};
 // console.log('chat first-2');
 // console.log('data', data);
-console.log('data.participant', data.participant);
+console.log('data.participant.decodedToken', socket.decodedToken);
+console.log('data.participant.token', socket.decodedToken.userId);
 const updateData =  JSON.parse(data);
     if (updateData.participant) {
       console.log('chat first-3');

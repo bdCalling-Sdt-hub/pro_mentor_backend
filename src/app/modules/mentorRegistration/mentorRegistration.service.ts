@@ -16,6 +16,7 @@ import {
 import ScheduleBooking from '../shediulBooking/shediulBooking.model';
 import moment from 'moment';
 import { notificationService } from '../notification/notification.service';
+import MentorShediulPricing from '../mentorShediulPricing/mentorShediulPricing.model';
 
 const createMentorRegistrationService = async (
   payload: TMentorRegistration,
@@ -344,9 +345,16 @@ const acceptSingleMentorRegistrationService = async (id: string) => {
       throw new AppError(404, 'Register Mentor Not Found!!');
     }
 
-    const mentor = await User.findById(registerMentor.mentorId).session(
-      session,
-    );
+    const mentorShedulingPricingAdd = await MentorShediulPricing.find({}).session(session)
+    if (mentorShedulingPricingAdd.length === 0) {
+      throw new AppError(
+        404,
+        'Please set scheduling price for mentor before proceeding!',
+      );
+    }
+      const mentor = await User.findById(registerMentor.mentorId).session(
+        session,
+      );
     if (!mentor) {
       throw new AppError(404, 'Mentor Not Found!!');
     }
