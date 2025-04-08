@@ -26,8 +26,8 @@ const MentorRegistrationSchema = new Schema<TMentorRegistration>(
     mentoringStyle: { type: String, required: true },
     preferredDays: { type: [String], required: true },
     availableTime: { type: String, required: false },
-    startBreakTime: { type: String, required: false, default: '' },
-    endBreakTime: { type: String, required: false, default: '' },
+    startBreakTime: { type: String, required: false, default: '1:00 PM' },
+    endBreakTime: { type: String, required: false, default: '2:00 PM' },
     startTime: { type: String, required: true },
     endTime: { type: String, required: true },
     status: {

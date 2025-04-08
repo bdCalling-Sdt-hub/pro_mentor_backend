@@ -43,23 +43,40 @@ const createMentorRegistration = catchAsync(async (req, res) => {
   // duplicate check by email  // todo
 
   // // console.log(files);
-  if (
-    !files ||
-    !files['introVideo'] ||
-    !files['professionalCredential'] ||
-    !files['additionalDocument']
-  ) {
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      'Both introvideo and document files are required',
-    );
-  }
+  // if (
+  //   !files ||
+  //   !files['introVideo'] ||
+  //   !files['professionalCredential'] ||
+  //   !files['additionalDocument']
+  // ) {
+  //   throw new AppError(
+  //     httpStatus.BAD_REQUEST,
+  //     'Both introvideo and document files are required',
+  //   );
+  // }
 
-  const introVideo = files['introVideo'][0];
-  const professionalCredential = files['professionalCredential'];
-  const additionalDocument = files['additionalDocument'];
+  // const introVideo = files['introVideo'][0];
+  // const professionalCredential = files['professionalCredential'];
+  // const additionalDocument = files['additionalDocument'];
 
-  const videoPath = introVideo.path.replace(/^public[\\/]/, '');
+  // const videoPath = introVideo.path.replace(/^public[\\/]/, '');
+
+  // const professionalCredentialPath = professionalCredential.map((credential) =>
+  //   credential.path.replace(/^public[\\/]/, ''),
+  // );
+
+  // const additionalDocumentPath = additionalDocument.map((credential) =>
+  //   credential.path.replace(/^public[\\/]/, ''),
+  // );
+
+  const introVideo = files['introVideo'] ? files['introVideo'][0] : null;
+  const professionalCredential = files['professionalCredential'] || [];
+  const additionalDocument = files['additionalDocument'] || [];
+
+  // Handle paths for the files if they exist
+  const videoPath = introVideo
+    ? introVideo.path.replace(/^public[\\/]/, '')
+    : null;
 
   const professionalCredentialPath = professionalCredential.map((credential) =>
     credential.path.replace(/^public[\\/]/, ''),
@@ -72,23 +89,31 @@ const createMentorRegistration = catchAsync(async (req, res) => {
   // console.log({ professionalCredential });
   // console.log({ professionalCredentialPath });
 
+
   const availableTimeSlots = `${bodyData.startTime} - ${bodyData.endTime}`; // todo
-  const endBreaktime = bodyData.endBreakTime - 1;
-  bodyData.endBreaktime = endBreaktime;
+  // const endBreaktime1 = bodyData.endBreakTime - 1;
+  // console.log('endBreaktime1', endBreaktime1);
+  // const endBreaktime = parseInt(bodyData.endBreakTime.split(':')[0]) - 1;
+  // console.log('endBreaktime', endBreaktime);
+  // bodyData.endBreaktime = endBreaktime;
 
   const payload = {
     ...bodyData,
     mentorId: userId,
     introVideo: videoPath,
-    professionalCredential: professionalCredentialPath,
-    additionalDocument: additionalDocumentPath,
+    professionalCredential: professionalCredentialPath.length
+      ? professionalCredentialPath
+      : null,
+    additionalDocument: additionalDocumentPath.length
+      ? additionalDocumentPath
+      : null,
     availableTime: availableTimeSlots,
   };
 
-  // // console.log('payload payload', payload);
+  console.log('payload payload*****', payload);
   // console.log('............controller............');
   const result =
-    await mentorRegistrationService.createMentorRegistrationService(payload); // todo email sent to admin
+    await mentorRegistrationService.createMentorRegistrationService(payload); 
   // console.log('result result ', result);
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -123,31 +148,25 @@ const getallMentorRegistration = catchAsync(async (req, res) => {
       // Only process string values
       if (typeof value === 'string') {
         try {
-          // Check if the string looks like an array (e.g., "['Finance']")
           if (value.startsWith('[') && value.endsWith(']')) {
-            // Parse the string to convert to an actual array
             const parsedValue = JSON.parse(value.replace(/'/g, '"'));
-            // If it's an empty array (e.g., '[]'), ignore it
             if (Array.isArray(parsedValue) && parsedValue.length > 0) {
-              acc[key] = parsedValue; // Add to filtersQuery
+              acc[key] = parsedValue; 
             }
           } else {
-            // If not an array-like string, just add it as is
             acc[key] = value;
           }
         } catch (error) {
           console.error('Error parsing array string:', error);
         }
       } else if (Array.isArray(value)) {
-        // If value is already an array (e.g., multiple values for the same key), keep it as is
         acc[key] = value;
       }
       return acc;
     }, {});
   }
 
-  // Here you can process your filtersQuery or pass it to your database query
-  // // console.log('Processed filtersQuery:', filtersQuery);
+
 
   const { meta, result } =
     await mentorRegistrationService.getAllMentorRegistrationQuery(filtersQuery);
