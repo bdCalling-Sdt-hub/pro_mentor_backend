@@ -125,7 +125,7 @@ const createMentorRegistration = catchAsync(async (req, res) => {
 
 const getallMentorRegistration = catchAsync(async (req, res) => {
   const query = req.query;
-  // console.log('query', query);
+  console.log('query', query);
   let filtersQuery: any = {};
 
   // if (Object.keys(query).length > 0) {
